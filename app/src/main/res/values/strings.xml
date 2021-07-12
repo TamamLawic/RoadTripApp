@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">RoadTripApp-FBU</string>
+    <string name="app_name">My Application Test</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">vaxtlmwBmQbWtDqCdwRrfzr31IllkhLijk8Zp4u7</string>
+    <string name="back4app_client_key">p7T4jT6cchOBkaO63c49hIzwX1QA4BvBdAYO7DqB</string>
+    <string name="title_activity_login">Login</string>
+
 </resources>
