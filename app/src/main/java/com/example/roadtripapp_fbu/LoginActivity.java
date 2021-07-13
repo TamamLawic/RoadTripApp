@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.roadtripapp_fbu.MainActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -42,7 +41,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ivIconLogin = findViewById(R.id.ivIconLogin);
         //ivIconLogin.setImageResource(R.mipmap.icon);
-        etUsername = findViewById(R.id.etDescription);
+        etUsername = findViewById(R.id.etCaption);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
         btnSignUp = findViewById(R.id.btnSignUp);
