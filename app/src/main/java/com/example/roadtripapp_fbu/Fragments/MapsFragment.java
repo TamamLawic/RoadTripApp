@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,9 +8,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,7 +53,9 @@ public class MapsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_maps, container, false);
+        View v = inflater.inflate(R.layout.fragment_maps, container, false);
+        setHasOptionsMenu(true);
+        return v;
     }
 
     @Override
@@ -58,5 +66,22 @@ public class MapsFragment extends Fragment {
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+    }
+
+    /**
+     * When the options menu is created, change it to the one for the maps fragment
+     */
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.maps_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Toast.makeText(getContext(), "Post clicked!", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(getContext(), NewPostActivity.class);
+        startActivity(i);
+        return super.onOptionsItemSelected(item);
     }
 }
