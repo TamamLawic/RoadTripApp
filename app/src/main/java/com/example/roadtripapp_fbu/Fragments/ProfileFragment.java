@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,10 +20,13 @@ import android.widget.Toast;
 import com.example.roadtripapp_fbu.LoginActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.TripAdapter;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import java.util.List;
 
 /**
  * Fragment for bottom navigational view. ParseQuery to get all of the user's trips and show them in a recycler view.
@@ -31,6 +35,9 @@ public class ProfileFragment extends Fragment {
     public static final String TAG = "ProfileFragment";
     private Button btnLogOut;
     private Button btnNewTrip;
+    private RecyclerView rvTrips;
+    protected TripAdapter adapter;
+    protected List<Trip> allTrips;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -51,6 +58,7 @@ public class ProfileFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         btnLogOut = view.findViewById(R.id.btnLogOut);
         btnNewTrip = view.findViewById(R.id.btnNewTrip);
+        rvTrips = view.findViewById(R.id.rvTrips);
 
         //when logout button is clicked, log out the current user
         btnLogOut.setOnClickListener(new View.OnClickListener() {
