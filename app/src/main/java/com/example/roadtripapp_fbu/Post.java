@@ -2,6 +2,7 @@ package com.example.roadtripapp_fbu;
 
 import android.util.Log;
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -91,7 +92,7 @@ public class Post extends ParseObject {
     public ParseObject getTripId() { return getParseObject(KEY_TRIP);}
 
     //set the post's tripId
-    public void setTripId(ParseUser user) {
-        put(KEY_TRIP, user);
+    public void setTripId(ParseObject tripId) {
+        put(KEY_TRIP, tripId);
     }
 }

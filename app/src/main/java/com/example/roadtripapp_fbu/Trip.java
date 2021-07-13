@@ -15,6 +15,11 @@ public class Trip extends ParseObject {
     public static final String KEY_COST = "cost";
     public static final String KEY_TRIP_NAME = "tripName";
 
+    // Ensure that your subclass has a public default constructor
+    public Trip() {
+        super();
+    }
+
     //returns Trips's cost
     public Number getCost() {
         return getNumber(KEY_COST);

@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 
 import org.parceler.Parcels;
 
@@ -43,7 +44,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        return 0;
+        return trips.size();
     }
 
     /** Viewholder class, that sets up posts for the ProfileFragment recycler view.
@@ -58,10 +59,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
             itemView.setOnClickListener(this);
         }
 
-        /** Bind the post passed in into the item_post for the recycler view using Glide for images. */
+        /** Bind the post passed in into the item_post for the recycler view using Glide for images.
+         * @param trip*/
         public void bind(Trip trip) {
             // Bind the post data to the view elements
-            tvTripNameProfile.setText(trip.getTripName());
+            tvTripNameProfile.setText(trip.getString("tripName"));
         }
 
         /** When the post is clicked, wrap trip data using Parcels and start TripFeedActivity sending it with the wrapped trip. */
@@ -76,11 +78,23 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 // create intent for the new activity
                 Intent intent = new Intent(context, TripFeedActivity.class);
                 // serialize the post using parceler, use its short name as a key
-                intent.putExtra(trip.getTripName(), Parcels.wrap(trip));
+                intent.putExtra(trip.getString("tripName"), Parcels.wrap(trip));
                 // display activity
                 context.startActivity(intent);
             }
         }
 
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        trips.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Trip> list) {
+        trips.addAll(list);
+        notifyDataSetChanged();
     }
 }
