@@ -29,7 +29,10 @@ import com.parse.SaveCallback;
 
 import java.io.File;
 import java.util.List;
-
+/**
+ * Creates a new ParseObject Post, and allows user input to put into fields.
+ * Sets onclick listeners for
+ */
 //TODO: Need to add in the user's current trip, and pass that when creating a new post
 public class NewPostActivity extends AppCompatActivity {
     public String photoFileName = "photo.jpg";
@@ -85,7 +88,7 @@ public class NewPostActivity extends AppCompatActivity {
         post.setCaption(description);
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
-        newest_trip = getCurrentTrip();
+        newest_trip = Trip.getCurrentTrip();
         Log.i("NewPostActivity", newest_trip.getTripName());
         post.setTripId(newest_trip);
         //TODO: need to be able to set the tripID
@@ -104,28 +107,10 @@ public class NewPostActivity extends AppCompatActivity {
                 etMoneySpent.setText("");
             }
         });
+        //After posting, send the user to the trip feed
+        Intent i = new Intent(NewPostActivity.this, TripFeedActivity.class);
+        startActivity(i);
 
-    }
-
-    /** Get the current trip the user is on*/
-    private Trip getCurrentTrip() {
-        // specify what type of data we want to query - Post.class
-        ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        // include data referred by user key
-        query.include(Trip.KEY_USER);
-        //only query posts of the currently signed in user
-        query.whereEqualTo(Trip.KEY_USER, ParseUser.getCurrentUser());
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        //finds the newest created trip
-        try {
-            return query.find().get(0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
     /** External Launch of camera application on phone and takes an image.

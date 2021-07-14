@@ -17,12 +17,16 @@ import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.TripFeedActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.parceler.Parcels;
 
 /**
  * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
@@ -77,10 +81,15 @@ public class MapsFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * When the MenuItem post is selected startActivity : NewPostActivity
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Toast.makeText(getContext(), "Post clicked!", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getContext(), NewPostActivity.class);
+        // serialize the post using parceler, use its short name as a key
+        i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(Trip.getCurrentTrip()));
         startActivity(i);
         return super.onOptionsItemSelected(item);
     }

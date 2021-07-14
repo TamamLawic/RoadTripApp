@@ -78,7 +78,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 // create intent for the new activity
                 Intent intent = new Intent(context, TripFeedActivity.class);
                 // serialize the post using parceler, use its short name as a key
-                intent.putExtra(trip.getString("tripName"), Parcels.wrap(trip));
+                intent.putExtra(Trip.class.getSimpleName(), Parcels.wrap(trip));
                 // display activity
                 context.startActivity(intent);
             }

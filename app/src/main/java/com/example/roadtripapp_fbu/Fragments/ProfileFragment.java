@@ -65,6 +65,7 @@ public class ProfileFragment extends Fragment {
 
     /**
      * When the fragment is created, set an onclick listener for logging out the user.
+     * Sets up the recyclerview and displays all of the user's trips
      */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
