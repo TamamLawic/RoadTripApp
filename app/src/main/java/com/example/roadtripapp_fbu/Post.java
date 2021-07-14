@@ -79,9 +79,7 @@ public class Post extends ParseObject {
     }
 
     //returns the user that created the post
-    public ParseUser getUser() {
-        return getParseUser(KEY_USER);
-    }
+    public ParseUser getUser() { return getParseUser(KEY_USER); }
 
     //set the user that created the post
     public void setUser(ParseUser user) {

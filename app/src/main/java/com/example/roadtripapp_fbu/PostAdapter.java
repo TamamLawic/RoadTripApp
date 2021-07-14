@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 
 import java.util.Date;
 import java.util.List;
@@ -67,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             // Bind the post data to the view elements
             tvCaption.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
+
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
             String timeAgo = post.calculateTimeAgo(createdAt);
@@ -83,6 +85,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     .into(ivProfile);
 
         }
+    }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        posts.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Post> list) {
+        posts.addAll(list);
+        notifyDataSetChanged();
     }
 
 }

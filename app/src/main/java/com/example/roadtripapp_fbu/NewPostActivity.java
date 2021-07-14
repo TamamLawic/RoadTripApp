@@ -84,7 +84,9 @@ public class NewPostActivity extends AppCompatActivity {
         Post post = new Post();
         post.setCaption(description);
         post.setImage(new ParseFile(photoFile));
+        post.setUser(ParseUser.getCurrentUser());
         newest_trip = getCurrentTrip();
+        Log.i("NewPostActivity", newest_trip.getTripName());
         post.setTripId(newest_trip);
         //TODO: need to be able to set the tripID
         //TODO: add in the users current location to make the post

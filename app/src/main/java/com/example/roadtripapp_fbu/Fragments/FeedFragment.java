@@ -32,10 +32,9 @@ import java.util.List;
  */
 public class FeedFragment extends Fragment {
     public static final String TAG = "FeedFragment";
-    private List<Post> posts;
     private RecyclerView rvPosts;
     protected PostAdapter adapter;
-
+    public List<Post> allPosts;
 
     public FeedFragment() {
         // Required empty public constructor
@@ -52,16 +51,15 @@ public class FeedFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvPosts = view.findViewById(R.id.rvHomeFeed);
-
         //Set up the adapter for the trip recycler view
-        posts = new ArrayList<>();
+        allPosts = new ArrayList<>();
         //create the adapter
-        adapter = new PostAdapter(getContext(), posts);
+        adapter = new PostAdapter(getContext(), allPosts);
         //set the adapter on the recycler view
         rvPosts.setAdapter(adapter);
         rvPosts.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         // set the layout manager on the recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext() ,LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
         queryPosts();
@@ -72,6 +70,10 @@ public class FeedFragment extends Fragment {
     protected void queryPosts() {
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        // include data referred by user key
+        query.include(Post.KEY_USER);
+        // include data referred by user key
+        query.include(Post.KEY_TRIP);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
@@ -85,15 +87,16 @@ public class FeedFragment extends Fragment {
                     Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
+                else {
+                    // save received posts to list and notify adapter of new data
+                    allPosts.addAll(posts);
+                    adapter.notifyDataSetChanged();
+                }
 
                 // for debugging purposes let's print every post description to logcat
                 for (Post post : posts) {
                     Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
                 }
-
-                // save received posts to list and notify adapter of new data
-                posts.addAll(posts);
-                adapter.notifyDataSetChanged();
             }
         });
     }
