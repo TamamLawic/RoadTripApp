@@ -27,6 +27,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
 import java.io.File;
 import java.util.List;
 /**
@@ -44,7 +46,7 @@ public class NewPostActivity extends AppCompatActivity {
     ImageButton btnTakePicture;
     ImageButton btnPostUpdate;
     File photoFile;
-    Trip newest_trip;
+    Trip clicked_trip;
 
     /** Sets up on click listeners for buttons to take photo and post update **/
     @Override
@@ -57,6 +59,12 @@ public class NewPostActivity extends AppCompatActivity {
         etMoneySpent = findViewById(R.id.etMoneySpent);
         btnTakePicture = findViewById(R.id.btnTakePicture);
         btnPostUpdate = findViewById(R.id.btnPostUpdate);
+
+        //use Parcels to unwrap trip selected
+        //unwrap post's data from the pass
+        clicked_trip = (Trip) Parcels
+                .unwrap(getIntent()
+                        .getParcelableExtra(Trip.class.getSimpleName()));
 
         //when post picture button is clicked, post to current trip
         btnPostUpdate.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +87,6 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void onClick(View v)  { onLaunchCamera(); }
         });
-
     }
 
     /** Save post in a background thread, sets the parameters to the current fields of the View.*/
@@ -88,9 +95,7 @@ public class NewPostActivity extends AppCompatActivity {
         post.setCaption(description);
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
-        newest_trip = Trip.getCurrentTrip();
-        Log.i("NewPostActivity", newest_trip.getTripName());
-        post.setTripId(newest_trip);
+        post.setTripId(clicked_trip);
         //TODO: need to be able to set the tripID
         //TODO: add in the users current location to make the post
         post.saveInBackground(new SaveCallback() {
@@ -105,12 +110,12 @@ public class NewPostActivity extends AppCompatActivity {
                 etCaption.setText("");
                 ivPostImage.setImageResource(0);
                 etMoneySpent.setText("");
+                Intent intent = new Intent();
+                intent.putExtra("post", Parcels.wrap(post));//set result code and bundle response
+                setResult(RESULT_OK, intent);//return results okay, and intent
+                finish();//end and return user back to timeline
             }
         });
-        //After posting, send the user to the trip feed
-        Intent i = new Intent(NewPostActivity.this, TripFeedActivity.class);
-        startActivity(i);
-
     }
 
     /** External Launch of camera application on phone and takes an image.
