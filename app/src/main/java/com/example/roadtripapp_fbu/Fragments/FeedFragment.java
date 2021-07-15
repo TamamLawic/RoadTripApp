@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.roadtripapp_fbu.EndlessRecyclerViewScrollListener;
 import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.PostAdapter;
 import com.example.roadtripapp_fbu.R;
@@ -24,14 +26,22 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import okhttp3.Headers;
 
 /**
  * Fragment for bottom navigational view. ParseQuery to get the feed of the user, and display in a recycler view.
  */
 public class FeedFragment extends Fragment {
     public static final String TAG = "FeedFragment";
+    private EndlessRecyclerViewScrollListener scrollListener;
+    private SwipeRefreshLayout swipeContainer;
     private RecyclerView rvPosts;
     protected PostAdapter adapter;
     public List<Post> allPosts;
@@ -63,6 +73,108 @@ public class FeedFragment extends Fragment {
         rvPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
         queryPosts();
+
+        //Add endless scrolling
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi();
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvPosts.addOnScrollListener(scrollListener);
+
+        // Lookup the swipe container view
+        swipeContainer = (SwipeRefreshLayout) view.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchTimelineAsync(0);
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+    }
+
+    /** Clears the timeline, then adds all of the new posts, and notifies the adapter */
+    public void fetchTimelineAsync(int page) {
+        // specify what type of data we want to query - Post.class
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        // include data referred by user key
+        query.include(Post.KEY_USER);
+        // include data referred by user key
+        query.include(Post.KEY_TRIP).include(Trip.KEY_USER);
+        // limit query to latest 20 items
+        query.setLimit(20);
+        // order posts by creation date (newest first)
+        query.addDescendingOrder("createdAt");
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                } else {
+                    // save received posts to list and notify adapter of new data
+                    adapter.clear();
+                    allPosts.addAll(posts);
+                    adapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
+                }
+
+                // for debugging purposes let's print every post description to logcat
+                for (Post post : posts) {
+                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
+                }
+            }
+        });
+    }
+
+    /** Fetches next posts from the timeline to enable endless scrolling. */
+    private void loadNextDataFromApi() {
+        ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
+        // include data referred by user key
+        query.include(Post.KEY_USER);
+        // include data referred by user key
+        query.include(Post.KEY_TRIP).include(Trip.KEY_USER);
+        // limit query to latest 20 items
+        query.setLimit(20);
+        // order posts by creation date (newest first)
+        query.addDescendingOrder("createdAt");
+        //only get the posts that are after the last one displayed in the feed
+        query.setSkip(allPosts.size());
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<Post>() {
+            @Override
+            public void done(List<Post> posts, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                else {
+                    // save received posts to list and notify adapter of new data
+                    allPosts.addAll(posts);
+                    adapter.notifyDataSetChanged();
+                }
+
+                // for debugging purposes let's print every post description to logcat
+                for (Post post : posts) {
+                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
+                }
+            }
+        });
     }
 
     /** Begins a Parse Query in a background thread, getting all posts. */

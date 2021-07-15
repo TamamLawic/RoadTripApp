@@ -19,7 +19,7 @@ import org.parceler.Parcels;
 
 import java.util.Date;
 import java.util.List;
-
+/** Adapter for the TripFeedActivity, binds selected Trip's posts into the recycler view, using Glide for images. */
 public class TripFeedAdapter extends RecyclerView.Adapter<TripFeedAdapter.ViewHolder> {
     public static final String KEY_PROFILE = "profilePic";
     Context context;

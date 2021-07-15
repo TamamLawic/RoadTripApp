@@ -92,7 +92,7 @@ public class TripFeedActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Begins a Parse Query in a background thread, getting all posts for this trip. */
+    /** Begins a Parse Query in a background thread, getting all posts for this trip (20). */
     /**The posts are added to a list, and the adapter is notified of the data change.*/
     protected void queryPosts() {
         // specify what type of data we want to query - Post.class
@@ -130,13 +130,14 @@ public class TripFeedActivity extends AppCompatActivity {
         });
     }
 
+    /** Unwraps the posted updated, and populates the Trip Feed without a query.*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         //Make sure it is returning the same request we made earlier, and the result is ok
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
             //get data from the intent and unwrap parcel
             Post post = Parcels.unwrap(data.getParcelableExtra("post"));
-            //update the recycler view with the new tweet
+            //update the recycler view with the new post
             //modify data source
             tripPosts.add(0, post);
             //update the adapter

@@ -83,11 +83,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     .load(profileImage.getUrl())
                     .circleCrop()
                     .into(ivProfile);
-
         }
     }
 
-    // Clean all elements of the recycler
+    // Clean all elements of the recycler for endless scrolling
     public void clear() {
         posts.clear();
         notifyDataSetChanged();
