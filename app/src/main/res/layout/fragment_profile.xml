@@ -8,17 +8,6 @@
     tools:context=".Fragments.ProfileFragment">
 
     <Button
-        android:id="@+id/itemRenameTrip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:text="Log Out" />
-
-    <Button
         android:id="@+id/btnNewTrip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

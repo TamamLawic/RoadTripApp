@@ -2,6 +2,7 @@ package com.example.roadtripapp_fbu;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -68,6 +69,8 @@ public class TripFeedActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_trip_feed, menu);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(selectedTrip.getTripName());
         return true;
     }
 
@@ -76,10 +79,6 @@ public class TripFeedActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.itemRenameTrip){
-            //Compose icon is tapped
-            return true;
-        }
         if (item.getItemId() == R.id.itemNewPost){
             //NewPost icon is tapped, start new post activity
             Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
@@ -92,7 +91,7 @@ public class TripFeedActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /** Begins a Parse Query in a background thread, getting all posts for this trip (20). */
+    /** Begins a Parse Query in a background thread, getting all posts for this trip. */
     /**The posts are added to a list, and the adapter is notified of the data change.*/
     protected void queryPosts() {
         // specify what type of data we want to query - Post.class

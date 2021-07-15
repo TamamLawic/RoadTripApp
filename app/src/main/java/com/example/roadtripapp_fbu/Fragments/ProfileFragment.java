@@ -1,10 +1,13 @@
 package com.example.roadtripapp_fbu.Fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,6 +17,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +30,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.LoginActivity;
+import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
 import com.example.roadtripapp_fbu.TripAdapter;
@@ -34,6 +41,8 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +52,6 @@ import java.util.List;
 public class ProfileFragment extends Fragment implements EditTripNameFragment.EditNameDialogListener {
     public static final String TAG = "ProfileFragment";
     public static final String KEY_PROFILE = "profilePic";
-    Button btnLogOut;
     Button btnNewTrip;
     RecyclerView rvTrips;
     ImageView ivProfilePic;
@@ -71,7 +79,7 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnLogOut = view.findViewById(R.id.itemRenameTrip);
+        setHasOptionsMenu(true);
         btnNewTrip = view.findViewById(R.id.btnNewTrip);
         rvTrips = view.findViewById(R.id.rvTrips);
         ivProfilePic = view.findViewById(R.id.ivProfileImage);
@@ -98,18 +106,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 .load(profileImage.getUrl())
                 .circleCrop()
                 .into(ivProfilePic);
-
-        //when logout button is clicked, log out the current user
-        btnLogOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ParseUser.logOut();
-                ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
-                //send user back to the log in page
-                Intent i = new Intent(getContext(), LoginActivity.class);
-                startActivity(i);
-            }
-        });
 
         //Creates a new trip object, and takes you to the mapFragment to start planning the trip
         btnNewTrip.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +135,31 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         Toast.makeText(getContext(), "New trip: " + inputText, Toast.LENGTH_SHORT).show();
         ParseUser currentUser = ParseUser.getCurrentUser();
         makeNewTrip(currentUser, inputText);
+    }
+
+    /**
+     * When the options menu is created, change it to the one for the maps fragment
+     */
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_profile_fragment, menu);
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        ActionBar actionBar = activity.getSupportActionBar();
+        actionBar.setTitle("Profile");
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * When the MenuItem post is selected startActivity : NewPostActivity
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        ParseUser.logOut();
+        ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+        //send user back to the log in page
+        Intent i = new Intent(getContext(), LoginActivity.class);
+        startActivity(i);
+        return super.onOptionsItemSelected(item);
     }
 
     /**
