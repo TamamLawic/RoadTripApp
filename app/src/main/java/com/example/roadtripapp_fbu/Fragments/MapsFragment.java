@@ -86,7 +86,6 @@ public class MapsFragment extends Fragment {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(getContext(), "Post clicked!", Toast.LENGTH_SHORT).show();
         Intent i = new Intent(getContext(), NewPostActivity.class);
         // serialize the post using parceler, use its short name as a key
         i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(Trip.getCurrentTrip()));

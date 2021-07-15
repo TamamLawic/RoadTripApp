@@ -4,19 +4,19 @@
     <item
         android:id="@+id/action_feed"
         android:enabled="true"
-        android:icon="@android:drawable/ic_menu_mapmode"
-        android:title="homeIcon"
+        android:icon="@drawable/outline_feed_24"
+        android:title="Home Feed"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_create_trip"
         android:enabled="true"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="createTrip"
+        android:icon="@drawable/outline_map_24"
+        android:title="Trip"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_profile"
         android:enabled="true"
-        android:icon="?android:attr/fingerprintAuthDrawable"
-        android:title="profile"
+        android:icon="@drawable/outline_account_circle_24"
+        android:title="Profile"
         app:showAsAction="ifRoom" />
 </menu>

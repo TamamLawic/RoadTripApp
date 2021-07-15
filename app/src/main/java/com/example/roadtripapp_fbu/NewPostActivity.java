@@ -35,7 +35,6 @@ import java.util.List;
  * Creates a new ParseObject Post, and allows user input to put into fields.
  * Sets onclick listeners for
  */
-//TODO: Need to add in the user's current trip, and pass that when creating a new post
 public class NewPostActivity extends AppCompatActivity {
     public String photoFileName = "photo.jpg";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
@@ -96,7 +95,6 @@ public class NewPostActivity extends AppCompatActivity {
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
         post.setTripId(clicked_trip);
-        //TODO: need to be able to set the tripID
         //TODO: add in the users current location to make the post
         post.saveInBackground(new SaveCallback() {
             @Override

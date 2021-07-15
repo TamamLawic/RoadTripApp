@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -9,14 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.roadtripapp_fbu.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -47,19 +49,6 @@ public class TripFeedActivity extends AppCompatActivity {
                 .unwrap(getIntent()
                         .getParcelableExtra(Trip.class.getSimpleName()));
 
-        //set onClickListener for new post to trip, uses Parcel to wrap selected trip
-        btnNewPost = findViewById(R.id.btnNewPost);
-        btnNewPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
-                // serialize the post using parceler, use its short name as a key
-                i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
-                //startActivity(i);
-                startActivityForResult(i, REQUEST_CODE);
-            }
-        });
-
         rvTripPosts = findViewById(R.id.rvPosts);
         //Set up the adapter for the trip recycler view
         tripPosts = new ArrayList<>();
@@ -73,6 +62,34 @@ public class TripFeedActivity extends AppCompatActivity {
         rvTripPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
         queryPosts();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_trip_feed, menu);
+        return true;
+    }
+
+    /**
+     * When the Delete button is clicked, delete the current trip. When the new post is selected, start intent to NewPostActivity
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.itemRenameTrip){
+            //Compose icon is tapped
+            return true;
+        }
+        if (item.getItemId() == R.id.itemNewPost){
+            //NewPost icon is tapped, start new post activity
+            Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
+            // serialize the post using parceler, use its short name as a key
+            i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
+            //startActivity(i);
+            startActivityForResult(i, REQUEST_CODE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /** Begins a Parse Query in a background thread, getting all posts for this trip. */

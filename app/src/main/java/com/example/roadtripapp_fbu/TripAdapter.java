@@ -83,7 +83,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 context.startActivity(intent);
             }
         }
-
     }
 
     // Clean all elements of the recycler

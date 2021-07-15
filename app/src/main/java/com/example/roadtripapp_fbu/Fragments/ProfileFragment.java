@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +30,6 @@ import com.example.roadtripapp_fbu.TripAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
@@ -41,14 +40,16 @@ import java.util.List;
 /**
  * Fragment for bottom navigational view. ParseQuery to get all of the user's trips and show them in a recycler view.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements EditTripNameFragment.EditNameDialogListener {
     public static final String TAG = "ProfileFragment";
     public static final String KEY_PROFILE = "profilePic";
-    private Button btnLogOut;
-    private Button btnNewTrip;
-    private RecyclerView rvTrips;
-    private ImageView ivProfilePic;
-    private TextView tvName;
+    Button btnLogOut;
+    Button btnNewTrip;
+    RecyclerView rvTrips;
+    ImageView ivProfilePic;
+    TextView tvName;
+    EditText etTripName;
+
     protected TripAdapter adapter;
     protected List<Trip> allTrips;
 
@@ -70,11 +71,12 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        btnLogOut = view.findViewById(R.id.btnLogOut);
+        btnLogOut = view.findViewById(R.id.itemRenameTrip);
         btnNewTrip = view.findViewById(R.id.btnNewTrip);
         rvTrips = view.findViewById(R.id.rvTrips);
         ivProfilePic = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
+        etTripName = view.findViewById(R.id.etTripName);
 
         //Set up the adapter for the trip recycler view
         allTrips = new ArrayList<>();
@@ -113,8 +115,8 @@ public class ProfileFragment extends Fragment {
         btnNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ParseUser currentUser = ParseUser.getCurrentUser();
-                makeNewTrip(currentUser);
+                //start the fragment to namee the trip, set the imput to the result
+                showEditDialog();
             }
         });
 
@@ -122,15 +124,31 @@ public class ProfileFragment extends Fragment {
         queryPosts();
     }
 
+    // Call this method to launch the edit dialog
+    private void showEditDialog() {
+        FragmentManager fm = getFragmentManager();
+        EditTripNameFragment editNameDialogFragment = EditTripNameFragment.newInstance("Some Title");
+        // SETS the target fragment for use later when sending results
+        editNameDialogFragment.setTargetFragment(ProfileFragment.this, 300);
+        editNameDialogFragment.show(fm, "fragment_edit_name");
+    }
+
+    // This is called when the dialog is completed and the results have been passed
+    @Override
+    public void onFinishEditDialog(String inputText) {
+        Toast.makeText(getContext(), "New trip: " + inputText, Toast.LENGTH_SHORT).show();
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        makeNewTrip(currentUser, inputText);
+    }
+
     /**
      * makes a new trip object in parse for the logged in user
      */
-    private void makeNewTrip(ParseUser currentUser) {
+    private void makeNewTrip(ParseUser currentUser, String tripName) {
         Trip trip = new Trip();
 
         trip.put("author", ParseUser.getCurrentUser());
-        //TODO: make a way to edit the name of the trip
-        trip.put("tripName", "A string");
+        trip.put("tripName", tripName);
 
         // Saves the new object.
         trip.saveInBackground(new SaveCallback() {

@@ -25,7 +25,6 @@ public class TripFeedAdapter extends RecyclerView.Adapter<TripFeedAdapter.ViewHo
     Context context;
     List<Post> posts;
 
-
     public TripFeedAdapter(Context context, List<Post> posts) {
         this.context = context;
         this.posts = posts;
