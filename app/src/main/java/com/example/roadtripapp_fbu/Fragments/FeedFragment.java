@@ -130,7 +130,6 @@ public class FeedFragment extends Fragment {
             public void done(List<Post> posts, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
                     return;
                 } else {
                     // save received posts to list and notify adapter of new data
@@ -138,11 +137,6 @@ public class FeedFragment extends Fragment {
                     allPosts.addAll(posts);
                     adapter.notifyDataSetChanged();
                     swipeContainer.setRefreshing(false);
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
                 }
             }
         });
@@ -167,18 +161,12 @@ public class FeedFragment extends Fragment {
             public void done(List<Post> posts, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
                 else {
                     // save received posts to list and notify adapter of new data
                     allPosts.addAll(posts);
                     adapter.notifyDataSetChanged();
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
                 }
             }
         });
@@ -203,18 +191,12 @@ public class FeedFragment extends Fragment {
             public void done(List<Post> posts, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
                 else {
                     // save received posts to list and notify adapter of new data
                     allPosts.addAll(posts);
                     adapter.notifyDataSetChanged();
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
                 }
             }
         });

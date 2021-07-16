@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("login", "Log in button clicked");
                 //when the button is clicked, get inputted strings, and attempt login
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
@@ -83,16 +82,11 @@ public class LoginActivity extends AppCompatActivity {
 
     /** Use Parse verify a user log in attempt, and take them to their feed page if successful */
     private void loginUser(String username, String password) {
-        Log.i("login", "Attempting to log user in");
-        Log.i("login", username);
-        Log.i("login", password);
-
         //If log in successful, go to the main activity
         ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser user, ParseException e) {
                 if (e != null){
-                    Log.e("login", "issue with log in");
                     return;
                 }
                 goToMainActivity();

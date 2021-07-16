@@ -100,10 +100,8 @@ public class NewPostActivity extends AppCompatActivity {
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Log.e("NewPostActivity", "error while saving", e);
                     Toast.makeText(NewPostActivity.this, "Error while saving!", Toast.LENGTH_SHORT).show();
                 }
-                Log.i("NewPostActivity", "Post was saved successfully!");
                 //if post saved successfully, remove input fields
                 etCaption.setText("");
                 ivPostImage.setImageResource(0);
@@ -143,11 +141,6 @@ public class NewPostActivity extends AppCompatActivity {
         // Use `getExternalFilesDir` on Context to access package-specific directories.
         // This way, we don't need to request external read/write runtime permissions.
         File mediaStorageDir = new File(this.getExternalFilesDir(Environment.DIRECTORY_PICTURES), TAG);
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()){
-            Log.d(TAG, "failed to create directory");
-        }
 
         // Return the file target for the photo based on filename
         return new File(mediaStorageDir.getPath() + File.separator + fileName);

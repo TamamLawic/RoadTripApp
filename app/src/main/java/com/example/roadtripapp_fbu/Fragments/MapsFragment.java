@@ -16,7 +16,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.example.roadtripapp_fbu.Location;
 import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -35,10 +38,13 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.parse.ParseException;
+import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
@@ -47,7 +53,8 @@ public class MapsFragment extends Fragment {
     private PlacesClient placesClient;
     public static final String TAG = "MapFragment";
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
-
+    GoogleMap tripMap;
+    List<Location> locations;
 
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         /**
@@ -61,10 +68,21 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            //set map markers
-            LatLng sydney = new LatLng(-34, 151);
-            googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            //create bounds for start or map, center around the US
+            LatLngBounds bounds = new LatLngBounds(
+                    new LatLng(25.82, -124.39),
+                    new LatLng(49.38, -66.94)
+            );
+            //when the map is ready, add the markers for the current trip
+            tripMap = googleMap;
+            locations = Location.getTripLocations(Trip.getCurrentTrip());
+            for (int i = 0; i < locations.size(); i++) {
+                Location location = locations.get(i);
+                LatLng latLng = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
+                tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
+                tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
+            }
+
         }
     };
 
@@ -99,7 +117,6 @@ public class MapsFragment extends Fragment {
         //set the type of places you want to autocomplete
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
         //set a location bias for completions
-        //TODO: change this to get the user's current location
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
                 new LatLng(-33.880490, 151.184364),
                 new LatLng(-33.858754, 151.229596)));
@@ -110,15 +127,35 @@ public class MapsFragment extends Fragment {
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {
-                // TODO: Get info about the selected place.
-                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
-                //TODO : add location to the trip, reload the map with all the markers.
+                //when location is clicked, add it to the trip
+                addPlaceToTrip(place);
             }
             @Override
             public void onError(@NonNull Status status) {
-                Log.e(TAG, "Error getting data for place selected");
             }
         });
+    }
+
+    /**
+     * Creates a new Location, and populates with the selected place's data. Shows the current map with the pin added
+     */
+    private void addPlaceToTrip(Place place) {
+        Location location = new Location();
+        LatLng latLng = place.getLatLng();
+        location.setLatitude(latLng.latitude);
+        location.setLocationName(place.getName());
+        location.setLongitude(latLng.longitude);
+        location.setTripId(Trip.getCurrentTrip());
+        location.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e != null) {
+                    Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        tripMap.addMarker(new MarkerOptions().position(latLng).title(place.getName()));
+        tripMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
     /**

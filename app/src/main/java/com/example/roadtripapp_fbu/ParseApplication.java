@@ -16,6 +16,7 @@ public class ParseApplication extends Application {
         //register Parse Models
         ParseObject.registerSubclass(Trip.class);
         ParseObject.registerSubclass(Post.class);
+        ParseObject.registerSubclass(Location.class);
 
         //set applicationId, and server server based on the values
         Parse.initialize(new Parse.Configuration.Builder(this)

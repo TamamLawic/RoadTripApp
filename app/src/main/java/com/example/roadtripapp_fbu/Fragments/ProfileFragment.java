@@ -176,10 +176,8 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
             @Override
             public void done(ParseException e) {
                 if (e != null) {
-                    Log.e(TAG, "error while saving", e);
                     Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
                 }
-                Log.i(TAG, "Post was saved successfully!");
                 //if post saved successfully, send user to the create mapView with a new map
                 Fragment fragment = new MapsFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -211,13 +209,7 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
             public void done(List<Trip> trips, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
                     return;
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Trip trip : trips) {
-                    Log.i(TAG, "Trip: " + trip.getObjectId() + ", username: " + ParseUser.getCurrentUser().getUsername().toString());
                 }
 
                 // save received posts to list and notify adapter of new data
