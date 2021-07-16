@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -32,7 +33,8 @@ import java.util.List;
  */
 public class TripFeedActivity extends AppCompatActivity {
     public static final String TAG = "TripFeedActivity";
-    public static final int REQUEST_CODE = 20;
+    public static final int REQUEST_CODE_POST = 20;
+    public static final int REQUEST_CODE_JOURNAL = 40;
     Button btnNewPost;
     RecyclerView rvTripPosts;
     List<Post> tripPosts;
@@ -79,15 +81,27 @@ public class TripFeedActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        //if the selected menu item is new post, take to new post activity
         if (item.getItemId() == R.id.itemNewPost){
             //NewPost icon is tapped, start new post activity
             Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
             // serialize the post using parceler, use its short name as a key
             i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
             //startActivity(i);
-            startActivityForResult(i, REQUEST_CODE);
+            startActivityForResult(i, REQUEST_CODE_POST);
             return true;
         }
+        //if the New Journal Entry Button is selected, take to journal entry activity
+        if (item.getItemId() == R.id.itemNewJournal){
+            //NewPost icon is tapped, start new post activity
+            Intent i = new Intent(TripFeedActivity.this, NewJournalActivity.class);
+            // serialize the post using parceler, use its short name as a key
+            i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
+            //startActivity(i);
+            startActivityForResult(i, REQUEST_CODE_JOURNAL);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -132,8 +146,8 @@ public class TripFeedActivity extends AppCompatActivity {
     /** Unwraps the posted updated, and populates the Trip Feed without a query.*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        //Make sure it is returning the same request we made earlier, and the result is ok
-        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK){
+        //Make sure it is returning the same request we made earlier for post, and the result is ok
+        if (requestCode == REQUEST_CODE_POST && resultCode == RESULT_OK){
             //get data from the intent and unwrap parcel
             Post post = Parcels.unwrap(data.getParcelableExtra("post"));
             //update the recycler view with the new post
@@ -143,6 +157,11 @@ public class TripFeedActivity extends AppCompatActivity {
             adapter.notifyItemInserted(0);
             //scroll to the top of the recycler view
             rvTripPosts.smoothScrollToPosition(0);
+        }
+        //Make sure it is returning the same request we made earlier for journal, and the result is ok
+        if (requestCode == REQUEST_CODE_JOURNAL && resultCode == RESULT_OK){
+            //TODO: change the adapter to have multiple view types for the recycler view
+            Toast.makeText(this, "JOURNAL WAS MADE", Toast.LENGTH_SHORT).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
