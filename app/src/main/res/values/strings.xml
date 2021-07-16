@@ -5,5 +5,5 @@
     <string name="back4app_app_id">vaxtlmwBmQbWtDqCdwRrfzr31IllkhLijk8Zp4u7</string>
     <string name="back4app_client_key">p7T4jT6cchOBkaO63c49hIzwX1QA4BvBdAYO7DqB</string>
     <string name="title_activity_login">Login</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="maps_api_key">AIzaSyAjxi1uo7GulF9nhMoEibLwx1HLpIR1XRc</string>
 </resources>

@@ -11,7 +11,17 @@ import android.view.MenuItem;
 import com.example.roadtripapp_fbu.Fragments.FeedFragment;
 import com.example.roadtripapp_fbu.Fragments.MapsFragment;
 import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.Arrays;
+
 /**
  * Sets up bottom navigational view, and sets fragments for the bottom navigation.
  */
