@@ -14,7 +14,7 @@ import java.util.Date;
  * Parse class, setting up Post object.
  */
 @ParseClassName("Post")
-public class Post extends ParseObject {
+public class Post extends ParseObject implements FeedObjects{
     public static final String KEY_DESCRIPTION = "caption";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
@@ -91,5 +91,11 @@ public class Post extends ParseObject {
     //set the post's tripId
     public void setTripId(ParseObject tripId) {
         put(KEY_TRIP, tripId);
+    }
+
+    //Gets the type of object according to the Literature interface
+    @Override
+    public int getType() {
+        return FeedObjects.TYPE_POST;
     }
 }

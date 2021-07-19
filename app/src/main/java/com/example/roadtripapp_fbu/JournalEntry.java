@@ -8,7 +8,7 @@ import com.parse.ParseUser;
  * Parse class, setting up JournalEntry
  */
 @ParseClassName("JournalEntry")
-public class JournalEntry extends ParseObject {
+public class JournalEntry extends ParseObject implements FeedObjects{
     public static final String KEY_TEXT = "text";
     public static final String KEY_TRIP = "tripId";
     public static final String KEY_USER = "author";
@@ -47,4 +47,9 @@ public class JournalEntry extends ParseObject {
 
     //sets the journal entry's title
     public void setTitle(String title) {put(KEY_TITLE, title);}
+
+    @Override
+    public int getType() {
+        return FeedObjects.TYPE_JOURNAL;
+    }
 }

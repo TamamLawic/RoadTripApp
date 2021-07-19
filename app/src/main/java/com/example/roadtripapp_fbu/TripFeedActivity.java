@@ -25,6 +25,8 @@ import com.parse.ParseQuery;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,9 +37,8 @@ public class TripFeedActivity extends AppCompatActivity {
     public static final String TAG = "TripFeedActivity";
     public static final int REQUEST_CODE_POST = 20;
     public static final int REQUEST_CODE_JOURNAL = 40;
-    Button btnNewPost;
     RecyclerView rvTripPosts;
-    List<Post> tripPosts;
+    List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
     Trip selectedTrip;
 
@@ -54,9 +55,9 @@ public class TripFeedActivity extends AppCompatActivity {
 
         rvTripPosts = findViewById(R.id.rvPosts);
         //Set up the adapter for the trip recycler view
-        tripPosts = new ArrayList<>();
+        feedObjects = new ArrayList<>();
         //create the adapter
-        adapter = new TripFeedAdapter(this, tripPosts);
+        adapter = new TripFeedAdapter(this, feedObjects);
         //set the adapter on the recycler view
         rvTripPosts.setAdapter(adapter);
         rvTripPosts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -65,6 +66,7 @@ public class TripFeedActivity extends AppCompatActivity {
         rvTripPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
         queryPosts();
+        queryJournals();
     }
 
     @Override
@@ -131,13 +133,51 @@ public class TripFeedActivity extends AppCompatActivity {
                 }
                 else {
                     // save received posts to list and notify adapter of new data
-                    tripPosts.addAll(posts);
+                    feedObjects.addAll(posts);
                     adapter.notifyDataSetChanged();
                 }
 
                 // for debugging purposes let's print every post description to logcat
                 for (Post post : posts) {
                     Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
+                }
+            }
+        });
+    }
+
+    /** Begins a Parse Query in a background thread, getting all posts for this trip. */
+    /**The posts are added to a list, and the adapter is notified of the data change.*/
+    protected void queryJournals() {
+        // specify what type of data we want to query - Post.class
+        ParseQuery<JournalEntry> query = ParseQuery.getQuery(JournalEntry.class);
+        // include data referred by user key
+        query.include(JournalEntry.KEY_USER);
+        // include data referred by user key
+        query.include(JournalEntry.KEY_TRIP);
+        //only show the trip was selected
+        query.whereEqualTo("tripId", selectedTrip);
+        // limit query to latest 20 items
+        query.setLimit(20);
+        // order posts by creation date (newest first)
+        query.addDescendingOrder("createdAt");
+        // start an asynchronous call for posts
+        query.findInBackground(new FindCallback<JournalEntry>() {
+            @Override
+            public void done(List<JournalEntry> journals, ParseException e) {
+                // check for errors
+                if (e != null) {
+                    Log.e(TAG, "Issue with getting posts", e);
+                    return;
+                }
+                else {
+                    // save received posts to list and notify adapter of new data
+                    feedObjects.addAll(journals);
+                    adapter.notifyDataSetChanged();
+                }
+
+                // for debugging purposes let's print every post description to logcat
+                for (JournalEntry journal : journals) {
+                    Log.i(TAG, "journal: " + journal.getText() + ", trip: " + journal.getTripId());
                 }
             }
         });
@@ -152,7 +192,7 @@ public class TripFeedActivity extends AppCompatActivity {
             Post post = Parcels.unwrap(data.getParcelableExtra("post"));
             //update the recycler view with the new post
             //modify data source
-            tripPosts.add(0, post);
+            feedObjects.add(0, post);
             //update the adapter
             adapter.notifyItemInserted(0);
             //scroll to the top of the recycler view
@@ -160,7 +200,6 @@ public class TripFeedActivity extends AppCompatActivity {
         }
         //Make sure it is returning the same request we made earlier for journal, and the result is ok
         if (requestCode == REQUEST_CODE_JOURNAL && resultCode == RESULT_OK){
-            //TODO: change the adapter to have multiple view types for the recycler view
             Toast.makeText(this, "JOURNAL WAS MADE", Toast.LENGTH_SHORT).show();
         }
         super.onActivityResult(requestCode, resultCode, data);
