@@ -50,5 +50,8 @@ dependencies {
     annotationProcessor 'org.parceler:parceler:1.1.12'
     //google maps Autocomplete
     implementation 'com.google.android.libraries.places:places:2.2.0'
+    //accessing user's photos
+    implementation 'com.github.hotchemi:permissionsdispatcher:3.1.0'
+    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
 
 }

@@ -2,7 +2,8 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:icon="@android:drawable/ic_menu_camera"
+        android:icon="@drawable/outline_add_a_photo_24"
+        android:iconTint="#FFFFFF"
         android:title="Post"
         app:showAsAction="always" />
 </menu>

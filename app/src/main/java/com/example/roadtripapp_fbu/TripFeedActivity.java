@@ -200,7 +200,15 @@ public class TripFeedActivity extends AppCompatActivity {
         }
         //Make sure it is returning the same request we made earlier for journal, and the result is ok
         if (requestCode == REQUEST_CODE_JOURNAL && resultCode == RESULT_OK){
-            Toast.makeText(this, "JOURNAL WAS MADE", Toast.LENGTH_SHORT).show();
+            //get data from the intent and unwrap parcel
+            JournalEntry journal = Parcels.unwrap(data.getParcelableExtra("journal"));
+            //update the recycler view with the new post
+            //modify data source
+            feedObjects.add(0, journal);
+            //update the adapter
+            adapter.notifyItemInserted(0);
+            //scroll to the top of the recycler view
+            rvTripPosts.smoothScrollToPosition(0);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

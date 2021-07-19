@@ -43,6 +43,7 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="15dp"
         android:background="@drawable/outline_add_box_24"
+        android:backgroundTint="#00BCD4"
         android:text="Post"
         android:textSize="13sp" />
 
@@ -64,9 +65,20 @@
         android:layout_height="40dp"
         android:layout_below="@+id/ivPostImage"
         android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginEnd="5dp"
         android:layout_toStartOf="@+id/btnPostUpdate"
         android:background="@drawable/outline_add_a_photo_24"
+        android:backgroundTint="#00BCD4" />
+
+    <ImageButton
+        android:id="@+id/btnSelectPhoto"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/ivPostImage"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/btnTakePicture"
+        android:background="@drawable/outline_collections_24"
         android:backgroundTint="#00BCD4" />
 
     <Button

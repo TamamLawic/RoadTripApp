@@ -5,4 +5,5 @@ public interface FeedObjects {
     int TYPE_POST = 102;
 
     int getType();
+
 }
