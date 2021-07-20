@@ -10,7 +10,7 @@ import com.parse.ParseUser;
 import java.util.List;
 
 /**
- * Parse class, setting up Post object.
+ * Parse class, setting up Location object.
  */
 @ParseClassName("Location")
 public class Location extends ParseObject {
@@ -18,6 +18,7 @@ public class Location extends ParseObject {
     public static final String KEY_LNG = "longitude";
     public static final String KEY_NAME = "locationName";
     public static final String KEY_TRIP = "tripId";
+    public static final String KEY_ADDRESS = "address";
 
     //Getters and setters for the Parse Location Object
     //returns location's description
@@ -55,6 +56,11 @@ public class Location extends ParseObject {
         put(KEY_TRIP, tripId);
     }
 
+    //get the current tripID for the location
+    public String getAddress() { return getString(KEY_ADDRESS);}
+
+    //set the location's tripId
+    public void setAddress(String address) { put(KEY_ADDRESS, address);}
 
     //returns all locations for a trip passed in*/
     public static List<Location> getTripLocations(Trip trip) {

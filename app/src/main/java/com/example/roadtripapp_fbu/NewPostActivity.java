@@ -258,17 +258,11 @@ public class NewPostActivity extends AppCompatActivity {
         return image;
     }
 
-    // this function is triggered when
-    // the Select Image Button is clicked
+    /** Starts activity to get the image from gallery selection*/
     void imageChooser() {
-        // create an instance of the
-        // intent of the type image
         Intent i = new Intent();
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
-
-        // pass the constant to compare it
-        // with the returned requestCode
         startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_PHOTO_CODE);
     }
 }

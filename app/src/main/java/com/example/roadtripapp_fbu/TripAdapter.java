@@ -71,15 +71,11 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
         public void onClick(View v) {
             // gets item position
             int position = getAdapterPosition();
-            // makes sure the position exists
+            // makes sure the position exists before using intent to start TripFeed for selected Trip
             if (position != RecyclerView.NO_POSITION) {
-                // get the movie at the position
                 Trip trip = trips.get(position);
-                // create intent for the new activity
                 Intent intent = new Intent(context, TripFeedActivity.class);
-                // serialize the post using parceler, use its short name as a key
                 intent.putExtra(Trip.class.getSimpleName(), Parcels.wrap(trip));
-                // display activity
                 context.startActivity(intent);
             }
         }

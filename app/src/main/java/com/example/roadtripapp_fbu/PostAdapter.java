@@ -17,6 +17,7 @@ import com.parse.ParseObject;
 import java.util.Date;
 import java.util.List;
 
+/** Adapter class for FeedFragment*/
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public static final String KEY_PROFILE = "profilePic";
     private Context context;

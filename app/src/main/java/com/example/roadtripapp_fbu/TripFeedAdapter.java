@@ -31,6 +31,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         this.feedObjects = feedObjects;
     }
 
+    /** Seperate ViewHolder and Binder for the Post Objects*/
     class PostViewHolder extends RecyclerView.ViewHolder {
         private TextView tvUsername;
         private ImageView ivImage;
@@ -38,6 +39,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         private TextView tvTime;
         private ImageView ivProfile;
 
+        /** View Holder for the Post Objects*/
         public PostViewHolder(View itemView) {
             super(itemView);
             // get reference to views
@@ -71,7 +73,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
             }
         }
     }
-
+    /** Seperate View Holder for the Journal Objects in the TripFeed*/
     class JournalViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
         TextView tvCaption;
@@ -133,7 +135,6 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return feedObjects.size();
     }
-
 
     public void setLiteratureList(List<? extends FeedObjects> literatureList) {
         if (feedObjects == null){
