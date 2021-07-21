@@ -1,4 +1,4 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.FeedObjects;
+import com.example.roadtripapp_fbu.JournalEntry;
+import com.example.roadtripapp_fbu.Post;
+import com.example.roadtripapp_fbu.R;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;

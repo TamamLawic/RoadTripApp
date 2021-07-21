@@ -1,6 +1,5 @@
 package com.example.roadtripapp_fbu.Fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,18 +28,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.LoginActivity;
-import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
-import com.example.roadtripapp_fbu.TripAdapter;
+import com.example.roadtripapp_fbu.Adapters.TripAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;

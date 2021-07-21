@@ -7,6 +7,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -19,6 +20,7 @@ public class Location extends ParseObject {
     public static final String KEY_NAME = "locationName";
     public static final String KEY_TRIP = "tripId";
     public static final String KEY_ADDRESS = "address";
+    public static final String KEY_IMAGE = "placeImage";
 
     //Getters and setters for the Parse Location Object
     //returns location's description
@@ -61,6 +63,12 @@ public class Location extends ParseObject {
 
     //set the location's tripId
     public void setAddress(String address) { put(KEY_ADDRESS, address);}
+
+    //get the current Imaage for the location
+    public ParseFile getImage() { return getParseFile(KEY_IMAGE);}
+
+    //set the location's tripId
+    public void setImage(ParseFile image) { put(KEY_IMAGE, image);}
 
     //returns all locations for a trip passed in*/
     public static List<Location> getTripLocations(Trip trip) {

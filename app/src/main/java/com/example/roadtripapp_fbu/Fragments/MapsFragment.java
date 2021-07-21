@@ -1,6 +1,7 @@
 package com.example.roadtripapp_fbu.Fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
 import android.util.Log;
@@ -17,11 +21,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
+import com.example.roadtripapp_fbu.Adapters.PostAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Location;
 import com.example.roadtripapp_fbu.NewPostActivity;
+import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
 import com.google.android.gms.common.api.ApiException;
@@ -37,9 +45,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -48,8 +58,11 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.Distance;
+import com.google.maps.model.Duration;
 import com.google.maps.model.TravelMode;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.SaveCallback;
 import com.google.maps.DirectionsApi;
 
@@ -57,6 +70,10 @@ import com.google.maps.DirectionsApi;
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,11 +84,19 @@ import java.util.concurrent.TimeUnit;
  * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
  */
 public class MapsFragment extends Fragment {
-    private PlacesClient placesClient;
     public static final String TAG = "MapFragment";
-    GoogleMap tripMap;
-    List<Location> locations;
     private static final int overview = 0;
+    private PlacesClient placesClient;
+    List<Location> locations;
+    GoogleMap tripMap;
+    TextView tvStops;
+    TextView tvDuration;
+    TextView tvMiles;
+    int stops = 0;
+    long miles = 0L;
+    long duration = 0L;
+    RecyclerView rvItinerary;
+    protected ItineraryAdapter adapter;
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction polylines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -88,7 +113,8 @@ public class MapsFragment extends Fragment {
             );
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
-            locations = Location.getTripLocations(Trip.getCurrentTrip());
+            locations.addAll(Location.getTripLocations(Trip.getCurrentTrip()));
+            adapter.notifyDataSetChanged();
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
                 LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
@@ -105,9 +131,16 @@ public class MapsFragment extends Fragment {
                         addPolyline(results, googleMap);
                         addMarkersToMap(results, googleMap);
                     }
+                    else {
+                        tripMap.addMarker(new MarkerOptions().position(latLng1));
+                        tripMap.addMarker(new MarkerOptions().position(latLng2));
+                    }
                 }
                 tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
             }
+            tvStops.setText(String.valueOf(stops));
+            tvDuration.setText(String.valueOf(duration));
+            tvMiles.setText(String.valueOf(miles));
         }
     };
 
@@ -125,29 +158,32 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tvMiles = view.findViewById(R.id.tvMiles);
+        tvDuration = view.findViewById(R.id.tvDuration);
+        tvStops = view.findViewById(R.id.tvStops);
+        rvItinerary = view.findViewById(R.id.rvItinerary);
+
         //set up map view
         SupportMapFragment mapFragment =
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
+
         //initializes Places APi
         // Setup Places Client
         Places.initialize(getContext(), BuildConfig.GOOGLE_API_KEY);
         //get new Places client
         placesClient = Places.createClient(getContext());
         //set up the autocomplete fragment and cast to autocompleteSupportFragment
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment)
-                getChildFragmentManager().findFragmentById(R.id.autocomplete);
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.autocomplete);
         //set the type of places you want to autocomplete
         autocompleteFragment.setTypeFilter(TypeFilter.ESTABLISHMENT);
         //set a location bias for completions
-        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(
-                new LatLng(-33.880490, 151.184364),
-                new LatLng(-33.858754, 151.229596)));
+        autocompleteFragment.setLocationBias(RectangularBounds.newInstance(new LatLng(-33.880490, 151.184364), new LatLng(-33.858754, 151.229596)));
         autocompleteFragment.setCountries("US");
         //specify the types of place data to return
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS));
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -159,10 +195,24 @@ public class MapsFragment extends Fragment {
             public void onError(@NonNull Status status) {
             }
         });
+
+        //set up the recycler view for the itinerary
+        //Set up the adapter for the trip recycler view
+        locations = new ArrayList<>();
+        //create the adapter
+        adapter = new ItineraryAdapter(getContext(), locations);
+        //set the adapter on the recycler view
+        rvItinerary.setAdapter(adapter);
+        rvItinerary.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        // set the layout manager on the recycler view
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        rvItinerary.setLayoutManager(layoutManager);
+        // query posts from Instagram App
     }
 
     /**
-     * Creates a new Location, and populates with the selected place's data. Shows the current map with the pin added with directions
+     * Creates a new Location, and populates with the selected place's data. Shows the current map with the pin added with directions.
+     * Uses places query to find photo metadata, and convert into a photo
      */
     private void addPlaceToTrip(Place place) {
         Location location = new Location();
@@ -171,16 +221,80 @@ public class MapsFragment extends Fragment {
         location.setLocationName(place.getName());
         location.setAddress(place.getAddress());
         location.setLongitude(latLng.longitude);
-        location.setTripId(Trip.getCurrentTrip());
-        location.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e != null) {
-                    Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                    locations.add(location);
+        //get the image data from google places
+        final PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
+
+        // Get the attribution text.
+        final String attributions = photoMetadata.getAttributions();
+
+        // Create a FetchPhotoRequest.
+        final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
+                .setMaxWidth(500) // Optional.
+                .setMaxHeight(300) // Optional.
+                .build();
+        placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
+            Bitmap bitmap = fetchPhotoResponse.getBitmap();
+            //create a file to write bitmap data
+            //set the save file
+            //create a file to write bitmap data
+            File f = new File(getContext().getCacheDir(), "photo");
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //Convert bitmap to byte array
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+            byte[] bitmapdata = bos.toByteArray();
+
+            //write the bytes in file
+            FileOutputStream fos = null;
+            try {
+                fos = new FileOutputStream(f);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.write(bitmapdata);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            location.setImage(new ParseFile(f));
+            location.setTripId(Trip.getCurrentTrip());
+            location.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error while saving, " + e);
+                    }
+                    else{
+                        locations.add(location);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
+            });
+        }).addOnFailureListener((exception) -> {
+            if (exception instanceof ApiException) {
+                final ApiException apiException = (ApiException) exception;
+                Log.e(TAG, "Place not found: " + exception.getMessage());
+                final int statusCode = apiException.getStatusCode();
             }
         });
+
+
         //If there is already markers on the map, add a polyline and a marker, otherwise just add the marker
         if (locations.size() > 0) {
             Location location2 = locations.get(locations.size() - 1);
@@ -192,7 +306,17 @@ public class MapsFragment extends Fragment {
             if (results != null) {
                 addPolyline(results, tripMap);
                 addMarkersToMap(results, tripMap);
+                stops += 1;
+                miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
+                duration += results.routes[overview].legs[overview].duration.inSeconds/360;
+                //after adding another stop, add to the values
+                tvStops.setText(String.valueOf(stops));
+                tvDuration.setText(String.valueOf(duration));
+                tvMiles.setText(String.valueOf(miles));
             }
+        }
+        else {
+            tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
         }
         tripMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
@@ -262,6 +386,10 @@ public class MapsFragment extends Fragment {
     private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].startLocation.lat,results.routes[overview].legs[overview].startLocation.lng)).title(results.routes[overview].legs[overview].startAddress));
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].endLocation.lat,results.routes[overview].legs[overview].endLocation.lng)).title(results.routes[overview].legs[overview].startAddress).snippet(getEndLocationTitle(results)));
+        //add to total time of the trip, total miles for the trip, and stops
+        stops += 1;
+        miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
+        duration += results.routes[overview].legs[overview].duration.inSeconds/360;
     }
 
     private void positionCamera(DirectionsRoute route, GoogleMap mMap) {

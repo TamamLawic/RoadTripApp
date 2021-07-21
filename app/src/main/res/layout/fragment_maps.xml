@@ -59,7 +59,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentStart="false"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/outline_location_on_24" />
 
@@ -112,5 +112,14 @@
             android:layout_marginTop="15dp"
             android:layout_toEndOf="@+id/imageView2"
             android:text="TextView" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvItinerary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/imageView"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="20dp" />
     </RelativeLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>

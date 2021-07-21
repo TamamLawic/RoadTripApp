@@ -12,32 +12,21 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.roadtripapp_fbu.EndlessRecyclerViewScrollListener;
 import com.example.roadtripapp_fbu.Post;
-import com.example.roadtripapp_fbu.PostAdapter;
+import com.example.roadtripapp_fbu.Adapters.PostAdapter;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
-import com.example.roadtripapp_fbu.TripAdapter;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-
-import okhttp3.Headers;
 
 /**
  * Fragment for bottom navigational view. ParseQuery to get the feed of the user, and display in a recycler view.

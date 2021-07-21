@@ -1,4 +1,4 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,8 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.Post;
+import com.example.roadtripapp_fbu.R;
 import com.parse.ParseFile;
-import com.parse.ParseObject;
 
 import java.util.Date;
 import java.util.List;
