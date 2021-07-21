@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -96,7 +98,6 @@ public class MapsFragment extends Fragment {
     TextView tvStops;
     TextView tvDuration;
     TextView tvMiles;
-    int stops = 0;
     long miles = 0L;
     long duration = 0L;
     RecyclerView rvItinerary;
@@ -142,7 +143,7 @@ public class MapsFragment extends Fragment {
                 }
                 tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
             }
-            tvStops.setText(String.valueOf(stops));
+            tvStops.setText(String.valueOf(locations.size()));
             tvDuration.setText(String.valueOf(duration));
             tvMiles.setText(String.valueOf(miles));
         }
@@ -212,6 +213,8 @@ public class MapsFragment extends Fragment {
                 //if the panel is closed, push changes to Parse for order
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     reorderTrip();
+                    FragmentManager manager = getParentFragmentManager();
+                    manager.beginTransaction().replace(R.id.flContainer, new MapsFragment()).commit();
                 }
             }
         });
@@ -342,11 +345,10 @@ public class MapsFragment extends Fragment {
             if (results != null) {
                 addPolyline(results, tripMap);
                 addMarkersToMap(results, tripMap);
-                stops += 1;
                 miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
                 duration += results.routes[overview].legs[overview].duration.inSeconds/360;
                 //after adding another stop, add to the values
-                tvStops.setText(String.valueOf(stops));
+                tvStops.setText(String.valueOf(locations.size()));
                 tvDuration.setText(String.valueOf(duration));
                 tvMiles.setText(String.valueOf(miles));
             }
@@ -440,7 +442,6 @@ public class MapsFragment extends Fragment {
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].startLocation.lat,results.routes[overview].legs[overview].startLocation.lng)).title(results.routes[overview].legs[overview].startAddress));
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].endLocation.lat,results.routes[overview].legs[overview].endLocation.lng)).title(results.routes[overview].legs[overview].startAddress).snippet(getEndLocationTitle(results)));
         //add to total time of the trip, total miles for the trip, and stops
-        stops += 1;
         miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
         duration += results.routes[overview].legs[overview].duration.inSeconds/360;
     }
