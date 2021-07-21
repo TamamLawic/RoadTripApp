@@ -21,6 +21,8 @@ public class Location extends ParseObject {
     public static final String KEY_TRIP = "tripId";
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_IMAGE = "placeImage";
+    public static final String KEY_POSITION = "order";
+
 
     //Getters and setters for the Parse Location Object
     //returns location's description
@@ -29,8 +31,7 @@ public class Location extends ParseObject {
     }
 
     //sets the latitude for the location
-    public void setLatitude(Number latitude) { put(KEY_LAT, latitude);
-    }
+    public void setLatitude(Number latitude) { put(KEY_LAT, latitude); }
 
     //returns the latitude for the location
     public Number getLongitude() {
@@ -70,6 +71,12 @@ public class Location extends ParseObject {
     //set the location's tripId
     public void setImage(ParseFile image) { put(KEY_IMAGE, image);}
 
+    //get the current Imaage for the location
+    public int getPosition() { return (int) getNumber(KEY_POSITION);}
+
+    //set the location's tripId
+    public void setPosition(int position) { put(KEY_POSITION, position);}
+
     //returns all locations for a trip passed in*/
     public static List<Location> getTripLocations(Trip trip) {
         // specify what type of data we want to query - Location.class
@@ -77,6 +84,7 @@ public class Location extends ParseObject {
         //only query posts in the tripID passed in
         query.whereEqualTo(KEY_TRIP, trip);
         //finds the newest created trip
+        query.addAscendingOrder(KEY_POSITION);
         try {
             return query.find();
         } catch (ParseException e) {

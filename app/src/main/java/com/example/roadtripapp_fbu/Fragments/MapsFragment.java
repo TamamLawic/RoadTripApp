@@ -10,6 +10,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,6 +66,7 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
 import com.google.maps.DirectionsApi;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
 import org.joda.time.DateTime;
@@ -77,6 +79,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -85,6 +88,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MapsFragment extends Fragment {
     public static final String TAG = "MapFragment";
+    private SlidingUpPanelLayout slidingPane;
     private static final int overview = 0;
     private PlacesClient placesClient;
     List<Location> locations;
@@ -162,6 +166,7 @@ public class MapsFragment extends Fragment {
         tvDuration = view.findViewById(R.id.tvDuration);
         tvStops = view.findViewById(R.id.tvStops);
         rvItinerary = view.findViewById(R.id.rvItinerary);
+        slidingPane = view.findViewById(R.id.slidingPaneItinerary);
 
         //set up map view
         SupportMapFragment mapFragment =
@@ -196,6 +201,21 @@ public class MapsFragment extends Fragment {
             }
         });
 
+        //Set up Slide Listener for pull up view
+        slidingPane.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) {
+            }
+
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                //if the panel is closed, push changes to Parse for order
+                if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
+                    reorderTrip();
+                }
+            }
+        });
+
         //set up the recycler view for the itinerary
         //Set up the adapter for the trip recycler view
         locations = new ArrayList<>();
@@ -207,8 +227,26 @@ public class MapsFragment extends Fragment {
         // set the layout manager on the recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvItinerary.setLayoutManager(layoutManager);
-        // query posts from Instagram App
+        // set up reorder itemTouch Helper
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(rvItinerary);
     }
+
+    /** Sets up touch helper for reordering the trip*/
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            int fromPostion = viewHolder.getAdapterPosition();
+            int toPosition = target.getAdapterPosition();
+            Collections.swap(locations, fromPostion, toPosition);
+            adapter.notifyItemMoved(fromPostion, toPosition);
+            return false;
+        }
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        }
+    } ;
 
     /**
      * Creates a new Location, and populates with the selected place's data. Shows the current map with the pin added with directions.
@@ -278,7 +316,6 @@ public class MapsFragment extends Fragment {
                 public void done(ParseException e) {
                     if (e != null) {
                         Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Error while saving, " + e);
                     }
                     else{
                         locations.add(location);
@@ -289,7 +326,6 @@ public class MapsFragment extends Fragment {
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 final ApiException apiException = (ApiException) exception;
-                Log.e(TAG, "Place not found: " + exception.getMessage());
                 final int statusCode = apiException.getStatusCode();
             }
         });
@@ -381,6 +417,23 @@ public class MapsFragment extends Fragment {
                 .setConnectTimeout(2, TimeUnit.SECONDS)
                 .setReadTimeout(5, TimeUnit.SECONDS)
                 .setWriteTimeout(2, TimeUnit.SECONDS);
+    }
+
+    /** Pushes user's reordered list of places to Parse to store*/
+    private void reorderTrip() {
+        for (int i = 0; i < locations.size(); i++) {
+            Location location = locations.get(i);
+            location.setPosition(i);
+            location.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                        Log.e(TAG, "Error while saving, " + e);
+                    }
+                }
+            });
+        }
     }
 
     private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
