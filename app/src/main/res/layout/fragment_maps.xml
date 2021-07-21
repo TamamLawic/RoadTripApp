@@ -1,23 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<com.sothree.slidinguppanel.SlidingUpPanelLayout
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments.ProfileFragment">
-    <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    tools:context=".Fragments.ProfileFragment"
+    android:gravity="bottom"
+    sothree:umanoPanelHeight="70dp"
+    sothree:umanoShadowHeight="4dp">>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Fragments.MapsFragment" />
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/autocomplete"
-        android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
+        android:id="@+id/mainScreenPull">
 
-</RelativeLayout>
+        <fragment
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Fragments.MapsFragment" />
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="0dp"
+            android:background="#9EFFFFFF"
+            android:clickable="false"
+            android:longClickable="false"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+
+        <fragment
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/autocomplete"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/pullScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="false">
+
+        <ImageView
+            android:id="@+id/ivStopsIcon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="false"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/outline_location_on_24" />
+
+        <TextView
+            android:id="@+id/tvStops"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/ivStopsIcon"
+            android:text="TextView" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/tvStops"
+            app:srcCompat="@drawable/outline_watch_later_24" />
+
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/imageView"
+            android:text="TextView" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="10dp"
+            android:layout_toEndOf="@+id/tvDuration"
+            app:srcCompat="@drawable/outline_directions_car_filled_24" />
+
+        <TextView
+            android:id="@+id/tvMiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="15dp"
+            android:layout_toEndOf="@+id/imageView2"
+            android:text="TextView" />
+    </RelativeLayout>
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

@@ -88,11 +88,11 @@ public class MapsFragment extends Fragment {
             );
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
-            setupGoogleMapScreenSettings(googleMap);
             locations = Location.getTripLocations(Trip.getCurrentTrip());
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
                 LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
+
                 //If you have two pins connecting to each other, add polyline
                 if (i < locations.size() - 1) {
                     Location location2 = locations.get(i + 1);
@@ -110,21 +110,6 @@ public class MapsFragment extends Fragment {
             }
         }
     };
-
-    /** Uses google map properties to set up map controls */
-    private void setupGoogleMapScreenSettings(GoogleMap googleMap) {
-        googleMap.setBuildingsEnabled(true);
-        googleMap.setIndoorEnabled(true);
-        googleMap.setTrafficEnabled(true);
-        UiSettings mUiSettings = googleMap.getUiSettings();
-        mUiSettings.setZoomControlsEnabled(true);
-        mUiSettings.setCompassEnabled(true);
-        mUiSettings.setMyLocationButtonEnabled(true);
-        mUiSettings.setScrollGesturesEnabled(true);
-        mUiSettings.setZoomGesturesEnabled(true);
-        mUiSettings.setTiltGesturesEnabled(true);
-        mUiSettings.setRotateGesturesEnabled(true);
-    }
 
     @Nullable
     @Override
@@ -192,17 +177,18 @@ public class MapsFragment extends Fragment {
             public void done(ParseException e) {
                 if (e != null) {
                     Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                    locations.add(location);
                 }
             }
         });
         //If there is already markers on the map, add a polyline and a marker, otherwise just add the marker
         if (locations.size() > 0) {
-            Location location2 = locations.get(locations.size()-1);
+            Location location2 = locations.get(locations.size() - 1);
             LatLng latLng2 = new LatLng(location2.getLatitude().doubleValue(), location2.getLongitude().doubleValue());
             //draw the trip with directions
             String locationEnd = location.getAddress();
             String locationStart = location2.getAddress();
-            DirectionsResult results = getDirectionsDetails(locationStart,locationEnd,TravelMode.DRIVING);
+            DirectionsResult results = getDirectionsDetails(locationStart, locationEnd, TravelMode.DRIVING);
             if (results != null) {
                 addPolyline(results, tripMap);
                 addMarkersToMap(results, tripMap);
