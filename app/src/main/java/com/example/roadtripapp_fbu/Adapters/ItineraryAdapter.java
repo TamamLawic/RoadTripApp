@@ -1,6 +1,8 @@
 package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.PlaceDetailsActivity;
 import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.TripFeedActivity;
 import com.parse.ParseFile;
+
+import org.parceler.Parcels;
 
 import java.util.Date;
 import java.util.List;
@@ -49,7 +56,7 @@ public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.View
     /** ViewHolder class, that sets up posts for the FeedFragment recycler view.
      * Binds Posts using Parse to get the data, and Glide to bind it.*/
     //find and store references to the Text and Image views for the post
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private TextView tvAddress2;
         private TextView tvAddress;
         private ImageView ivPlaceImage;
@@ -59,6 +66,7 @@ public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.View
             tvAddress2 = itemView.findViewById(R.id.tvAddress2);
             tvAddress = itemView.findViewById(R.id.tvAddress);
             ivPlaceImage = itemView.findViewById(R.id.ivPlaceImage);
+            itemView.setOnClickListener(this);
         }
 
         /** Bind the post passed in into the item_post for the recycler view using Glide for images. */
@@ -66,11 +74,24 @@ public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.View
             // Bind the post data to the view elements
             tvAddress.setText(location.getLocationName());
             tvAddress2.setText(location.getAddress());
-            //TODO: add the place image into the location
 
             ParseFile image = location.getImage();
             if (image != null) {
-                Glide.with(context).load(image.getUrl()).into(ivPlaceImage);
+                Glide.with(context).load(image.getUrl()).centerCrop().into(ivPlaceImage);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            //when place is clicked, take to details page
+            // gets item position
+            int position = getAdapterPosition();
+            // makes sure the position exists before using intent to start TripFeed for selected Trip
+            if (position != RecyclerView.NO_POSITION) {
+                Location location = locations.get(position);
+                Intent intent = new Intent(context, PlaceDetailsActivity.class);
+                intent.putExtra(Location.class.getSimpleName(), Parcels.wrap(location));
+                context.startActivity(intent);
             }
         }
     }

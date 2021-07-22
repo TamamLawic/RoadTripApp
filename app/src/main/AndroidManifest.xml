@@ -7,7 +7,7 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -27,7 +27,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadTripAppFBU">
-        <activity android:name=".NewJournalActivity"></activity>
+        <activity android:name=".ShowTripActivity"></activity>
+        <activity android:name=".PlaceDetailsActivity" />
+        <activity android:name=".NewJournalActivity" />
         <activity android:name=".NewPostActivity" />
         <activity android:name=".TripFeedActivity" />
         <activity android:name=".MainActivity" />

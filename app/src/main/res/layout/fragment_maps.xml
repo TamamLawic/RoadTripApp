@@ -65,7 +65,7 @@
             android:background="@drawable/outline_location_on_24" />
 
         <TextView
-            android:id="@+id/tvStops"
+            android:id="@+id/tvStopsDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -81,11 +81,11 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/tvStops"
+            android:layout_toEndOf="@+id/tvStopsDetails"
             app:srcCompat="@drawable/outline_watch_later_24" />
 
         <TextView
-            android:id="@+id/tvDuration"
+            android:id="@+id/tvDurationDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -101,11 +101,11 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/tvDuration"
+            android:layout_toEndOf="@+id/tvDurationDetails"
             app:srcCompat="@drawable/outline_directions_car_filled_24" />
 
         <TextView
-            android:id="@+id/tvMiles"
+            android:id="@+id/tvMilesDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

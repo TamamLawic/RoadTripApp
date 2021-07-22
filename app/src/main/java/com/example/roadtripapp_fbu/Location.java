@@ -22,6 +22,10 @@ public class Location extends ParseObject {
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_IMAGE = "placeImage";
     public static final String KEY_POSITION = "order";
+    public static final String KEY_HOURS = "openingHours";
+    public static final String KEY_PHONE = "phoneNumber";
+    public static final String KEY_WEBSITE = "website";
+
 
 
     //Getters and setters for the Parse Location Object
@@ -76,6 +80,21 @@ public class Location extends ParseObject {
 
     //set the location's tripId
     public void setPosition(int position) { put(KEY_POSITION, position);}
+
+    public String getHours() { return getString(KEY_HOURS);}
+
+    //set the location's tripId
+    public void setHours(String hours) { put(KEY_HOURS, hours);}
+
+    public String getPhone() { return getString(KEY_PHONE);}
+
+    //set the location's tripId
+    public void setPhone(String phone) { put(KEY_PHONE, phone);}
+
+    public String getWebsite() { return getString(KEY_WEBSITE);}
+
+    //set the location's tripId
+    public void setWebsite(String website) { put(KEY_WEBSITE, website);}
 
     //returns all locations for a trip passed in*/
     public static List<Location> getTripLocations(Trip trip) {

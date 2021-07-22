@@ -1,19 +1,29 @@
 package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.telecom.Call;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.PlaceDetailsActivity;
 import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.ShowTripActivity;
+import com.example.roadtripapp_fbu.Trip;
+import com.google.android.libraries.places.api.model.Place;
 import com.parse.ParseFile;
+
+import org.parceler.Parcels;
 
 import java.util.Date;
 import java.util.List;
@@ -50,11 +60,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
      * Binds Posts using Parse to get the data, and Glide to bind it.*/
     //find and store references to the Text and Image views for the post
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvUsername;
-        private ImageView ivImage;
-        private TextView tvTime;
-        private ImageView ivProfile;
-        private TextView tvCaption;
+        TextView tvUsername;
+        ImageView ivImage;
+        TextView tvTime;
+        ImageView ivProfile;
+        TextView tvCaption;
+        TextView tvTripNamePost;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -63,6 +74,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvCaption = itemView.findViewById(R.id.tvCaption);
+            tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
+            //when the name of the trip is clicked, bring up details
+            tvTripNamePost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Trip trip = (Trip) posts.get(getAdapterPosition()).getTripId();
+                    Intent intent = new Intent(context, ShowTripActivity.class);
+                    intent.putExtra("trip", Parcels.wrap(trip));
+                    context.startActivity(intent);
+                }
+            });
         }
 
         /** Bind the post passed in into the item_post for the recycler view using Glide for images. */
@@ -70,7 +92,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             // Bind the post data to the view elements
             tvCaption.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
-
+            Trip trip = (Trip) post.getTripId();
+            tvTripNamePost.setText(trip.getTripName());
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
             String timeAgo = post.calculateTimeAgo(createdAt);

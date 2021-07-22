@@ -42,6 +42,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         private TextView tvDescription;
         private TextView tvTime;
         private ImageView ivProfile;
+        TextView tvTripNamePost;
 
         /** View Holder for the Post Objects*/
         public PostViewHolder(View itemView) {
@@ -52,6 +53,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
             tvDescription = itemView.findViewById(R.id.tvCaption);
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
             ivProfile = itemView.findViewById(R.id.ivProfile);
+            tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
         }
 
         void bindView(int position) {
@@ -59,6 +61,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
             // bind data to the views
             tvDescription.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
+            tvTripNamePost.setText(post.getTripId().getString("tripName"));
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
             String timeAgo = post.calculateTimeAgo(createdAt);

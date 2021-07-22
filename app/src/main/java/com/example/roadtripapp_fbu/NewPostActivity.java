@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
@@ -24,6 +25,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.data.BufferedOutputStream;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.RectangularBounds;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -40,6 +50,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -71,7 +82,6 @@ public class NewPostActivity extends AppCompatActivity {
 
         etCaption = findViewById(R.id.etCaption);
         ivPostImage = findViewById(R.id.ivPostImage);
-        etMoneySpent = findViewById(R.id.etMoneySpent);
         btnTakePicture = findViewById(R.id.btnTakePicture);
         btnPostUpdate = findViewById(R.id.btnPostUpdate);
         btnSelectPhoto = findViewById(R.id.btnSelectPhoto);
@@ -120,7 +130,6 @@ public class NewPostActivity extends AppCompatActivity {
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
         post.setTripId(clicked_trip);
-        //TODO: add in the users current location to make the post
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -131,7 +140,6 @@ public class NewPostActivity extends AppCompatActivity {
                 //if post saved successfully, remove input fields
                 etCaption.setText("");
                 ivPostImage.setImageResource(0);
-                etMoneySpent.setText("");
                 Intent intent = new Intent();
                 intent.putExtra("post", Parcels.wrap(post));//set result code and bundle response
                 setResult(RESULT_OK, intent);//return results okay, and intent

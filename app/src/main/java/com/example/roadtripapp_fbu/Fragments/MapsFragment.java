@@ -10,14 +10,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,11 +26,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
-import com.example.roadtripapp_fbu.Adapters.PostAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Location;
 import com.example.roadtripapp_fbu.NewPostActivity;
-import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
 import com.google.android.gms.common.api.ApiException;
@@ -41,11 +37,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -54,15 +48,12 @@ import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
-import com.google.maps.model.Distance;
-import com.google.maps.model.Duration;
 import com.google.maps.model.TravelMode;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -154,7 +145,6 @@ public class MapsFragment extends Fragment {
                     public void done(ParseException e) {
                         if (e != null) {
                             Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Error while saving, " + e);
                         }
                     }
                 });
@@ -179,9 +169,9 @@ public class MapsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvMiles = view.findViewById(R.id.tvMiles);
-        tvDuration = view.findViewById(R.id.tvDuration);
-        tvStops = view.findViewById(R.id.tvStops);
+        tvMiles = view.findViewById(R.id.tvMilesDetails);
+        tvDuration = view.findViewById(R.id.tvDurationDetails);
+        tvStops = view.findViewById(R.id.tvStopsDetails);
         rvItinerary = view.findViewById(R.id.rvItinerary);
         slidingPane = view.findViewById(R.id.slidingPaneItinerary);
 
@@ -205,7 +195,7 @@ public class MapsFragment extends Fragment {
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(new LatLng(-33.880490, 151.184364), new LatLng(-33.858754, 151.229596)));
         autocompleteFragment.setCountries("US");
         //specify the types of place data to return
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI));
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -277,6 +267,14 @@ public class MapsFragment extends Fragment {
         location.setLatitude(latLng.latitude);
         location.setLocationName(place.getName());
         location.setAddress(place.getAddress());
+        try{
+            location.setHours(place.getOpeningHours().toString());
+            location.setPhone(place.getPhoneNumber());
+            location.setWebsite(place.getWebsiteUri().toString());
+        } catch (Exception e) {
+            location.setHours("");
+            location.setPhone("");
+            location.setWebsite("");        }
         location.setLongitude(latLng.longitude);
         //get the image data from google places
         final PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
@@ -375,7 +373,6 @@ public class MapsFragment extends Fragment {
                     public void done(ParseException e) {
                         if (e != null) {
                             Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, "Error while saving, " + e);
                         }
                     }
                 });
@@ -444,9 +441,9 @@ public class MapsFragment extends Fragment {
         return geoApiContext
                 .setQueryRateLimit(3)
                 .setApiKey(BuildConfig.GOOGLE_API_KEY)
-                .setConnectTimeout(2, TimeUnit.SECONDS)
-                .setReadTimeout(5, TimeUnit.SECONDS)
-                .setWriteTimeout(2, TimeUnit.SECONDS);
+                .setConnectTimeout(5, TimeUnit.SECONDS)
+                .setReadTimeout(8, TimeUnit.SECONDS)
+                .setWriteTimeout(5, TimeUnit.SECONDS);
     }
 
     /** Pushes user's reordered list of places to Parse to store*/
@@ -459,7 +456,6 @@ public class MapsFragment extends Fragment {
                 public void done(ParseException e) {
                     if (e != null) {
                         Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Error while saving, " + e);
                     }
                 }
             });

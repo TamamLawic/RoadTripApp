@@ -12,27 +12,14 @@
         android:id="@+id/etCaption"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnTakePicture"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="9dp"
-        android:hint="Caption..." />
-
-    <EditText
-        android:id="@+id/etMoneySpent"
-        android:layout_width="380dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/etCaption"
+        android:layout_below="@+id/btnSelectPhoto"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="7dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:hint="Money Spent" />
+        android:layout_marginEnd="9dp"
+        android:hint="Caption..." />
 
     <ImageButton
         android:id="@+id/btnPostUpdate"
