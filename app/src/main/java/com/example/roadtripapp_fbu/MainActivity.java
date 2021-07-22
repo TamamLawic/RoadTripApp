@@ -59,6 +59,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         // Set default selection
-        bottomNavigationView.setSelectedItemId(R.id.action_create_trip);
+        bottomNavigationView.setSelectedItemId(R.id.action_profile);
     }
 }

@@ -5,14 +5,19 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.Location;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
 import com.example.roadtripapp_fbu.TripFeedActivity;
+import com.parse.ParseFile;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -48,11 +53,19 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
      * Binds Posts using Parse to get the data.*/
     //find and store references to the Text and Image views for the post
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView tvTripNameProfile;
+        TextView tvTripNameProfile;
+        ImageView ivDestinationTrip;
+        TextView tvStopsTrip;
+        TextView tvMilesTrip;
+        TextView tvDurationTrip;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTripNameProfile = itemView.findViewById(R.id.tvTripNameProfile);
+            ivDestinationTrip = itemView.findViewById(R.id.ivDestinationTrip);
+            tvStopsTrip = itemView.findViewById(R.id.tvStopsTrip);
+            tvMilesTrip = itemView.findViewById(R.id.tvMilesTrip);
+            tvDurationTrip = itemView.findViewById(R.id.tvDurationTrip);
             itemView.setOnClickListener(this);
         }
 
@@ -60,7 +73,18 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
          * @param trip*/
         public void bind(Trip trip) {
             // Bind the post data to the view elements
-            tvTripNameProfile.setText(trip.getString("tripName"));
+            tvTripNameProfile.setText(trip.getTripName());
+            tvMilesTrip.setText(String.valueOf(trip.getLength()).concat(" Mi"));
+            tvDurationTrip.setText(String.valueOf(trip.getTime()).concat(" Hr"));
+            List<Location> locations = Location.getTripLocations(trip);
+            tvStopsTrip.setText(String.valueOf(locations.size()));
+            if (locations.size() > 0){
+                ParseFile destinationImage = locations.get(locations.size() - 1).getImage();
+                Glide.with(context)
+                        .load(destinationImage.getUrl())
+                        .centerCrop()
+                        .into(ivDestinationTrip);
+            }
         }
 
         /** When the post is clicked, wrap trip data using Parcels and start TripFeedActivity sending it with the wrapped trip. */

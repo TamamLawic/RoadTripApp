@@ -102,6 +102,7 @@ public class MapsFragment extends Fragment {
     long duration = 0L;
     RecyclerView rvItinerary;
     protected ItineraryAdapter adapter;
+    Trip currentTrip = Trip.getCurrentTrip();
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction polylines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -118,7 +119,7 @@ public class MapsFragment extends Fragment {
             );
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
-            locations.addAll(Location.getTripLocations(Trip.getCurrentTrip()));
+            locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
@@ -135,6 +136,9 @@ public class MapsFragment extends Fragment {
                     if (results != null) {
                         addPolyline(results, googleMap);
                         addMarkersToMap(results, googleMap);
+                        //add to total time of the trip, total miles for the trip, and stops
+                        miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
+                        duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
                     }
                     else {
                         tripMap.addMarker(new MarkerOptions().position(latLng1));
@@ -142,10 +146,22 @@ public class MapsFragment extends Fragment {
                     }
                 }
                 tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
+                //set the TripDistance and time
+                currentTrip.setLength((int) miles);
+                currentTrip.setTime((int) duration);
+                currentTrip.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Error while saving, " + e);
+                        }
+                    }
+                });
             }
             tvStops.setText(String.valueOf(locations.size()));
-            tvDuration.setText(String.valueOf(duration));
-            tvMiles.setText(String.valueOf(miles));
+            tvDuration.setText(String.valueOf(duration).concat(" Hours"));
+            tvMiles.setText(String.valueOf(miles).concat(" Miles"));
         }
     };
 
@@ -313,7 +329,8 @@ public class MapsFragment extends Fragment {
                 e.printStackTrace();
             }
             location.setImage(new ParseFile(f));
-            location.setTripId(Trip.getCurrentTrip());
+            location.setTripId(currentTrip);
+            location.setPosition(locations.size());
             location.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -333,7 +350,6 @@ public class MapsFragment extends Fragment {
             }
         });
 
-
         //If there is already markers on the map, add a polyline and a marker, otherwise just add the marker
         if (locations.size() > 0) {
             Location location2 = locations.get(locations.size() - 1);
@@ -346,11 +362,23 @@ public class MapsFragment extends Fragment {
                 addPolyline(results, tripMap);
                 addMarkersToMap(results, tripMap);
                 miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
-                duration += results.routes[overview].legs[overview].duration.inSeconds/360;
+                duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
                 //after adding another stop, add to the values
                 tvStops.setText(String.valueOf(locations.size()));
-                tvDuration.setText(String.valueOf(duration));
-                tvMiles.setText(String.valueOf(miles));
+                tvDuration.setText(String.valueOf(duration).concat(" Hours"));
+                tvMiles.setText(String.valueOf(miles).concat(" Miles"));
+                //set the TripDistance and time
+                currentTrip.setLength((int) miles);
+                currentTrip.setTime((int) duration);
+                currentTrip.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        if (e != null) {
+                            Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "Error while saving, " + e);
+                        }
+                    }
+                });
             }
         }
         else {
@@ -368,7 +396,7 @@ public class MapsFragment extends Fragment {
         //change the title to show the trip you are editing/viewing
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
-        actionBar.setTitle(Trip.getCurrentTrip().getTripName());
+        actionBar.setTitle(currentTrip.getTripName());
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -379,7 +407,7 @@ public class MapsFragment extends Fragment {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent i = new Intent(getContext(), NewPostActivity.class);
         // serialize the post using parceler, use its short name as a key
-        i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(Trip.getCurrentTrip()));
+        i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(currentTrip));
         startActivity(i);
         return super.onOptionsItemSelected(item);
     }
@@ -441,9 +469,6 @@ public class MapsFragment extends Fragment {
     private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].startLocation.lat,results.routes[overview].legs[overview].startLocation.lng)).title(results.routes[overview].legs[overview].startAddress));
         mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].endLocation.lat,results.routes[overview].legs[overview].endLocation.lng)).title(results.routes[overview].legs[overview].startAddress).snippet(getEndLocationTitle(results)));
-        //add to total time of the trip, total miles for the trip, and stops
-        miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
-        duration += results.routes[overview].legs[overview].duration.inSeconds/360;
     }
 
     private void positionCamera(DirectionsRoute route, GoogleMap mMap) {

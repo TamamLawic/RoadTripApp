@@ -1,21 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp">
-
     <TextView
         android:id="@+id/tvTripNameProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="10dp"
         android:text="New Trip"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/ivDestinationTrip"
+        android:layout_width="275dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/tvTripNameProfile"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvTripNameProfile"
+        tools:layout_editor_absoluteX="78dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/ivStopsIconTrip"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="45dp"
+        android:layout_toEndOf="@+id/ivDestinationTrip"
+        android:background="@drawable/outline_location_on_24" />
+
+    <TextView
+        android:id="@+id/tvStopsTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="47dp"
+        android:layout_toEndOf="@+id/ivStopsIconTrip"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/imageViewTrip"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/ivStopsIconTrip"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivDestinationTrip"
+        app:srcCompat="@drawable/outline_watch_later_24" />
+
+    <TextView
+        android:id="@+id/tvDurationTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvStopsTrip"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/imageViewTrip"
+        android:text="0" />
+
+    <ImageView
+        android:id="@+id/imageView2Trip"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/imageViewTrip"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_toEndOf="@+id/ivDestinationTrip"
+        app:srcCompat="@drawable/outline_directions_car_filled_24" />
+
+    <TextView
+        android:id="@+id/tvMilesTrip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDurationTrip"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/imageView2Trip"
+        android:text="0" />
+
+</RelativeLayout>

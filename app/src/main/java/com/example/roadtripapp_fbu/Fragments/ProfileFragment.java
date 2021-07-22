@@ -101,7 +101,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 .load(profileImage.getUrl())
                 .circleCrop()
                 .into(ivProfilePic);
-
         //Creates a new trip object, and takes you to the mapFragment to start planning the trip
         btnNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override

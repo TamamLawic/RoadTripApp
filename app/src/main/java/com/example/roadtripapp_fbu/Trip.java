@@ -13,9 +13,10 @@ import com.parse.ParseUser;
 @ParseClassName("Trip")
 public class Trip extends ParseObject {
     public static final String KEY_USER = "author";
-    public static final String KEY_TRIP_LENGTH = "tripLength";
     public static final String KEY_COST = "cost";
     public static final String KEY_TRIP_NAME = "tripName";
+    public static final String KEY_LENGTH = "tripLength";
+    public static final String KEY_TIME = "tripTime";
 
     // Ensure that your subclass has a public default constructor
     public Trip() {
@@ -30,16 +31,6 @@ public class Trip extends ParseObject {
     //updates the cost for the Trip
     public void updateCost(Number cost) {
         put(KEY_COST, cost);
-    }
-
-    //returns the time for the Trip
-    public Number getTime() {
-        return getNumber(KEY_TRIP_LENGTH);
-    }
-
-    //updates the time for the Trip
-    public void updateTime(Number time) {
-        put(KEY_TRIP_LENGTH, time);
     }
 
     //returns the user that created the Trip
@@ -61,6 +52,14 @@ public class Trip extends ParseObject {
     public void setTripName(String tripName) {
         put(KEY_TRIP_NAME, tripName);
     }
+
+    public int getLength() { return (int) getNumber(KEY_LENGTH);}
+
+    public void setLength(int position) { put(KEY_LENGTH, position);}
+
+    public int getTime() { return (int) getNumber(KEY_TIME);}
+
+    public void setTime(int position) { put(KEY_TIME, position);}
 
     //get the newest trip the user has made
     /** Get the newest trip the current user has made*/
