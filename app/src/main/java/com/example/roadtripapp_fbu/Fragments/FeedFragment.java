@@ -107,8 +107,10 @@ public class FeedFragment extends Fragment {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // include data referred by user key
         query.include(Post.KEY_USER);
-        // include data referred by user key
+        // include data referred by trip
         query.include(Post.KEY_TRIP).include(Trip.KEY_USER);
+        // include data referred by location
+        query.include(Post.KEY_LOCATION);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
@@ -136,8 +138,10 @@ public class FeedFragment extends Fragment {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // include data referred by user key
         query.include(Post.KEY_USER);
-        // include data referred by user key
+        // include data referred by trip
         query.include(Post.KEY_TRIP).include(Trip.KEY_USER);
+        // include data referred by location
+        query.include(Post.KEY_LOCATION);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
@@ -166,10 +170,12 @@ public class FeedFragment extends Fragment {
     protected void queryPosts() {
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
+        // include data referred by user
         query.include(Post.KEY_USER);
-        // include data referred by user key
+        // include data referred by trip
         query.include(Post.KEY_TRIP).include(Trip.KEY_USER);
+        // include data referred by location
+        query.include(Post.KEY_LOCATION);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)

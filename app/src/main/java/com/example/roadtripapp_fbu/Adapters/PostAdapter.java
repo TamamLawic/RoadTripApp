@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.Location;
 import com.example.roadtripapp_fbu.PlaceDetailsActivity;
 import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
@@ -76,13 +77,23 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
             //when the name of the trip is clicked, bring up details
+            //If the location is cliked, show the location details page
             tvTripNamePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Trip trip = (Trip) posts.get(getAdapterPosition()).getTripId();
-                    Intent intent = new Intent(context, ShowTripActivity.class);
-                    intent.putExtra("trip", Parcels.wrap(trip));
-                    context.startActivity(intent);
+                    Post post = posts.get(getAdapterPosition());
+                    if (post.getLocation() != null) {
+                        Location location = (Location) post.getLocation();
+                        Intent intent = new Intent(context, PlaceDetailsActivity.class);
+                        intent.putExtra(Location.class.getSimpleName(), Parcels.wrap(location));
+                        context.startActivity(intent);
+                    }
+                    else {
+                        Trip trip = (Trip) posts.get(getAdapterPosition()).getTripId();
+                        Intent intent = new Intent(context, ShowTripActivity.class);
+                        intent.putExtra("trip", Parcels.wrap(trip));
+                        context.startActivity(intent);
+                    }
                 }
             });
         }
@@ -93,7 +104,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvCaption.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
             Trip trip = (Trip) post.getTripId();
-            tvTripNamePost.setText(trip.getTripName());
+            //If there is a location associated to the post, show the location instead of the trip
+            if (post.getLocation() != null) {
+                tvTripNamePost.setText(post.getLocation().getString("locationName"));
+            }
+            else {
+                tvTripNamePost.setText(trip.getTripName());
+            }
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
             String timeAgo = post.calculateTimeAgo(createdAt);

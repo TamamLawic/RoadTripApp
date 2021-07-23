@@ -153,7 +153,9 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
         post.setTripId(clicked_trip);
-        post.setLocation(postLocation);
+        if (postLocation != null) {
+            post.setLocation(postLocation);
+        }
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
