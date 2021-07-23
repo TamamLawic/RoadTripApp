@@ -17,6 +17,7 @@ import com.example.roadtripapp_fbu.FeedObjects;
 import com.example.roadtripapp_fbu.JournalEntry;
 import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.Trip;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -43,6 +44,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         private TextView tvTime;
         private ImageView ivProfile;
         TextView tvTripNamePost;
+        Trip trip;
 
         /** View Holder for the Post Objects*/
         public PostViewHolder(View itemView) {
@@ -61,7 +63,12 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
             // bind data to the views
             tvDescription.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
-            tvTripNamePost.setText(post.getTripId().getString("tripName"));
+            if (post.getLocation() != null) {
+                tvTripNamePost.setText(post.getLocation().getString("locationName"));
+            }
+            else {
+                tvTripNamePost.setText(post.getTripId().getString("tripName"));
+            }
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
             String timeAgo = post.calculateTimeAgo(createdAt);

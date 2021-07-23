@@ -110,8 +110,10 @@ public class TripFeedActivity extends AppCompatActivity {
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
         // include data referred by user key
         query.include(Post.KEY_USER);
-        // include data referred by user key
+        // include data referred by trip
         query.include(Post.KEY_TRIP);
+        // include data referred by location
+        query.include(Post.KEY_LOCATION);
         //only show the trip was selected
         query.whereEqualTo("tripId", selectedTrip);
         // limit query to latest 20 items

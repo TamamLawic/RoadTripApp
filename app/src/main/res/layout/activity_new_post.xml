@@ -12,12 +12,12 @@
         android:id="@+id/etCaption"
         android:layout_width="380dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSelectPhoto"
+        android:layout_below="@+id/spinnerLocation"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="7dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="9dp"
         android:hint="Caption..." />
 
@@ -83,5 +83,26 @@
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="normal" />
+
+    <Spinner
+        android:id="@+id/spinnerLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnSelectPhoto"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toEndOf="@+id/imageView3" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/btnSelectPhoto"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        app:srcCompat="@drawable/outline_location_on_24" />
 
 </RelativeLayout>

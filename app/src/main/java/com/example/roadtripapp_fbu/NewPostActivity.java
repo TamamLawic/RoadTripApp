@@ -18,10 +18,13 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.bumptech.glide.load.data.BufferedOutputStream;
@@ -50,6 +53,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -60,19 +64,22 @@ import permissions.dispatcher.RuntimePermissions;
  * Creates a new ParseObject Post, and allows user input to put into fields.
  * Sets onclick listeners for
  */
-public class NewPostActivity extends AppCompatActivity {
+public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String TAG  = "NewPostActivity";
     public String photoFileName = "photo.jpg";
     public final static int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 1034;
     public final static int PICK_PHOTO_CODE = 1046;
+    Spinner spinnerLocation;
+    List<Location> locations;
+    List<String> locationOptions;
     EditText etCaption;
     ImageView ivPostImage;
-    EditText etMoneySpent;
     ImageButton btnTakePicture;
     ImageButton btnPostUpdate;
     ImageButton btnSelectPhoto;
     File photoFile;
     Trip clicked_trip;
+    Location postLocation;
 
     /** Sets up on click listeners for buttons to take photo and post update **/
     @Override
@@ -85,6 +92,7 @@ public class NewPostActivity extends AppCompatActivity {
         btnTakePicture = findViewById(R.id.btnTakePicture);
         btnPostUpdate = findViewById(R.id.btnPostUpdate);
         btnSelectPhoto = findViewById(R.id.btnSelectPhoto);
+        spinnerLocation = findViewById(R.id.spinnerLocation);
 
         //use Parcels to unwrap trip selected
         //unwrap post's data from the pass
@@ -121,6 +129,21 @@ public class NewPostActivity extends AppCompatActivity {
                 imageChooser();
             }
         });
+
+        //set click listener for spinner
+        locations = Location.getTripLocations(clicked_trip);
+        locationOptions = new ArrayList<String>();
+        locationOptions.add("None");
+        //add all locations in your trip for options
+        for (int i = 0; i < locations.size() - 1; i++){
+            locationOptions.add(locations.get(i).getLocationName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(NewPostActivity.this,
+                android.R.layout.simple_spinner_item, locationOptions);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerLocation.setAdapter(adapter);
+        spinnerLocation.setOnItemSelectedListener(this);
     }
 
     /** Save post in a background thread, sets the parameters to the current fields of the View.*/
@@ -130,6 +153,7 @@ public class NewPostActivity extends AppCompatActivity {
         post.setImage(new ParseFile(photoFile));
         post.setUser(ParseUser.getCurrentUser());
         post.setTripId(clicked_trip);
+        post.setLocation(postLocation);
         post.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -272,5 +296,18 @@ public class NewPostActivity extends AppCompatActivity {
         i.setType("image/*");
         i.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(i, "Select Picture"), PICK_PHOTO_CODE);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        //add the location at that position
+        if (position > 0) {
+            postLocation = locations.get(position - 1);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

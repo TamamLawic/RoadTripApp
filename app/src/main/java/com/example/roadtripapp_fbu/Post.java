@@ -19,6 +19,7 @@ public class Post extends ParseObject implements FeedObjects{
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";
     public static final String KEY_TRIP = "tripId";
+    public static final String KEY_LOCATION = "location";
 
     /** Returns the time elapsed given the creation date until now */
     public static String calculateTimeAgo(Date createdAt) {
@@ -91,6 +92,14 @@ public class Post extends ParseObject implements FeedObjects{
     //set the post's tripId
     public void setTripId(ParseObject tripId) {
         put(KEY_TRIP, tripId);
+    }
+
+    //get the current location for the post
+    public ParseObject getLocation() { return getParseObject(KEY_LOCATION);}
+
+    //set the post's location
+    public void setLocation(ParseObject location) {
+        put(KEY_LOCATION, location);
     }
 
     //Gets the type of object according to the Literature interface
