@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -28,9 +29,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.LoginActivity;
+import com.example.roadtripapp_fbu.PagerAdapter;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Trip;
 import com.example.roadtripapp_fbu.Adapters.TripAdapter;
+import com.google.android.material.tabs.TabLayout;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -42,19 +45,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment for bottom navigational view. ParseQuery to get all of the user's trips and show them in a recycler view.
+ * Fragment for bottom navigational view. Sets up Tab View to show user's Trips and BucketList items
  */
 public class ProfileFragment extends Fragment implements EditTripNameFragment.EditNameDialogListener {
     public static final String TAG = "ProfileFragment";
     public static final String KEY_PROFILE = "profilePic";
     Button btnNewTrip;
-    RecyclerView rvTrips;
     ImageView ivProfilePic;
     TextView tvName;
     EditText etTripName;
-
-    protected TripAdapter adapter;
-    protected List<Trip> allTrips;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -76,21 +75,9 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         btnNewTrip = view.findViewById(R.id.btnNewTrip);
-        rvTrips = view.findViewById(R.id.rvTrips);
         ivProfilePic = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
         etTripName = view.findViewById(R.id.etTripName);
-
-        //Set up the adapter for the trip recycler view
-        allTrips = new ArrayList<>();
-        //create the adapter
-        adapter = new TripAdapter(getContext(), allTrips);
-        //set the adapter on the recycler view
-        rvTrips.setAdapter(adapter);
-        rvTrips.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        // set the layout manager on the recycler view
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext() ,LinearLayoutManager.VERTICAL, false);
-        rvTrips.setLayoutManager(layoutManager);
 
         //fill in profile
         tvName.setText(ParseUser.getCurrentUser().getUsername());
@@ -110,8 +97,12 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
             }
         });
 
-        // query posts from Instagram App
-        queryPosts();
+        //Set up the Tab View for Trips/BucketList
+        ViewPager viewPager = (ViewPager) view.findViewById(R.id.pager);
+        PagerAdapter myPagerAdapter = new PagerAdapter(getActivity().getSupportFragmentManager(), 0);
+        viewPager.setAdapter(myPagerAdapter);
+        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tablayout);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     // Call this method to launch the edit dialog
@@ -180,35 +171,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 //Add a new trip item for the profile recycler view
-            }
-        });
-    }
-
-    /** Begins a Parse Query in a background thread, getting all of the posts the user has authored. */
-    /**The posts are added to a list, and the adapter is notified of the data change.*/
-    protected void queryPosts() {
-        // specify what type of data we want to query - Post.class
-        ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        // include data referred by user key
-        query.include(Trip.KEY_USER);
-        //only query posts of the currently signed in user
-        query.whereEqualTo(Trip.KEY_USER, ParseUser.getCurrentUser());
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        // start an asynchronous call for posts
-        query.findInBackground(new FindCallback<Trip>() {
-            @Override
-            public void done(List<Trip> trips, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    return;
-                }
-
-                // save received posts to list and notify adapter of new data
-                allTrips.addAll(trips);
-                adapter.notifyDataSetChanged();
             }
         });
     }

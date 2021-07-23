@@ -21,16 +21,20 @@
         android:text="New Trip"
         android:textColor="@color/black" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvTrips"
+    <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="454dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/tvName"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="0dp" />
+        android:id="@+id/tablayout"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_below="@+id/tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/pager"/>
 
     <ImageView
         android:id="@+id/ivProfileImage"

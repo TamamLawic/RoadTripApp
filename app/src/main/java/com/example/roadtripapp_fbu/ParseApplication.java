@@ -2,6 +2,7 @@ package com.example.roadtripapp_fbu;
 
 import android.app.Application;
 
+import com.example.roadtripapp_fbu.Fragments.BucketlistViewFragment;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -18,6 +19,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Location.class);
         ParseObject.registerSubclass(JournalEntry.class);
+        ParseObject.registerSubclass(BucketListLocation.class);
 
         //set applicationId, and server server based on the values
         Parse.initialize(new Parse.Configuration.Builder(this)
