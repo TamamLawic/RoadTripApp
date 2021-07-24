@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 
 import com.example.roadtripapp_fbu.Adapters.TripAdapter;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

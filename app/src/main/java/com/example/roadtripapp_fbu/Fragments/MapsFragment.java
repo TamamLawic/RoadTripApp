@@ -27,10 +27,10 @@ import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
-import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;

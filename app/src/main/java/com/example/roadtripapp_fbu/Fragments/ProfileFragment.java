@@ -10,9 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
@@ -29,20 +26,14 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.LoginActivity;
-import com.example.roadtripapp_fbu.PagerAdapter;
+import com.example.roadtripapp_fbu.Adapters.PagerAdapter;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
-import com.example.roadtripapp_fbu.Adapters.TripAdapter;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Fragment for bottom navigational view. Sets up Tab View to show user's Trips and BucketList items

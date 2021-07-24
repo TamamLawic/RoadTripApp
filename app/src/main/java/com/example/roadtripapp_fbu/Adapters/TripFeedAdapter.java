@@ -1,11 +1,9 @@
 package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,14 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.FeedObjects;
-import com.example.roadtripapp_fbu.JournalEntry;
-import com.example.roadtripapp_fbu.Post;
+import com.example.roadtripapp_fbu.Objects.FeedObjects;
+import com.example.roadtripapp_fbu.Objects.JournalEntry;
+import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.ParseFile;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Date;

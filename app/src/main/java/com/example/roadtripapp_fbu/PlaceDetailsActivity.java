@@ -3,9 +3,7 @@ package com.example.roadtripapp_fbu;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,7 +11,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.Fragments.BucketlistViewFragment;
+import com.example.roadtripapp_fbu.Objects.BucketListLocation;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseUser;

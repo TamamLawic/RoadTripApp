@@ -5,23 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.roadtripapp_fbu.Objects.JournalEntry;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.ParseException;
-import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
-
-import java.io.File;
-import java.util.List;
 
 public class NewJournalActivity extends AppCompatActivity {
     public static final String TAG  = "NewJournalActivity";

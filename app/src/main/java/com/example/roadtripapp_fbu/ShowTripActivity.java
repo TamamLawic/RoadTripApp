@@ -9,9 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
+import com.example.roadtripapp_fbu.Objects.Location;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -25,12 +26,9 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
-import com.parse.ParseException;
-import com.parse.SaveCallback;
 
 import org.joda.time.DateTime;
 import org.parceler.Parcels;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.ArrayList;

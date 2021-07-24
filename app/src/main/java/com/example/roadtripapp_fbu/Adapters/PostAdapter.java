@@ -2,26 +2,23 @@ package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.telecom.Call;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.PlaceDetailsActivity;
-import com.example.roadtripapp_fbu.Post;
+import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.ShowTripActivity;
-import com.example.roadtripapp_fbu.Trip;
-import com.google.android.libraries.places.api.model.Place;
+import com.example.roadtripapp_fbu.Objects.Trip;
+import com.example.roadtripapp_fbu.UserProfileActivity;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
@@ -94,6 +91,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                         intent.putExtra("trip", Parcels.wrap(trip));
                         context.startActivity(intent);
                     }
+                }
+            });
+            //when the username is clicked, show the user's profile
+            tvUsername.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UserProfileActivity.class);
+                    intent.putExtra("user", Parcels.wrap(posts.get(getAdapterPosition()).getUser()));
+                    context.startActivity(intent);
                 }
             });
         }

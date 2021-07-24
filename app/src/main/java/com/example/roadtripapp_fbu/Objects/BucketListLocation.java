@@ -1,5 +1,6 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Objects;
 
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;

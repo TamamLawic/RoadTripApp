@@ -10,12 +10,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.roadtripapp_fbu.Adapters.TripFeedAdapter;
+import com.example.roadtripapp_fbu.Objects.FeedObjects;
+import com.example.roadtripapp_fbu.Objects.JournalEntry;
+import com.example.roadtripapp_fbu.Objects.Post;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -126,18 +129,12 @@ public class TripFeedActivity extends AppCompatActivity {
             public void done(List<Post> posts, ParseException e) {
                 // check for errors
                 if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
                     return;
                 }
                 else {
                     // save received posts to list and notify adapter of new data
                     feedObjects.addAll(posts);
                     adapter.notifyDataSetChanged();
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (Post post : posts) {
-                    Log.i(TAG, "Post: " + post.getCaption() + ", trip: " + post.getTripId());
                 }
             }
         });
@@ -162,21 +159,9 @@ public class TripFeedActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<JournalEntry>() {
             @Override
             public void done(List<JournalEntry> journals, ParseException e) {
-                // check for errors
-                if (e != null) {
-                    Log.e(TAG, "Issue with getting posts", e);
-                    return;
-                }
-                else {
-                    // save received posts to list and notify adapter of new data
-                    feedObjects.addAll(journals);
-                    adapter.notifyDataSetChanged();
-                }
-
-                // for debugging purposes let's print every post description to logcat
-                for (JournalEntry journal : journals) {
-                    Log.i(TAG, "journal: " + journal.getText() + ", trip: " + journal.getTripId());
-                }
+                // save received posts to list and notify adapter of new data
+                feedObjects.addAll(journals);
+                adapter.notifyDataSetChanged();
             }
         });
     }

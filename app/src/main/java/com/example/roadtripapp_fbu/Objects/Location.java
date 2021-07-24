@@ -1,13 +1,11 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Objects;
 
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
-import java.io.File;
 import java.util.List;
 
 /**

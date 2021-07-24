@@ -1,4 +1,4 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Objects;
 
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
@@ -8,7 +8,7 @@ import com.parse.ParseUser;
  * Parse class, setting up JournalEntry
  */
 @ParseClassName("JournalEntry")
-public class JournalEntry extends ParseObject implements FeedObjects{
+public class JournalEntry extends ParseObject implements FeedObjects {
     public static final String KEY_TEXT = "text";
     public static final String KEY_TRIP = "tripId";
     public static final String KEY_USER = "author";

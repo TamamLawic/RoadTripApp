@@ -1,4 +1,4 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

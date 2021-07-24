@@ -1,8 +1,5 @@
-package com.example.roadtripapp_fbu;
+package com.example.roadtripapp_fbu.Objects;
 
-import android.util.Log;
-
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -14,7 +11,7 @@ import java.util.Date;
  * Parse class, setting up Post object.
  */
 @ParseClassName("Post")
-public class Post extends ParseObject implements FeedObjects{
+public class Post extends ParseObject implements FeedObjects {
     public static final String KEY_DESCRIPTION = "caption";
     public static final String KEY_IMAGE = "image";
     public static final String KEY_USER = "user";

@@ -14,19 +14,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
-import com.example.roadtripapp_fbu.BucketListLocation;
-import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.Objects.BucketListLocation;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.R;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import static com.example.roadtripapp_fbu.BucketListLocation.KEY_LOCATION;
-import static com.example.roadtripapp_fbu.BucketListLocation.KEY_USER;
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_LOCATION;
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_USER;
 import static com.parse.ParseObject.KEY_CREATED_AT;
 
 /**

@@ -12,12 +12,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.example.roadtripapp_fbu.TripFeedActivity;
 import com.parse.ParseFile;
-import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 

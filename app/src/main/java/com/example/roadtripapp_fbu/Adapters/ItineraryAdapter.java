@@ -2,7 +2,6 @@ package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.NetworkInfo;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.Location;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.PlaceDetailsActivity;
-import com.example.roadtripapp_fbu.Post;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.Trip;
-import com.example.roadtripapp_fbu.TripFeedActivity;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
-import java.util.Date;
 import java.util.List;
 
 public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.ViewHolder> {

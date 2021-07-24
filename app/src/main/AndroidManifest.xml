@@ -33,6 +33,7 @@
         <activity android:name=".NewPostActivity" />
         <activity android:name=".TripFeedActivity" />
         <activity android:name=".MainActivity" />
+        <activity android:name=".UserProfileActivity" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -2,7 +2,11 @@ package com.example.roadtripapp_fbu;
 
 import android.app.Application;
 
-import com.example.roadtripapp_fbu.Fragments.BucketlistViewFragment;
+import com.example.roadtripapp_fbu.Objects.BucketListLocation;
+import com.example.roadtripapp_fbu.Objects.JournalEntry;
+import com.example.roadtripapp_fbu.Objects.Location;
+import com.example.roadtripapp_fbu.Objects.Post;
+import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
