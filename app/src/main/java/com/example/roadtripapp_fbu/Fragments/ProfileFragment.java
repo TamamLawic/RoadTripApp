@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.LoginActivity;
 import com.example.roadtripapp_fbu.Adapters.PagerAdapter;
+import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
 import com.example.roadtripapp_fbu.UserProfileActivity;
@@ -41,7 +42,8 @@ import com.parse.SaveCallback;
 import java.util.List;
 
 /**
- * Fragment for bottom navigational view. Sets up Tab View to show user's Trips and BucketList items
+ * Fragment for bottom navigational view. Shows currently logged in User's information.
+ * Sets up Tab View to show user's Trips and BucketList items
  */
 public class ProfileFragment extends Fragment implements EditTripNameFragment.EditNameDialogListener {
     public static final String TAG = "ProfileFragment";
@@ -64,7 +66,7 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
 
     /**
      * When the fragment is created, set an onclick listener for logging out the user.
-     * Sets up the recyclerview and displays all of the user's trips
+     * Sets up the TabView to show the current user's trip and bucketlist
      */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -76,7 +78,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         tvName = view.findViewById(R.id.tvName);
         etTripName = view.findViewById(R.id.etTripName);
 
-        //fill in profile
         tvName.setText(ParseUser.getCurrentUser().getUsername());
         //Put profile picture into the ImageView
         // query posts from Instagram App
@@ -145,11 +146,10 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
     }
 
     /**
-     * makes a new trip object in parse for the logged in user
+     * makes a new trip object in parse for the logged in user, Makes the current user a collaborator to the Trip
      */
     private void makeNewTrip(ParseUser currentUser, String tripName) {
         Trip trip = new Trip();
-
         trip.put("author", ParseUser.getCurrentUser());
         trip.put("tripName", tripName);
 
@@ -160,6 +160,12 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 if (e != null) {
                     Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
                 }
+                //after the trip is saved successfully, add the user as a collaborator
+                //make the current user a collaborator to the Trip
+                Collaborator collaborator = new Collaborator();
+                collaborator.setTrip(trip);
+                collaborator.setUser(ParseUser.getCurrentUser());
+                collaborator.saveInBackground();
                 //if post saved successfully, send user to the create mapView with a new map
                 Fragment fragment = new MapsFragment();
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -167,6 +173,7 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 fragmentTransaction.replace(R.id.flContainer, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+
             }
         });
     }

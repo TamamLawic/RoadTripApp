@@ -59,26 +59,4 @@ public class Trip extends ParseObject {
     public int getTime() { return (int) getNumber(KEY_TIME);}
 
     public void setTime(int position) { put(KEY_TIME, position);}
-
-    //get the newest trip the user has made
-    /** Get the newest trip the current user has made*/
-    public static Trip getCurrentTrip() {
-        // specify what type of data we want to query - Post.class
-        ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
-        // include data referred by user key
-        query.include(Trip.KEY_USER);
-        //only query posts of the currently signed in user
-        query.whereEqualTo(Trip.KEY_USER, ParseUser.getCurrentUser());
-        // limit query to latest 20 items
-        query.setLimit(20);
-        // order posts by creation date (newest first)
-        query.addDescendingOrder("createdAt");
-        //finds the newest created trip
-        try {
-            return query.find().get(0);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Displays the Trip and itinerary for the trip selected from the Home Feed. Uses Parse to query the Trip selected and passed in using a Parcel.
+ */
 public class ShowTripActivity extends AppCompatActivity {
     private static final int overview = 0;
     private SupportMapFragment mapFragment;
@@ -99,6 +102,9 @@ public class ShowTripActivity extends AppCompatActivity {
         }
     }
 
+    /** Loads new google map. Populates the map with the user's current trip, determined by ParseQuery.
+     * Moves camera to see the current trip, and notifies the adapter the data has been loaded.
+     **/
     protected void loadMap(GoogleMap googleMap) {
         //create bounds for start or map, center around the US
         LatLngBounds bounds = new LatLngBounds(

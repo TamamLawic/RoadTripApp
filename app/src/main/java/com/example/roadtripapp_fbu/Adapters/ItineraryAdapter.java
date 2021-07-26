@@ -21,6 +21,10 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+/**
+ * Adapter class SlideUpPanel to show the list of waypoints on the trip in order.
+ * Sets up onclick listener to take user to the details page for the locations in the trip.
+ */
 public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.ViewHolder> {
     Context context;
     List<Location> locations;

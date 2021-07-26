@@ -20,13 +20,13 @@ import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
+/** Shows the selected user's profile. Uses Parse to display user's trips, bucketlist, and basic information*/
 public class UserProfileActivity extends AppCompatActivity {
     public static final String KEY_PROFILE = "profilePic";
     public static ParseUser user;
     Button btnNewTrip;
     ImageView ivProfilePic;
     TextView tvName;
-    //public ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +44,6 @@ public class UserProfileActivity extends AppCompatActivity {
         //fill in profile
         tvName.setText(user.getUsername());
         //Put profile picture into the ImageView
-        // query posts from Instagram App
         ParseFile profileImage = user.getParseFile(KEY_PROFILE);
         Glide.with(this)
                 .load(profileImage.getUrl())

@@ -6,8 +6,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.example.roadtripapp_fbu.Adapters.AddFriendsAdapter;
-import com.example.roadtripapp_fbu.Adapters.PostAdapter;
 import com.example.roadtripapp_fbu.Objects.Post;
-import com.example.roadtripapp_fbu.Objects.Trip;
-import com.example.roadtripapp_fbu.Objects.User;
 import com.example.roadtripapp_fbu.R;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -32,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ *Dialog fragment uses Parse to find users to collaborate on the trip.
  */
 public class AddFriendsFragment extends DialogFragment {
     RecyclerView rvAddFriends;
@@ -75,6 +70,9 @@ public class AddFriendsFragment extends DialogFragment {
         queryUsers();
     }
 
+    /**
+     * Parse Query to find profile information for all users, to add to recycler view.
+     */
     private void queryUsers() {
         // specify what type of data we want to query - Post.class
         ParseQuery<ParseUser> query = ParseQuery.getQuery(ParseUser.class);

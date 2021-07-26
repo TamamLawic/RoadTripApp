@@ -26,7 +26,8 @@ import org.parceler.Parcels;
 import java.util.Date;
 import java.util.List;
 
-/** Adapter class for FeedFragment*/
+/** Adapter class for HomeFeedFragment. Sets up onClickListener for user to see a trip overview or a location's details page
+ **/
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public static final String KEY_PROFILE = "profilePic";
     private Context context;
@@ -74,7 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
             //when the name of the trip is clicked, bring up details
-            //If the location is cliked, show the location details page
+            //If the location is clicked, show the location details page
             tvTripNamePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

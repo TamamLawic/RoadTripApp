@@ -77,6 +77,9 @@ public class BucketlistViewFragment extends Fragment {
         }
     }
 
+    /**
+     * Uses ParseQuery to get the BucketList of Locations for the user.
+     */
     private List<BucketListLocation> getBucketListLocations(ParseUser currentUser) {
         // specify what type of data we want to query - Location.class
         ParseQuery<BucketListLocation> query = ParseQuery.getQuery(BucketListLocation.class);

@@ -49,7 +49,7 @@ public class TripFeedActivity extends AppCompatActivity {
     RecyclerView rvTripPosts;
     List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
-    Trip selectedTrip;
+    public static Trip selectedTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -173,7 +173,9 @@ public class TripFeedActivity extends AppCompatActivity {
         // include data referred by user key
         query.include(JournalEntry.KEY_TRIP);
         //only show the trip was selected
-        query.whereEqualTo("tripId", selectedTrip);
+        query.whereEqualTo(JournalEntry.KEY_USER, ParseUser.getCurrentUser());
+        //only show the trip was selected
+        query.whereEqualTo(JournalEntry.KEY_TRIP, selectedTrip);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)

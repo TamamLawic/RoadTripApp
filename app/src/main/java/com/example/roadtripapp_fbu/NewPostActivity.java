@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -42,7 +43,7 @@ import java.util.List;
 
 /**
  * Creates a new ParseObject Post, and allows user input to put into fields.
- * Sets onclick listeners for
+ * Sets onclick listeners for adding a photo from yoru gallery, taking a photo and posting it.
  */
 public class NewPostActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     public static final String TAG  = "NewPostActivity";
@@ -148,7 +149,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
                 Intent intent = new Intent();
                 intent.putExtra("post", Parcels.wrap(post));//set result code and bundle response
                 setResult(RESULT_OK, intent);//return results okay, and intent
-                finish();//end and return user back to timeline
+                finish();
             }
         });
     }

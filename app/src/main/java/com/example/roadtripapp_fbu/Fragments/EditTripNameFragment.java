@@ -13,7 +13,8 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.roadtripapp_fbu.R;
 /**
- * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
+ * Fragment Dialog, Allows the user to name the trip they are creating. Uses Parse to create new trip, and collaborator.
+ * Takes user to map page to start planning the trip.
  */
 public class EditTripNameFragment extends DialogFragment {
     EditText etTripName;

@@ -21,7 +21,8 @@ import com.parse.ParseFile;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-/** Adapter for the TripFeedActivity, binds selected Trip's posts into the recycler view, using Glide for images. */
+
+/** Adapter for the TripFeedActivity, binds selected Trip's posts and Journal Entries into the recycler view, using Glide for images. */
 public class TripFeedAdapter extends RecyclerView.Adapter {
     public static final String KEY_PROFILE = "profilePic";
     private List<FeedObjects> feedObjects;
@@ -32,7 +33,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         this.feedObjects = feedObjects;
     }
 
-    /** Seperate ViewHolder and Binder for the Post Objects*/
+    /** Separate ViewHolder and Binder for the Post Objects*/
     class PostViewHolder extends RecyclerView.ViewHolder {
         private TextView tvUsername;
         private ImageView ivImage;
@@ -129,6 +130,9 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         }
     }
 
+    /**
+     * Redirects the binding of the item into a post, or journal depending on the type.
+     */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
@@ -145,14 +149,4 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
     public int getItemCount() {
         return feedObjects.size();
     }
-
-    public void setLiteratureList(List<? extends FeedObjects> literatureList) {
-        if (feedObjects == null){
-            feedObjects = new ArrayList<>();
-        }
-        feedObjects.clear();
-        feedObjects.addAll(literatureList);
-        notifyDataSetChanged();
-    }
-
 }

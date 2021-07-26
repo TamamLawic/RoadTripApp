@@ -22,6 +22,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
+/**
+ * Adapter Class for the TabViews Trip Page, shows all Trips the user is a collaborator on.
+ */
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
     private Context context;
     private List<Trip> trips;

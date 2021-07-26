@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
+import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
@@ -93,7 +94,7 @@ public class MapsFragment extends Fragment {
     long duration = 0L;
     RecyclerView rvItinerary;
     protected ItineraryAdapter adapter;
-    Trip currentTrip = Trip.getCurrentTrip();
+    Trip currentTrip = Collaborator.getCurrentTrip();
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction polylines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
