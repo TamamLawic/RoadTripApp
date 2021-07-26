@@ -17,6 +17,7 @@ import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.Objects.BucketListLocation;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.UserProfileActivity;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -80,7 +81,7 @@ public class BucketlistViewFragment extends Fragment {
         // specify what type of data we want to query - Location.class
         ParseQuery<BucketListLocation> query = ParseQuery.getQuery(BucketListLocation.class);
         //only query BucketList of the current user
-        query.whereEqualTo(KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(KEY_USER, UserProfileActivity.user);
         //include data about the locations
         query.include(KEY_LOCATION);
         //finds the newest created trip

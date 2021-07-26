@@ -35,20 +35,20 @@
         android:id="@+id/imageView4"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/ivPlaceImageDetails"
+        android:layout_below="@+id/btnAddBucketList"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         app:srcCompat="@drawable/outline_watch_later_24" />
 
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/imageView4"
+        android:layout_below="@+id/tvOpeningHours"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="16dp"
         app:srcCompat="@drawable/outline_location_on_24" />
 
     <ImageView
@@ -74,12 +74,12 @@
         app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tvOpeningHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPlaceImageDetails"
+        android:layout_below="@+id/btnAddBucketList"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/imageView4"
         android:text="TextView" />
 
@@ -87,14 +87,14 @@
         android:id="@+id/tvPlaceAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/tvOpeningHours"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tvPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPlaceAddress"
@@ -104,10 +104,10 @@
         android:text="TextView" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/tvWebsite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView5"
+        android:layout_below="@+id/tvPhoneNumber"
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
@@ -118,9 +118,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivPlaceImageDetails"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="29dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
         android:text="+ Bucketlist"
         android:textColor="@color/white" />
 

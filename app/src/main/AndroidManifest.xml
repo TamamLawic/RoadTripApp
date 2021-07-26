@@ -28,10 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadTripAppFBU">
         <activity android:name=".ShowTripActivity"></activity>
+        <activity android:name=".TripFeedActivity" />
         <activity android:name=".PlaceDetailsActivity" />
         <activity android:name=".NewJournalActivity" />
         <activity android:name=".NewPostActivity" />
-        <activity android:name=".TripFeedActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".UserProfileActivity" />
 
@@ -74,6 +74,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

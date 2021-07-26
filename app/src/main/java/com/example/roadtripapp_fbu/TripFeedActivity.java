@@ -4,17 +4,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.TripFeedAdapter;
+import com.example.roadtripapp_fbu.Fragments.AddFriendsFragment;
+import com.example.roadtripapp_fbu.Fragments.EditTripNameFragment;
+import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
 import com.example.roadtripapp_fbu.Objects.FeedObjects;
 import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Post;
@@ -22,6 +31,7 @@ import com.example.roadtripapp_fbu.Objects.Trip;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
@@ -68,6 +78,7 @@ public class TripFeedActivity extends AppCompatActivity {
         queryJournals();
     }
 
+    /** Inflates the menu for trip feed, and sets up for a search view to add friends*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -102,9 +113,21 @@ public class TripFeedActivity extends AppCompatActivity {
             startActivityForResult(i, REQUEST_CODE_JOURNAL);
             return true;
         }
-
+        //if add user is selected, start dialogue to find friends to add
+        if (item.getItemId() == R.id.itemAddFriend) {
+            showAddFriendsDialogue();
+        }
         return super.onOptionsItemSelected(item);
     }
+
+    // Call this method to launch the edit dialog
+    private void showAddFriendsDialogue() {
+        DialogFragment dialog = new AddFriendsFragment();
+        FragmentManager fm = getSupportFragmentManager();
+        dialog.show(fm, "NEW ADD FRIENDS");
+    }
+
+
 
     /** Begins a Parse Query in a background thread, getting all posts for this trip. */
     /**The posts are added to a list, and the adapter is notified of the data change.*/

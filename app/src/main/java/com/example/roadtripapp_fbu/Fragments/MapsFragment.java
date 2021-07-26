@@ -268,7 +268,7 @@ public class MapsFragment extends Fragment {
         location.setLocationName(place.getName());
         location.setAddress(place.getAddress());
         try{
-            location.setHours(place.getOpeningHours().toString());
+            location.setHours(place.getOpeningHours().getWeekdayText().toString());
             location.setPhone(place.getPhoneNumber());
             location.setWebsite(place.getWebsiteUri().toString());
         } catch (Exception e) {

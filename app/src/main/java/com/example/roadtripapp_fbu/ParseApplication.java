@@ -7,6 +7,7 @@ import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.example.roadtripapp_fbu.Objects.User;
 import com.parse.Parse;
 import com.parse.ParseObject;
 
@@ -24,6 +25,7 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(Location.class);
         ParseObject.registerSubclass(JournalEntry.class);
         ParseObject.registerSubclass(BucketListLocation.class);
+        ParseObject.registerSubclass(User.class);
 
         //set applicationId, and server server based on the values
         Parse.initialize(new Parse.Configuration.Builder(this)

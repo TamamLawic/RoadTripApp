@@ -22,10 +22,11 @@ import org.parceler.Parcels;
 
 public class UserProfileActivity extends AppCompatActivity {
     public static final String KEY_PROFILE = "profilePic";
+    public static ParseUser user;
     Button btnNewTrip;
     ImageView ivProfilePic;
     TextView tvName;
-    ParseUser user;
+    //public ParseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +51,8 @@ public class UserProfileActivity extends AppCompatActivity {
                 .circleCrop()
                 .into(ivProfilePic);
 
-        //Creates a new trip object, and takes you to the mapFragment to start planning the trip
-        btnNewTrip.setVisibility(View.INVISIBLE);
+        //Adds the user to your friends list
+        btnNewTrip.setText("Add friend");
 
         //Set up the Tab View for Trips/BucketList
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager);

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.example.roadtripapp_fbu.Adapters.TripAdapter;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.example.roadtripapp_fbu.UserProfileActivity;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
@@ -62,13 +63,13 @@ public class TripViewFragment extends Fragment {
 
     /** Begins a Parse Query in a background thread, getting all of the posts the user has authored. */
     /**The posts are added to a list, and the adapter is notified of the data change.*/
-    protected void queryPosts() {
+    public void queryPosts() {
         // specify what type of data we want to query - Post.class
         ParseQuery<Trip> query = ParseQuery.getQuery(Trip.class);
         // include data referred by user key
         query.include(Trip.KEY_USER);
         //only query posts of the currently signed in user
-        query.whereEqualTo(Trip.KEY_USER, ParseUser.getCurrentUser());
+        query.whereEqualTo(Trip.KEY_USER, UserProfileActivity.user);
         // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
@@ -81,7 +82,6 @@ public class TripViewFragment extends Fragment {
                 if (e != null) {
                     return;
                 }
-
                 // save received posts to list and notify adapter of new data
                 allTrips.addAll(trips);
                 adapter.notifyDataSetChanged();

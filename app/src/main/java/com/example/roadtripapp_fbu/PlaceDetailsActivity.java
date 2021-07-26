@@ -26,6 +26,9 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     TextView tvPlaceName;
     TextView tvPlaceAddress;
     Button btnAddBucketList;
+    TextView tvOpeningHours;
+    TextView tvPhoneNumber;
+    TextView tvWebsite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,9 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         tvPlaceName = findViewById(R.id.tvPlaceName);
         tvPlaceAddress = findViewById(R.id.tvPlaceAddress);
         btnAddBucketList = findViewById(R.id.btnAddBucketList);
+        tvOpeningHours = findViewById(R.id.tvOpeningHours);
+        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
+        tvWebsite = findViewById(R.id.tvWebsite);
 
         //when created get the place that was clicked, and use parcel to unwrap
         selectedLocation = (Location) Parcels
@@ -46,6 +52,9 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         actionBar.setTitle(selectedLocation.getLocationName());
         tvPlaceName.setText(selectedLocation.getLocationName());
         tvPlaceAddress.setText(selectedLocation.getAddress());
+        tvOpeningHours.setText(selectedLocation.getHours());
+        tvPhoneNumber.setText(selectedLocation.getPhone());
+        tvWebsite.setText(selectedLocation.getWebsite());
         ParseFile locationImage = selectedLocation.getImage();
         Glide.with(this)
                 .load(locationImage.getUrl())

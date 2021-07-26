@@ -29,11 +29,16 @@ import com.example.roadtripapp_fbu.LoginActivity;
 import com.example.roadtripapp_fbu.Adapters.PagerAdapter;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.example.roadtripapp_fbu.UserProfileActivity;
 import com.google.android.material.tabs.TabLayout;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import java.util.List;
 
 /**
  * Fragment for bottom navigational view. Sets up Tab View to show user's Trips and BucketList items
@@ -65,6 +70,7 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
+        UserProfileActivity.user = ParseUser.getCurrentUser();
         btnNewTrip = view.findViewById(R.id.btnNewTrip);
         ivProfilePic = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
@@ -161,7 +167,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
                 fragmentTransaction.replace(R.id.flContainer, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
-                //Add a new trip item for the profile recycler view
             }
         });
     }

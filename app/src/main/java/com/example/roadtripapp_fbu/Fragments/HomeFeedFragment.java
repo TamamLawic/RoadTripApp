@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Fragment for bottom navigational view. ParseQuery to get the feed of the user, and display in a recycler view.
  */
-public class FeedFragment extends Fragment {
+public class HomeFeedFragment extends Fragment {
     public static final String TAG = "FeedFragment";
     private EndlessRecyclerViewScrollListener scrollListener;
     private SwipeRefreshLayout swipeContainer;
@@ -39,7 +39,7 @@ public class FeedFragment extends Fragment {
     protected PostAdapter adapter;
     public List<Post> allPosts;
 
-    public FeedFragment() {
+    public HomeFeedFragment() {
         // Required empty public constructor
     }
 
