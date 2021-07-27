@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.roadtripapp_fbu.Adapters.CustomInfoWindowAdapter;
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Objects.Collaborator;
@@ -38,8 +39,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
@@ -111,11 +114,14 @@ public class MapsFragment extends Fragment {
             );
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
+            // info window.
+            tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
             locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
             for (int i = 0; i < locations.size(); i++) {
                 Location location = locations.get(i);
                 LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
+                tripMap.addMarker(new MarkerOptions().position(latLng1).title(location.getLocationName()));
 
                 //If you have two pins connecting to each other, add polyline
                 if (i < locations.size() - 1) {
@@ -127,14 +133,9 @@ public class MapsFragment extends Fragment {
                     DirectionsResult results = getDirectionsDetails(locationStart,locationEnd,TravelMode.DRIVING);
                     if (results != null) {
                         addPolyline(results, googleMap);
-                        addMarkersToMap(results, googleMap);
                         //add to total time of the trip, total miles for the trip, and stops
                         miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
                         duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
-                    }
-                    else {
-                        tripMap.addMarker(new MarkerOptions().position(latLng1));
-                        tripMap.addMarker(new MarkerOptions().position(latLng2));
                     }
                 }
                 tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
@@ -153,6 +154,18 @@ public class MapsFragment extends Fragment {
             tvStops.setText(String.valueOf(locations.size()));
             tvDuration.setText(String.valueOf(duration).concat(" Hours"));
             tvMiles.setText(String.valueOf(miles).concat(" Miles"));
+
+            tripMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                @Override
+                public void onInfoWindowClick(Marker marker) {
+                    // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(marker.getPosition() )      // Sets the center of the map to Mountain View
+                            .zoom(12)                       // Sets the zoom
+                            .build();                   // Creates a CameraPosition from the builder
+                    tripMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            });
         }
     };
 
@@ -359,7 +372,6 @@ public class MapsFragment extends Fragment {
             DirectionsResult results = getDirectionsDetails(locationStart, locationEnd, TravelMode.DRIVING);
             if (results != null) {
                 addPolyline(results, tripMap);
-                addMarkersToMap(results, tripMap);
                 miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
                 duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
                 //after adding another stop, add to the values
@@ -379,9 +391,7 @@ public class MapsFragment extends Fragment {
                 });
             }
         }
-        else {
-            tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
-        }
+        tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
         tripMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
     }
 
@@ -463,21 +473,8 @@ public class MapsFragment extends Fragment {
         }
     }
 
-    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].startLocation.lat,results.routes[overview].legs[overview].startLocation.lng)).title(results.routes[overview].legs[overview].startAddress));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[overview].legs[overview].endLocation.lat,results.routes[overview].legs[overview].endLocation.lng)).title(results.routes[overview].legs[overview].startAddress).snippet(getEndLocationTitle(results)));
-    }
-
-    private void positionCamera(DirectionsRoute route, GoogleMap mMap) {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(route.legs[overview].startLocation.lat, route.legs[overview].startLocation.lng), 12));
-    }
-
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[overview].overviewPolyline.getEncodedPath());
         mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
-    }
-
-    private String getEndLocationTitle(DirectionsResult results){
-        return  "Time :"+ results.routes[overview].legs[overview].duration.humanReadable + " Distance :" + results.routes[overview].legs[overview].distance.humanReadable;
     }
 }

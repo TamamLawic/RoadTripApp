@@ -21,7 +21,7 @@ public class Collaborator extends ParseObject {
     }
 
     //Getters and setter for User Object
-    public String getUser() { return getString(KEY_USER);}
+    public ParseUser getUser() { return getParseUser(KEY_USER);}
 
     public void setUser(ParseUser user) { put(KEY_USER, user);}
 

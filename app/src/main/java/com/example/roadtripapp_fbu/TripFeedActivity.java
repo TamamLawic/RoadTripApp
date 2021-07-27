@@ -199,7 +199,6 @@ public class TripFeedActivity extends AppCompatActivity {
             //get data from the intent and unwrap parcel
             Post post = Parcels.unwrap(data.getParcelableExtra("post"));
             //update the recycler view with the new post
-            //modify data source
             feedObjects.add(0, post);
             //update the adapter
             adapter.notifyItemInserted(0);
@@ -211,7 +210,6 @@ public class TripFeedActivity extends AppCompatActivity {
             //get data from the intent and unwrap parcel
             JournalEntry journal = Parcels.unwrap(data.getParcelableExtra("journal"));
             //update the recycler view with the new post
-            //modify data source
             feedObjects.add(0, journal);
             //update the adapter
             adapter.notifyItemInserted(0);

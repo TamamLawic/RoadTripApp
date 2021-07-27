@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,12 +22,14 @@ import com.example.roadtripapp_fbu.TripFeedActivity;
 import com.parse.ParseFile;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 /**
  * Adapter class for AddFriendsFragment. Shows basic profile information for all users to add to trip collaborators.
  */
-public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.ViewHolder> {
+public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.ViewHolder> implements Filterable {
     List<ParseUser> users;
+    List<ParseUser> allUsers;
     Context context;
 
     public AddFriendsAdapter(Context context, List<ParseUser> users) {
@@ -49,6 +53,38 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
     public int getItemCount() {
         return users.size();
     }
+
+    @Override
+    public Filter getFilter() {
+        return filter;
+    }
+
+    private Filter filter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            allUsers = new ArrayList<>(users);
+            List<ParseUser> newUsersFiltered = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0){
+                newUsersFiltered.addAll(allUsers);
+            }
+            else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (ParseUser user : allUsers) {
+                    if (user.getUsername().toLowerCase().contains(filterPattern)){
+                        newUsersFiltered.add(user);
+                    }
+                }
+            }
+            FilterResults results = new FilterResults();
+            results.values = newUsersFiltered;
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            notifyDataSetChanged();
+        }
+    };
 
     /** Sets up view for adding friends, also sets onclick listener for adding friend*/
     class ViewHolder extends RecyclerView.ViewHolder {

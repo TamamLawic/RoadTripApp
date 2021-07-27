@@ -81,11 +81,13 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         tvName.setText(ParseUser.getCurrentUser().getUsername());
         //Put profile picture into the ImageView
         // query posts from Instagram App
-        ParseFile profileImage = ParseUser.getCurrentUser().getParseFile(KEY_PROFILE);
-        Glide.with(getContext())
-                .load(profileImage.getUrl())
-                .circleCrop()
-                .into(ivProfilePic);
+        if (ParseUser.getCurrentUser().getParseFile(KEY_PROFILE) != null) {
+            ParseFile profileImage = ParseUser.getCurrentUser().getParseFile(KEY_PROFILE);
+            Glide.with(getContext())
+                    .load(profileImage.getUrl())
+                    .circleCrop()
+                    .into(ivProfilePic);
+        }
         //Creates a new trip object, and takes you to the mapFragment to start planning the trip
         btnNewTrip.setOnClickListener(new View.OnClickListener() {
             @Override
