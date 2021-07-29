@@ -196,7 +196,7 @@ public class MapsFragment extends Fragment {
         googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
         //change the radius for the search
         googlePlacesUrl.append("&radius=").append(1500);
-        googlePlacesUrl.append("&types=").append("restaurant");
+        googlePlacesUrl.append("&types=").append("tourist_attraction");
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
 

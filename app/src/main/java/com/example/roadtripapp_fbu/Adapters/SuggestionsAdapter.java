@@ -3,6 +3,7 @@ package com.example.roadtripapp_fbu.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Objects.Location;
@@ -28,6 +34,7 @@ import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.maps.model.Photo;
 import com.parse.ParseException;
@@ -44,6 +51,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 /** Adapter class for the suggested places recycler view in MapFragment.*/
@@ -102,19 +112,58 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
             }
 
             //get the image data from google places
-            try {
-                JSONArray photoData = place.getJSONArray("photos");
-                Photo photo = (Photo) photoData.get(0);
-                photoMetadata = photo.photoReference;
+            // Initialize a new RequestQueue instance
+            RequestQueue requestQueue = Volley.newRequestQueue(context);
+            HttpURLConnection httpURLConnection = null;
+            StringBuilder jsonResults = new StringBuilder();
 
+            try {
+                //get the data
+                StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
+                googlePlacesUrl.append("maxwidth=").append(100);
+                //change the radius for the search
+                googlePlacesUrl.append("&photoreference=").append(place.getJSONArray("photos").getJSONObject(0).getString("photo_reference"));
+                googlePlacesUrl.append("&types=").append("restaurant");
+                googlePlacesUrl.append("&sensor=true");
+                googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
+
+                URL placeApiURL = new URL(googlePlacesUrl.toString());
+
+                // Initialize a new ImageRequest
+                ImageRequest imageRequest = new ImageRequest(
+                        googlePlacesUrl.toString(), // Image URL
+                        new Response.Listener<Bitmap>() { // Bitmap listener
+                            @Override
+                            public void onResponse(Bitmap response) {
+                                // Do something with response
+                                ivSuggestedImage.setImageBitmap(response);
+                            }
+                        },
+                        0, // Image width
+                        0, // Image height
+                        ImageView.ScaleType.FIT_CENTER, // Image scale type
+                        Bitmap.Config.RGB_565, //Image decode configuration
+                        new Response.ErrorListener() { // Error listener
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                // Do something with error response
+                                error.printStackTrace();
+                            }
+                        }
+                );
+
+            // Add ImageRequest to the RequestQueue
+            requestQueue.add(imageRequest);
+        } catch (MalformedURLException e) {
+                e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            //make request for photo data
-        }
+
+    }
 
         @Override
         public void onClick(View v) {
+
         }
-    }
-}
+    }}
