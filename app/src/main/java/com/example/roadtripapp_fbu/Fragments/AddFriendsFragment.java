@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *Dialog fragment uses Parse to find users to collaborate on the trip.
+ *Dialog fragment uses Parse to find users to collaborate on the trip, and display the users who are currently collaborators
  */
 public class AddFriendsFragment extends DialogFragment {
     RecyclerView rvAddFriends;
@@ -87,7 +87,7 @@ public class AddFriendsFragment extends DialogFragment {
 
         //set up the collaborators recycler view
         rvCollaborators  = view.findViewById(R.id.rvCollaborators);
-        //Set up the adapter for the trip recycler view
+        //Set up the adapter for the collaborator recycler view
         collaboratorsUsers = new ArrayList<>();
         //create the adapter
         collaboratorAdapter = new AddFriendsAdapter(getContext(), collaboratorsUsers);
@@ -97,7 +97,7 @@ public class AddFriendsFragment extends DialogFragment {
         // set the layout manager on the recycler view
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvCollaborators.setLayoutManager(layoutManager2);
-        // query posts from Instagram App
+        // query All of the users who are collaborators on the trip
         queryCollaborators();
 
         rvAddFriends  = view.findViewById(R.id.rvAddFriends);
@@ -111,10 +111,11 @@ public class AddFriendsFragment extends DialogFragment {
         // set the layout manager on the recycler view
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         rvAddFriends.setLayoutManager(layoutManager);
-        // query posts from Instagram App
+        // queries all of the users
         queryUsers();
     }
 
+    /** Parse Query to get all of the collaborator on a trip*/
     private void queryCollaborators() {
         collaborators = new ArrayList<>();
         // specify what type of data we want to query - User.class
@@ -142,6 +143,7 @@ public class AddFriendsFragment extends DialogFragment {
         });
     }
 
+    /** Gets all of the user Objects from the list of collaborators*/
     private void getUsers() {
         for (int i = 0; i < collaborators.size(); i ++) {
             collaboratorsUsers.add(collaborators.get(i).getUser());
@@ -179,10 +181,6 @@ public class AddFriendsFragment extends DialogFragment {
     /** The system calls this only when creating the layout in a dialog. */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // The only reason you might override this method when using onCreateView() is
-        // to modify any dialog characteristics. For example, the dialog includes a
-        // title by default, but your custom layout might not need it. So here you can
-        // remove the dialog title, but you must call the superclass to get the Dialog.
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         return dialog;

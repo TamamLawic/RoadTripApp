@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.roadtripapp_fbu.Adapters.CustomInfoWindowAdapter;
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
+import com.example.roadtripapp_fbu.Adapters.SuggestionsAdapter;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.Location;
@@ -34,7 +36,9 @@ import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -44,6 +48,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
@@ -57,7 +62,6 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
 import com.google.maps.model.DirectionsResult;
-import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.TravelMode;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -67,6 +71,9 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
@@ -74,6 +81,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,21 +96,25 @@ import java.util.concurrent.TimeUnit;
  */
 public class MapsFragment extends Fragment {
     public static final String TAG = "MapFragment";
+    Trip currentTrip = Collaborator.getCurrentTrip();
     private SlidingUpPanelLayout slidingPane;
+    protected ItineraryAdapter adapter;
+    protected SuggestionsAdapter suggestionsAdapter;
     private static final int overview = 0;
     private PlacesClient placesClient;
+    GoogleApiClient googleApiClient;
+    RecyclerView rvItinerary;
+    RecyclerView rvSuggestedStops;
     List<Location> locations;
+    List<JSONObject> suggestedLocations;
     GoogleMap tripMap;
     TextView tvStops;
     TextView tvDuration;
     TextView tvMiles;
     long miles = 0L;
     long duration = 0L;
-    RecyclerView rvItinerary;
-    protected ItineraryAdapter adapter;
-    Trip currentTrip = Collaborator.getCurrentTrip();
 
-    /** Loads Current trip data to display the current trip on a map with markers, and direction polylines connecting*/
+    /** Loads Current trip data to display the current trip on a map with markers, and direction poly lines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
         /**
          * Manipulates the map once available.
@@ -107,54 +122,18 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            //create bounds for start or map, center around the US
-            LatLngBounds bounds = new LatLngBounds(
-                    new LatLng(25.82, -124.39),
-                    new LatLng(49.38, -66.94)
-            );
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
             // info window.
             tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
             locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
-            for (int i = 0; i < locations.size(); i++) {
-                Location location = locations.get(i);
-                LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
-                tripMap.addMarker(new MarkerOptions().position(latLng1).title(location.getLocationName()));
-
-                //If you have two pins connecting to each other, add polyline
-                if (i < locations.size() - 1) {
-                    Location location2 = locations.get(i + 1);
-                    LatLng latLng2 = new LatLng(location2.getLatitude().doubleValue(), location2.getLongitude().doubleValue());
-                    //draw the trip with directions
-                    String locationStart = location.getAddress();
-                    String locationEnd = location2.getAddress();
-                    DirectionsResult results = getDirectionsDetails(locationStart,locationEnd,TravelMode.DRIVING);
-                    if (results != null) {
-                        addPolyline(results, googleMap);
-                        //add to total time of the trip, total miles for the trip, and stops
-                        miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
-                        duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
-                    }
-                }
-                tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
-                //set the TripDistance and time
-                currentTrip.setLength((int) miles);
-                currentTrip.setTime((int) duration);
-                currentTrip.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-                        if (e != null) {
-                            Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-            }
+            addAllLocationsMap();
             tvStops.setText(String.valueOf(locations.size()));
             tvDuration.setText(String.valueOf(duration).concat(" Hours"));
             tvMiles.setText(String.valueOf(miles).concat(" Miles"));
 
+            //Onclick listener for finding things to do near a stopping point
             tripMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
@@ -164,10 +143,94 @@ public class MapsFragment extends Fragment {
                             .zoom(12)                       // Sets the zoom
                             .build();                   // Creates a CameraPosition from the builder
                     tripMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    //find suggestions for places in this area
+                    showMapStops(marker);
+                }
+            });
+
+            //Onclick listener for clicking on Points of interest on the map
+            tripMap.setOnPoiClickListener(new GoogleMap.OnPoiClickListener() {
+                @Override
+                public void onPoiClick(PointOfInterest pointOfInterest) {
+                    Toast.makeText(getContext(), "Clicked: " +
+                                    pointOfInterest.name + "\nPlace ID:" + pointOfInterest.placeId +
+                                    "\nLatitude:" + pointOfInterest.latLng.latitude +
+                                    " Longitude:" + pointOfInterest.latLng.longitude, Toast.LENGTH_SHORT).show();
                 }
             });
         }
     };
+
+    /** Builds the google API Client to connect to the PlaceSearch API*/
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(LocationServices.API)
+                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) getContext())
+                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) getContext())
+                .build();
+        googleApiClient.connect();
+    }
+
+    /** Gets all of the suggested places to visit in the proximity of the waypoint selected*/
+    private void showMapStops(Marker marker) {
+        //get the trip for the marker
+        //set up the adapter and recycler view for the trip
+        //show the recycler view for the trip, with stops
+        //user can search for stops near them
+        LatLngBounds bounds = tripMap.getProjection().getVisibleRegion().latLngBounds;
+        double latitude = marker.getPosition().latitude;
+        double longitude = marker.getPosition().longitude;
+        suggestedLocations.clear();
+        suggestedLocations.addAll(loadNearByPlaces(latitude, longitude));
+        suggestionsAdapter.notifyDataSetChanged();
+    }
+
+    /** Calls Place Search API and gets data through Http request to get Places in the proximity to the location*/
+    private List<JSONObject> loadNearByPlaces(double latitude, double longitude) {
+        HttpURLConnection httpURLConnection = null;
+        StringBuilder jsonResults = new StringBuilder();
+        List<JSONObject> placeSuggestions = null;
+
+        //get the data
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
+        //change the radius for the search
+        googlePlacesUrl.append("&radius=").append(1500);
+        googlePlacesUrl.append("&types=").append("restaurant");
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
+
+        try {
+            URL placeApiURL = new URL(googlePlacesUrl.toString());
+            httpURLConnection = (HttpURLConnection) placeApiURL.openConnection();
+            InputStreamReader reader = new InputStreamReader(httpURLConnection.getInputStream());
+            int read;
+            char[] buffer = new char[1050];
+            while((read = reader.read(buffer)) != -1){
+                jsonResults.append(buffer, 0, read);
+            }
+            JSONObject jsonObject = new JSONObject(jsonResults.toString());
+            JSONArray resultsJsonArray = jsonObject.getJSONArray("results");
+            placeSuggestions = new ArrayList<>();
+            for (int i = 0; i < resultsJsonArray.length(); i ++){
+                JSONObject suggestion = resultsJsonArray.getJSONObject(i);
+                placeSuggestions.add(suggestion);
+                Log.i(TAG, suggestion.toString());
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+        return placeSuggestions;
+    }
 
     @Nullable
     @Override
@@ -187,6 +250,7 @@ public class MapsFragment extends Fragment {
         tvDuration = view.findViewById(R.id.tvDurationDetails);
         tvStops = view.findViewById(R.id.tvStopsDetails);
         rvItinerary = view.findViewById(R.id.rvItinerary);
+        rvSuggestedStops = view.findViewById(R.id.rvSuggestedStops);
         slidingPane = view.findViewById(R.id.slidingPaneItinerary);
 
         //set up map view
@@ -253,6 +317,16 @@ public class MapsFragment extends Fragment {
         // set up reorder itemTouch Helper
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(rvItinerary);
+
+        //set up recycler view for suggested stops
+        suggestedLocations = new ArrayList<JSONObject>();
+        //create the new adapter
+        suggestionsAdapter = new SuggestionsAdapter(getContext(), suggestedLocations);
+        //set the adapter to the recycler view
+        rvSuggestedStops.setAdapter(suggestionsAdapter);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        rvSuggestedStops.setLayoutManager(layoutManager1);
+
     }
 
     /** Sets up touch helper for reordering the trip*/
@@ -322,21 +396,11 @@ public class MapsFragment extends Fragment {
             FileOutputStream fos = null;
             try {
                 fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-            }
-            try {
-                fos.write(bitmapdata);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fos.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -463,6 +527,48 @@ public class MapsFragment extends Fragment {
             Location location = locations.get(i);
             location.setPosition(i);
             location.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e != null) {
+                        Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
+    }
+
+    /** Adds all locations to the current map*/
+    private void addAllLocationsMap() {
+        //create bounds for start or map, center around the US
+        LatLngBounds bounds = new LatLngBounds(
+                new LatLng(25.82, -124.39),
+                new LatLng(49.38, -66.94)
+        );
+
+        for (int i = 0; i < locations.size(); i++) {
+            Location location = locations.get(i);
+            LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
+            tripMap.addMarker(new MarkerOptions().position(latLng1).title(location.getLocationName()));
+
+            //If you have two pins connecting to each other, add polyline
+            if (i < locations.size() - 1) {
+                Location location2 = locations.get(i + 1);
+                //draw the trip with directions
+                String locationStart = location.getAddress();
+                String locationEnd = location2.getAddress();
+                DirectionsResult results = getDirectionsDetails(locationStart,locationEnd,TravelMode.DRIVING);
+                if (results != null) {
+                    addPolyline(results, tripMap);
+                    //add to total time of the trip, total miles for the trip, and stops
+                    miles += results.routes[overview].legs[overview].distance.inMeters * 0.000621371;
+                    duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
+                }
+            }
+            tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
+            //set the TripDistance and time
+            currentTrip.setLength((int) miles);
+            currentTrip.setTime((int) duration);
+            currentTrip.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     if (e != null) {

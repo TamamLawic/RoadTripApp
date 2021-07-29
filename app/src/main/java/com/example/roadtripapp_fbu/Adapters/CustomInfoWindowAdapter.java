@@ -27,7 +27,9 @@ import com.parse.ParseFile;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Custom Info Window for map markers. Uses Glide to put in images, and ParseQuery to find the photos for the locations.
+ */
 public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     Context context;
     private final View mContents;
@@ -52,7 +54,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         return mContents;
     }
 
-
+    /**
+     * Renders in the information for the custom Info Window for the specific location
+     */
     private void render(Marker marker, View view) {
         ImageView ivPlacePhoto = view.findViewById(R.id.ivPlacePhoto);
         getLocationImage(marker.getTitle());
@@ -73,6 +77,9 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }
     }
 
+    /**
+     * Gets the image for the current location from the Location Object
+     */
     private void getLocationImage(String title) {
         for (int i = 0; i < locations.size(); i ++ ) {
             String locationName = locations.get(i).getLocationName();

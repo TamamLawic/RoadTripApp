@@ -44,6 +44,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/autocomplete"
             android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSuggestedStops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="5dp"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -121,6 +130,6 @@
             android:layout_below="@+id/imageView"
             android:layout_alignParentStart="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="20dp"/>
     </RelativeLayout>
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
