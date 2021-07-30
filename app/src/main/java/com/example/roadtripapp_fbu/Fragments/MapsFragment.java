@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -101,7 +102,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
  */
-public class MapsFragment extends Fragment implements SuggestionsAdapter.EventListener {
+public class MapsFragment extends Fragment implements SuggestionsAdapter.EventListener, CustomInfoWindowAdapter.EventListener {
     public static final String TAG = "MapFragment";
     Trip currentTrip = Collaborator.getCurrentTrip();
     private SlidingUpPanelLayout slidingPane;
@@ -135,7 +136,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
             // info window.
-            tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
+            tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext(), MapsFragment.this));
             locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
             //register data observer for list of locations, triggered when the location has finished loading.
@@ -160,11 +161,11 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
             tripMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                 @Override
                 public void onInfoWindowClick(Marker marker) {
-                    // Construct a CameraPosition focusing on Mountain View and animate the camera to that position.
+                    // Construct a CameraPosition focusing on Marker position.
                     CameraPosition cameraPosition = new CameraPosition.Builder()
-                            .target(marker.getPosition() )      // Sets the center of the map to Mountain View
-                            .zoom(12)                       // Sets the zoom
-                            .build();                   // Creates a CameraPosition from the builder
+                            .target(marker.getPosition() )      // Sets the center of the map to the Marker
+                            .zoom(12)
+                            .build();
                     tripMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                     //find suggestions for places in this area
                     showMapStops(marker);
@@ -186,9 +187,18 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
             btnResfreshMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //add locations to the current trip
-                    targetLocationLength = locations.size() + addedLocations.size();
-                    addLocationsToTrip();
+                    if (addedLocations.size() > 0){
+                        //add locations to the current trip
+                        targetLocationLength = locations.size() + addedLocations.size();
+                        addLocationsToTrip();
+                    }
+                    else {
+                        LatLngBounds bounds = new LatLngBounds(
+                                new LatLng(25.82, -124.39),
+                                new LatLng(49.38, -66.94)
+                        );
+                        tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
+                    }
                 }
             });
         }
@@ -260,6 +270,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                 //if the panel is closed, push changes to Parse for order
                 if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED) {
                     reorderTrip();
+                    //reloads the map to show changes in directions
                     FragmentManager manager = getParentFragmentManager();
                     manager.beginTransaction().replace(R.id.flContainer, new MapsFragment()).commit();
                 }
@@ -362,13 +373,10 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         //get the image data from google places
         final PhotoMetadata photoMetadata = place.getPhotoMetadatas().get(0);
 
-        // Get the attribution text.
-        final String attributions = photoMetadata.getAttributions();
-
         // Create a FetchPhotoRequest.
         final FetchPhotoRequest photoRequest = FetchPhotoRequest.builder(photoMetadata)
-                .setMaxWidth(500) // Optional.
-                .setMaxHeight(300) // Optional.
+                .setMaxWidth(500)
+                .setMaxHeight(300)
                 .build();
         placesClient.fetchPhoto(photoRequest).addOnSuccessListener((fetchPhotoResponse) -> {
             Bitmap bitmap = fetchPhotoResponse.getBitmap();
@@ -419,7 +427,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         //If there is already markers on the map, add a polyline and a marker, otherwise just add the marker
         if (locations.size() > 0) {
             Location location2 = locations.get(locations.size() - 1);
-            LatLng latLng2 = new LatLng(location2.getLatitude().doubleValue(), location2.getLongitude().doubleValue());
             //draw the trip with directions
             String locationEnd = location.getAddress();
             String locationStart = location2.getAddress();
@@ -451,7 +458,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
 
     /** Connects to the DirectionAPI and requests directions from a destinations address string to another address string. Returns DirectionResult Object*/
     private DirectionsResult getDirectionsDetails(String origin, String destination, TravelMode mode) {
-        List<String> waypoints = new ArrayList<>();
         DateTime now = new DateTime();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
@@ -559,17 +565,17 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         StringBuilder jsonResults = new StringBuilder();
         List<JSONObject> placeSuggestions = null;
 
-        //get the data
+        //Make Places URL to get all locations in a 3 miles radius from the selected marker
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
         //change the radius for the search
-        googlePlacesUrl.append("&radius=").append(1500);
+        googlePlacesUrl.append("&radius=").append(5000);
         googlePlacesUrl.append("&types=").append("tourist_attraction");
         googlePlacesUrl.append("&sensor=true");
         googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
 
         try {
-            //Make a new URL and
+            //Make string into URL and connect.
             URL placeApiURL = new URL(googlePlacesUrl.toString());
             httpURLConnection = (HttpURLConnection) placeApiURL.openConnection();
             InputStreamReader reader = new InputStreamReader(httpURLConnection.getInputStream());
@@ -597,6 +603,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                 httpURLConnection.disconnect();
             }
         }
+        //Return all of the places in the area around the marker
         return placeSuggestions;
     }
 
@@ -620,7 +627,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
 
                 // Create a FetchPhotoRequest.
                 final FetchPlaceRequest placeRequest = FetchPlaceRequest.builder(placeID, placeFields).build();
-                //request the Place object
+                //request the Place object from MapsSDK
                 placesClient.fetchPlace(placeRequest).addOnSuccessListener((fetchPlaceResponse) -> {
                     Place place = fetchPlaceResponse.getPlace();
                     addPlaceToTrip(place);
@@ -635,5 +642,11 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
         List<LatLng> decodedPath = PolyUtil.decode(results.routes[overview].overviewPolyline.getEncodedPath());
         mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
+    }
+
+    //Event Listener for CustomInfoReady
+    @Override
+    public void onEvent(Marker marker) {
+        marker.showInfoWindow();
     }
 }

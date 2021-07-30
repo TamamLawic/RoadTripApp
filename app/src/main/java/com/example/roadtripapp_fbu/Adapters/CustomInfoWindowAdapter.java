@@ -1,8 +1,11 @@
 package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.media.MediaSync;
+import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
@@ -25,6 +28,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseFile;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 /**
@@ -35,9 +40,11 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private final View mContents;
     List<Location> locations;
     ParseFile locationImage;
+    EventListener listener;
 
-    public CustomInfoWindowAdapter(Context context) {
+    public CustomInfoWindowAdapter(Context context, EventListener listener) {
         this.context = context;
+        this.listener = listener;
         mContents = LayoutInflater.from(this.context).inflate(R.layout.custom_info_contents, null);
         locations = new ArrayList<>();
         locations.addAll(Location.getTripLocations(Collaborator.getCurrentTrip()));
@@ -90,5 +97,7 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         }
     }
 
-
+    public interface EventListener {
+        void onEvent(Marker marker);
+    }
 }
