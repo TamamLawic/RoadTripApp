@@ -1,12 +1,11 @@
 package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,52 +18,41 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.example.roadtripapp_fbu.BuildConfig;
+import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.Location;
-import com.example.roadtripapp_fbu.Objects.Post;
-import com.example.roadtripapp_fbu.Objects.Trip;
-import com.example.roadtripapp_fbu.PlaceDetailsActivity;
 import com.example.roadtripapp_fbu.R;
-import com.example.roadtripapp_fbu.ShowTripActivity;
-import com.example.roadtripapp_fbu.UserProfileActivity;
-import com.google.android.gms.common.api.ApiException;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.PhotoMetadata;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.net.FetchPhotoRequest;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonArray;
-import com.google.maps.model.Photo;
+import com.google.gson.JsonObject;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.SaveCallback;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.parceler.Parcels;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+
 /** Adapter class for the suggested places recycler view in MapFragment.*/
 public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.ViewHolder> {
-    private PlacesClient placesClient;
     List<JSONObject> suggestedPlaces;
+    List<Bitmap> placesImages;
     Context context;
+    EventListener listener;
+    List<JSONObject> placesAdded;
 
-    public SuggestionsAdapter(Context context, List<JSONObject> places) {
+    public SuggestionsAdapter(Context context, List<JSONObject> places, EventListener listener) {
         this.context = context;
         this.suggestedPlaces = places;
+        this.placesImages = new ArrayList<>();
+        this.listener = listener;
+        this.placesAdded = new ArrayList<JSONObject>();
     }
 
     @Override
@@ -72,8 +60,6 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
         View view = LayoutInflater.from(context).inflate(R.layout.item_suggested_locations, parent, false);
         // Setup Places Client
         Places.initialize(context, BuildConfig.GOOGLE_API_KEY);
-        //get new Places client
-        placesClient = Places.createClient(context);
         return new SuggestionsAdapter.ViewHolder(view);
     }
 
@@ -81,6 +67,25 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
     public void onBindViewHolder(@NonNull SuggestionsAdapter.ViewHolder holder, int position) {
         JSONObject place = suggestedPlaces.get(position);
         holder.bind(place);
+        holder.btnAddLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //addLocationTrip(position);
+                //if the button is add, add to trip
+                if (holder.btnAddLocation.getTag().toString().equals("Add")) {
+                    holder.btnAddLocation.setTag("Remove");
+                    holder.btnAddLocation.setImageResource(R.drawable. outline_remove_circle_outline_24);
+                    placesAdded.add(place);
+                }
+                else{
+                    holder.btnAddLocation.setImageResource(R.drawable. outline_add_24);
+                    holder.btnAddLocation.setTag("Add");
+                    placesAdded.remove(place);
+                }
+                //notify map that the data has changed for places to stop
+                listener.onEvent(placesAdded, placesImages);
+            }
+        });
     }
 
     @Override
@@ -89,21 +94,23 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
     }
 
     /** ViewHolder class, that sets up suggested places for the user to add to their trip*/
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivSuggestedImage;
         TextView tvSuggestionName;
+        ImageButton btnAddLocation;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivSuggestedImage = itemView.findViewById(R.id.ivSuggestedImage);
             tvSuggestionName = itemView.findViewById(R.id.tvSuggestionName);
-            itemView.setOnClickListener(this);
+            btnAddLocation = itemView.findViewById(R.id.btnAddLocation);
         }
 
         /** Bind the post passed in into the item_post for the recycler view using Glide for images.
          * @param place*/
         public void bind(JSONObject place) {
             String photoMetadata = null;
+            btnAddLocation.setVisibility(View.VISIBLE);
             // Bind the post data to the view elements
             try {
                 tvSuggestionName.setText(place.getString("name"));
@@ -112,22 +119,16 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
             }
 
             //get the image data from google places
-            // Initialize a new RequestQueue instance
             RequestQueue requestQueue = Volley.newRequestQueue(context);
-            HttpURLConnection httpURLConnection = null;
-            StringBuilder jsonResults = new StringBuilder();
-
             try {
                 //get the data
                 StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
-                googlePlacesUrl.append("maxwidth=").append(100);
+                googlePlacesUrl.append("maxwidth=").append(1600);
                 //change the radius for the search
                 googlePlacesUrl.append("&photoreference=").append(place.getJSONArray("photos").getJSONObject(0).getString("photo_reference"));
                 googlePlacesUrl.append("&types=").append("restaurant");
                 googlePlacesUrl.append("&sensor=true");
                 googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
-
-                URL placeApiURL = new URL(googlePlacesUrl.toString());
 
                 // Initialize a new ImageRequest
                 ImageRequest imageRequest = new ImageRequest(
@@ -136,6 +137,7 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
                             @Override
                             public void onResponse(Bitmap response) {
                                 // Do something with response
+                                placesImages.add(response);
                                 ivSuggestedImage.setImageBitmap(response);
                             }
                         },
@@ -151,19 +153,17 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
                             }
                         }
                 );
-
             // Add ImageRequest to the RequestQueue
             requestQueue.add(imageRequest);
-        } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+        } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+        }
     }
 
-        @Override
-        public void onClick(View v) {
-
-        }
-    }}
+    /** Event Listener triggered in Map Fragment when a location is clicked.
+     * Updates the list of suggested location the user wants to add or remove from their trip.*/
+    public interface EventListener {
+        void onEvent(List<JSONObject> stops, List<Bitmap> placeImages);
+    }
+}

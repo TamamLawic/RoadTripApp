@@ -1,6 +1,7 @@
 package com.example.roadtripapp_fbu.Fragments;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -23,9 +24,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageRequest;
 import com.example.roadtripapp_fbu.Adapters.CustomInfoWindowAdapter;
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.Adapters.SuggestionsAdapter;
@@ -50,12 +54,15 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.FetchPhotoRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -94,7 +101,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Fragment for bottom navigational view. Makes Google Map object, and populates with the user's current Trip using ParseQuery.
  */
-public class MapsFragment extends Fragment {
+public class MapsFragment extends Fragment implements SuggestionsAdapter.EventListener {
     public static final String TAG = "MapFragment";
     Trip currentTrip = Collaborator.getCurrentTrip();
     private SlidingUpPanelLayout slidingPane;
@@ -102,17 +109,20 @@ public class MapsFragment extends Fragment {
     protected SuggestionsAdapter suggestionsAdapter;
     private static final int overview = 0;
     private PlacesClient placesClient;
-    GoogleApiClient googleApiClient;
     RecyclerView rvItinerary;
     RecyclerView rvSuggestedStops;
     List<Location> locations;
     List<JSONObject> suggestedLocations;
+    List<JSONObject> addedLocations;
+    List<Bitmap> placesImages;
     GoogleMap tripMap;
+    ImageButton btnResfreshMap;
     TextView tvStops;
     TextView tvDuration;
     TextView tvMiles;
     long miles = 0L;
     long duration = 0L;
+    int targetLocationLength = 0;
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction poly lines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -128,6 +138,19 @@ public class MapsFragment extends Fragment {
             tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext()));
             locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
+            //register data observer for list of locations, triggered when the location has finished loading.
+            adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    if (suggestedLocations != null){
+                        //Only reload the map when all of the locations have been added in Parse
+                        if (locations.size() ==  targetLocationLength) {
+                            FragmentManager manager = getParentFragmentManager();
+                            manager.beginTransaction().replace(R.id.flContainer, new MapsFragment()).commit();
+                        }
+                    }
+                }
+            });
             addAllLocationsMap();
             tvStops.setText(String.valueOf(locations.size()));
             tvDuration.setText(String.valueOf(duration).concat(" Hours"));
@@ -158,79 +181,18 @@ public class MapsFragment extends Fragment {
                                     " Longitude:" + pointOfInterest.latLng.longitude, Toast.LENGTH_SHORT).show();
                 }
             });
+
+            //set on click listener for user done adding locations
+            btnResfreshMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //add locations to the current trip
+                    targetLocationLength = locations.size() + addedLocations.size();
+                    addLocationsToTrip();
+                }
+            });
         }
     };
-
-    /** Builds the google API Client to connect to the PlaceSearch API*/
-    protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(getContext())
-                .addApi(LocationServices.API)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) getContext())
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) getContext())
-                .build();
-        googleApiClient.connect();
-    }
-
-    /** Gets all of the suggested places to visit in the proximity of the waypoint selected*/
-    private void showMapStops(Marker marker) {
-        //get the trip for the marker
-        //set up the adapter and recycler view for the trip
-        //show the recycler view for the trip, with stops
-        //user can search for stops near them
-        LatLngBounds bounds = tripMap.getProjection().getVisibleRegion().latLngBounds;
-        double latitude = marker.getPosition().latitude;
-        double longitude = marker.getPosition().longitude;
-        suggestedLocations.clear();
-        suggestedLocations.addAll(loadNearByPlaces(latitude, longitude));
-        suggestionsAdapter.notifyDataSetChanged();
-    }
-
-    /** Calls Place Search API and gets data through Http request to get Places in the proximity to the location*/
-    private List<JSONObject> loadNearByPlaces(double latitude, double longitude) {
-        HttpURLConnection httpURLConnection = null;
-        StringBuilder jsonResults = new StringBuilder();
-        List<JSONObject> placeSuggestions = null;
-
-        //get the data
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
-        //change the radius for the search
-        googlePlacesUrl.append("&radius=").append(1500);
-        googlePlacesUrl.append("&types=").append("tourist_attraction");
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
-
-        try {
-            URL placeApiURL = new URL(googlePlacesUrl.toString());
-            httpURLConnection = (HttpURLConnection) placeApiURL.openConnection();
-            InputStreamReader reader = new InputStreamReader(httpURLConnection.getInputStream());
-            int read;
-            char[] buffer = new char[1050];
-            while((read = reader.read(buffer)) != -1){
-                jsonResults.append(buffer, 0, read);
-            }
-            JSONObject jsonObject = new JSONObject(jsonResults.toString());
-            JSONArray resultsJsonArray = jsonObject.getJSONArray("results");
-            placeSuggestions = new ArrayList<>();
-            for (int i = 0; i < resultsJsonArray.length(); i ++){
-                JSONObject suggestion = resultsJsonArray.getJSONObject(i);
-                placeSuggestions.add(suggestion);
-                Log.i(TAG, suggestion.toString());
-            }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        finally {
-            if (httpURLConnection != null) {
-                httpURLConnection.disconnect();
-            }
-        }
-        return placeSuggestions;
-    }
 
     @Nullable
     @Override
@@ -252,6 +214,7 @@ public class MapsFragment extends Fragment {
         rvItinerary = view.findViewById(R.id.rvItinerary);
         rvSuggestedStops = view.findViewById(R.id.rvSuggestedStops);
         slidingPane = view.findViewById(R.id.slidingPaneItinerary);
+        btnResfreshMap = view.findViewById(R.id.btnResfreshMap);
 
         //set up map view
         SupportMapFragment mapFragment =
@@ -321,12 +284,44 @@ public class MapsFragment extends Fragment {
         //set up recycler view for suggested stops
         suggestedLocations = new ArrayList<JSONObject>();
         //create the new adapter
-        suggestionsAdapter = new SuggestionsAdapter(getContext(), suggestedLocations);
+        suggestionsAdapter = new SuggestionsAdapter(getContext(), suggestedLocations, this);
         //set the adapter to the recycler view
         rvSuggestedStops.setAdapter(suggestionsAdapter);
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rvSuggestedStops.setLayoutManager(layoutManager1);
+        addedLocations = new ArrayList<>();
+        placesImages = new ArrayList<>();
+    }
 
+    /**
+     * When the options menu is created, change it to the one for the maps fragment
+     */
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_maps_fragment, menu);
+        //change the title to show the trip you are editing/viewing
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        ActionBar actionBar = activity.getSupportActionBar();
+        actionBar.setTitle(currentTrip.getTripName());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * When the MenuItem post is selected startActivity : NewPostActivity
+     */
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        Intent i = new Intent(getContext(), NewPostActivity.class);
+        // serialize the post using parceler, use its short name as a key
+        i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(currentTrip));
+        startActivity(i);
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onEvent(List<JSONObject> added_stops, List<Bitmap> images) {
+        addedLocations = added_stops;
+        placesImages = images;
     }
 
     /** Sets up touch helper for reordering the trip*/
@@ -407,18 +402,13 @@ public class MapsFragment extends Fragment {
             location.setImage(new ParseFile(f));
             location.setTripId(currentTrip);
             location.setPosition(locations.size());
-            location.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        Toast.makeText(getContext(), "Error while saving!", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        locations.add(location);
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            try {
+                location.save();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            locations.add(location);
+            adapter.notifyDataSetChanged();
         }).addOnFailureListener((exception) -> {
             if (exception instanceof ApiException) {
                 final ApiException apiException = (ApiException) exception;
@@ -457,31 +447,6 @@ public class MapsFragment extends Fragment {
         }
         tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
         tripMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-    /**
-     * When the options menu is created, change it to the one for the maps fragment
-     */
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_maps_fragment, menu);
-        //change the title to show the trip you are editing/viewing
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        ActionBar actionBar = activity.getSupportActionBar();
-        actionBar.setTitle(currentTrip.getTripName());
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    /**
-     * When the MenuItem post is selected startActivity : NewPostActivity
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Intent i = new Intent(getContext(), NewPostActivity.class);
-        // serialize the post using parceler, use its short name as a key
-        i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(currentTrip));
-        startActivity(i);
-        return super.onOptionsItemSelected(item);
     }
 
     /** Connects to the DirectionAPI and requests directions from a destinations address string to another address string. Returns DirectionResult Object*/
@@ -576,6 +541,94 @@ public class MapsFragment extends Fragment {
                     }
                 }
             });
+        }
+    }
+
+    /** Gets all of the suggested places to visit in the proximity of the waypoint selected using HTTP request to nearby search in PlaceAPI*/
+    private void showMapStops(Marker marker) {
+        double latitude = marker.getPosition().latitude;
+        double longitude = marker.getPosition().longitude;
+        suggestedLocations.clear();
+        suggestedLocations.addAll(loadNearByPlaces(latitude, longitude));
+        suggestionsAdapter.notifyDataSetChanged();
+    }
+
+    /** Calls Place Search API and gets data through Http request to get Places in the proximity to the location*/
+    private List<JSONObject> loadNearByPlaces(double latitude, double longitude) {
+        HttpURLConnection httpURLConnection = null;
+        StringBuilder jsonResults = new StringBuilder();
+        List<JSONObject> placeSuggestions = null;
+
+        //get the data
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=").append(latitude).append(",").append(longitude);
+        //change the radius for the search
+        googlePlacesUrl.append("&radius=").append(1500);
+        googlePlacesUrl.append("&types=").append("tourist_attraction");
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key=" + BuildConfig.GOOGLE_API_KEY);
+
+        try {
+            //Make a new URL and
+            URL placeApiURL = new URL(googlePlacesUrl.toString());
+            httpURLConnection = (HttpURLConnection) placeApiURL.openConnection();
+            InputStreamReader reader = new InputStreamReader(httpURLConnection.getInputStream());
+            int read;
+            char[] buffer = new char[1050];
+            while((read = reader.read(buffer)) != -1){
+                jsonResults.append(buffer, 0, read);
+            }
+            JSONObject jsonObject = new JSONObject(jsonResults.toString());
+            JSONArray resultsJsonArray = jsonObject.getJSONArray("results");
+            placeSuggestions = new ArrayList<>();
+            for (int i = 0; i < resultsJsonArray.length(); i ++){
+                JSONObject suggestion = resultsJsonArray.getJSONObject(i);
+                placeSuggestions.add(suggestion);
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+        }
+        return placeSuggestions;
+    }
+
+    /** Adds all the clicked suggested locations to the trip. Uses a GooglePlaceRequest to get place object from PlaceID
+     * uses Parse to add to the database*/
+    public void addLocationsToTrip() {
+        for (int i = 0; i < addedLocations.size(); i ++){
+            //for each location get the location's details
+            List<Place.Field> placeFields = new ArrayList<>();
+            placeFields.add(Place.Field.ID);
+            placeFields.add(Place.Field.NAME);
+            placeFields.add(Place.Field.LAT_LNG);
+            placeFields.add(Place.Field.ADDRESS);
+            placeFields.add(Place.Field.PHOTO_METADATAS);
+            placeFields.add(Place.Field.OPENING_HOURS);
+            placeFields.add(Place.Field.PHONE_NUMBER);
+            placeFields.add(Place.Field.WEBSITE_URI);
+
+            try {
+                String placeID = addedLocations.get(i).getString("place_id");
+
+                // Create a FetchPhotoRequest.
+                final FetchPlaceRequest placeRequest = FetchPlaceRequest.builder(placeID, placeFields).build();
+                //request the Place object
+                placesClient.fetchPlace(placeRequest).addOnSuccessListener((fetchPlaceResponse) -> {
+                    Place place = fetchPlaceResponse.getPlace();
+                    addPlaceToTrip(place);
+
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -60,11 +60,12 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     private void render(Marker marker, View view) {
         ImageView ivPlacePhoto = view.findViewById(R.id.ivPlacePhoto);
         getLocationImage(marker.getTitle());
-        Glide.with(context)
-                .load(locationImage.getUrl())
-                .centerCrop()
-                .into(ivPlacePhoto);
-
+        if (locationImage != null){
+            Glide.with(context)
+                    .load(locationImage.getUrl())
+                    .centerCrop()
+                    .into(ivPlacePhoto);
+        }
         String title = marker.getTitle();
         TextView tvLocationName = ((TextView) view.findViewById(R.id.tvLocationName));
         if (title != null) {
