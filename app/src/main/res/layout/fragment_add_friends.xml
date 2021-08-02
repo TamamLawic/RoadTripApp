@@ -53,6 +53,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/oswald_light"
         android:text="Collaborators: "
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 </RelativeLayout>

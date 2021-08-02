@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp">
+
     <TextView
         android:id="@+id/tvTripNameProfile"
         android:layout_width="wrap_content"
@@ -14,6 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="9dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/oswald_light"
         android:text="New Trip"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -48,8 +50,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="47dp"
+        android:layout_marginTop="45dp"
         android:layout_toEndOf="@+id/ivStopsIconTrip"
+        android:fontFamily="@font/oswald_light"
         android:text="0" />
 
     <ImageView
@@ -68,8 +71,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvStopsTrip"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="13dp"
         android:layout_toEndOf="@+id/imageViewTrip"
+        android:fontFamily="@font/oswald_light"
         android:text="0" />
 
     <ImageView
@@ -88,8 +92,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvDurationTrip"
         android:layout_marginStart="5dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="12dp"
         android:layout_toEndOf="@+id/imageView2Trip"
+        android:fontFamily="@font/oswald_light"
         android:text="0" />
 
 </RelativeLayout>

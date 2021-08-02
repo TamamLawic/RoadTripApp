@@ -24,6 +24,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="32dp"
         android:layout_toEndOf="@+id/ivPlaceImage"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="16sp" />
@@ -36,6 +37,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/ivPlaceImage"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView"
         android:textSize="12sp" />
 </RelativeLayout>

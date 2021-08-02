@@ -16,6 +16,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+        android:fontFamily="@font/oswald_light"
         android:hint="Phone number, username, or email"
         android:outlineProvider="bounds"
         android:textSize="14sp" />
@@ -30,6 +31,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="20dp"
+        android:fontFamily="@font/oswald_light"
         android:hint="password"
         android:inputType="textPassword"
         android:textSize="14sp" />
@@ -45,6 +47,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="#5C639F"
+        android:fontFamily="@font/oswald_light"
         android:text="Log In"
         android:textColor="@color/black" />
 
@@ -65,6 +68,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="110dp"
         android:layout_marginTop="30dp"
+        android:fontFamily="@font/oswald_light"
         android:text="Don't have an account?" />
 
     <Button
@@ -78,6 +82,7 @@
         android:layout_marginEnd="0dp"
         android:layout_toEndOf="@+id/textView7"
         android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/oswald_light"
         android:shadowColor="#FFFFFF"
         android:text="Sign Up"
         android:textColor="#FF5C639F" />

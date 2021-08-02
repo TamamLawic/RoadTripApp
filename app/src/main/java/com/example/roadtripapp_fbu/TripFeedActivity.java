@@ -25,6 +25,7 @@ import com.example.roadtripapp_fbu.Adapters.TripFeedAdapter;
 import com.example.roadtripapp_fbu.Fragments.AddFriendsFragment;
 import com.example.roadtripapp_fbu.Fragments.EditTripNameFragment;
 import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
+import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.FeedObjects;
 import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Post;
@@ -37,6 +38,9 @@ import com.parse.ParseUser;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -51,6 +55,7 @@ public class TripFeedActivity extends AppCompatActivity {
     List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
     public static Trip selectedTrip;
+    int ready = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,9 +154,13 @@ public class TripFeedActivity extends AppCompatActivity {
                     return;
                 }
                 else {
-                    // save received posts to list and notify adapter of new data
+                    // save received posts to list and check if the Journals have loaded
                     feedObjects.addAll(posts);
-                    adapter.notifyDataSetChanged();
+                    ready += 1;
+                    //if both the posts and journals have loaded, sort them by created at date
+                    if (ready == 2) {
+                        sortFeedObjects();
+                    }
                 }
             }
         });
@@ -173,9 +182,13 @@ public class TripFeedActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<JournalEntry>() {
             @Override
             public void done(List<JournalEntry> journals, ParseException e) {
-                // save received posts to list and notify adapter of new data
+                // save received posts to list and check if the posts have also loaded
                 feedObjects.addAll(journals);
-                adapter.notifyDataSetChanged();
+                ready += 1;
+                //If both posts and journals have loaded, sort them based on created date
+                if (ready == 2){
+                    sortFeedObjects();
+                }
             }
         });
     }
@@ -206,5 +219,42 @@ public class TripFeedActivity extends AppCompatActivity {
             rvTripPosts.smoothScrollToPosition(0);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * When both the posts and the journals have loaded, sort them before sending to the adapter class.
+     */
+    private void sortFeedObjects() {
+        Collections.sort(feedObjects, new Comparator<FeedObjects>() {
+            @Override
+            public int compare(FeedObjects o1, FeedObjects o2) {
+                Date date1 = null;
+                Date date2 = null;
+                if (o1.getType() == 101){
+                    JournalEntry journal = (JournalEntry) o1;
+                    date1 = journal.getCreatedAt();
+                }
+                else if (o1.getType() == 102) {
+                    Post post = (Post) o1;
+                    date1 = post.getCreatedAt();
+                }
+
+                if (o2.getType() == 101){
+                    JournalEntry journal = (JournalEntry) o2;
+                    date2 = journal.getCreatedAt();
+                }
+                else if (o2.getType() == 102) {
+                    Post post = (Post) o2;
+                    date2 = post.getCreatedAt();
+                }
+                return date2.compareTo(date1);
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                return false;
+            }
+        });
+        adapter.notifyDataSetChanged();
     }
 }

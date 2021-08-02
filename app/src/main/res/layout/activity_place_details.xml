@@ -27,6 +27,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginBottom="0dp"
         android:background="#46000000"
+        android:fontFamily="@font/oswald_light"
         android:text="Massachusetts Institute of Technology"
         android:textColor="@color/white"
         android:textSize="24sp" />
@@ -48,7 +49,7 @@
         android:layout_below="@+id/tvOpeningHours"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
         app:srcCompat="@drawable/outline_location_on_24" />
 
     <ImageView
@@ -58,10 +59,9 @@
         android:layout_below="@+id/imageView5"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:background="#A5A2A2"
+        android:layout_marginTop="15dp"
         android:backgroundTintMode="src_in"
-        app:srcCompat="@android:drawable/stat_sys_phone_call" />
+        app:srcCompat="@drawable/outline_call_24" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -81,6 +81,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/imageView4"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView" />
 
     <TextView
@@ -91,6 +92,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView" />
 
     <TextView
@@ -101,6 +103,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView" />
 
     <TextView
@@ -111,6 +114,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView" />
 
     <Button
@@ -121,6 +125,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/oswald_light"
         android:text="+ Bucketlist"
         android:textColor="@color/white" />
 

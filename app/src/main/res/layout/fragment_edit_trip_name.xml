@@ -6,10 +6,12 @@
     android:id="@+id/editTripName"
     android:layout_width="wrap_content" android:layout_height="wrap_content"
     android:layout_gravity="center" android:orientation="vertical"  >
+
     <TextView
         android:id="@+id/tvTripName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/oswald_light"
         android:text="Trip Name:"
         android:textSize="20sp" />
     <TableRow

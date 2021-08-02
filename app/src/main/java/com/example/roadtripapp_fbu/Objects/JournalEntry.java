@@ -4,6 +4,8 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.Date;
+
 /**
  * Parse class, setting up JournalEntry
  */
@@ -13,7 +15,6 @@ public class JournalEntry extends ParseObject implements FeedObjects {
     public static final String KEY_TRIP = "tripId";
     public static final String KEY_USER = "author";
     public static final String KEY_TITLE = "title";
-
 
     //Getters and setters for the Parse Post Object
     //returns journal entry's description

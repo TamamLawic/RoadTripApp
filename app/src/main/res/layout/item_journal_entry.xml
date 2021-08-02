@@ -18,8 +18,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
-        android:textSize="20sp"
+        android:fontFamily="@font/oswald_light"
         android:textColor="@color/material_on_surface_emphasis_medium"
+        android:textSize="20sp"
         tools:text="Title" />
 
     <TextView
@@ -34,7 +35,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/caveat"
         android:textColor="@color/material_on_surface_emphasis_medium"
+        android:textSize="20sp"
         tools:text="look at this" />
 
     <TextView
@@ -48,6 +51,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/oswald_light"
         android:textColor="@color/material_on_background_disabled"
         android:textSize="9sp"
         tools:text="8 min ago" />

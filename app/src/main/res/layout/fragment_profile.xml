@@ -17,6 +17,7 @@
         android:layout_marginEnd="298dp"
         android:layout_marginBottom="0dp"
         android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/oswald_light"
         android:text="New Trip"
         android:textColor="@color/black" />
 
@@ -53,6 +54,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="176dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/oswald_light"
         android:text="Sophie"
         android:textSize="20sp" />
 

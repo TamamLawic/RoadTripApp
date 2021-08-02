@@ -19,7 +19,9 @@
         android:layout_marginStart="7dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="9dp"
-        android:hint="Caption..." />
+        android:fontFamily="@font/caveat"
+        android:hint="Caption..."
+        android:textSize="20dp" />
 
     <ImageButton
         android:id="@+id/btnPostUpdate"
@@ -77,11 +79,12 @@
         android:layout_marginStart="1dp"
         android:layout_marginTop="25dp"
         android:backgroundTint="#FFFFFF"
+        android:fontFamily="@font/caveat"
         android:text="New Post"
         android:textAlignment="textStart"
         android:textAllCaps="false"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="normal" />
 
     <Spinner

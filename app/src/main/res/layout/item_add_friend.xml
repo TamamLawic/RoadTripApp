@@ -27,6 +27,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/ivProfileImageAdd"
+        android:fontFamily="@font/oswald_light"
         android:text="TextView"
         android:textColor="@color/black"
         android:textSize="16sp" />

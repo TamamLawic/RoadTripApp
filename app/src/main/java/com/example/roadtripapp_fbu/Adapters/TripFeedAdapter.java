@@ -41,7 +41,6 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
         private TextView tvTime;
         private ImageView ivProfile;
         TextView tvTripNamePost;
-        Trip trip;
 
         /** View Holder for the Post Objects*/
         public PostViewHolder(View itemView) {
