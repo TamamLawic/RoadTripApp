@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaSync;
+import android.nfc.Tag;
 import android.os.Handler;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -27,6 +28,8 @@ import com.example.roadtripapp_fbu.R;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseFile;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -68,10 +71,22 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
         ImageView ivPlacePhoto = view.findViewById(R.id.ivPlacePhoto);
         getLocationImage(marker.getTitle());
         if (locationImage != null){
-            Glide.with(context)
+            Picasso.with(context)
                     .load(locationImage.getUrl())
+                    .resize(420,420)
                     .centerCrop()
-                    .into(ivPlacePhoto);
+                    .into(ivPlacePhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            //reloads the image in to the window when ready
+                            if (marker.getTag() == null) {
+                                marker.setTag("setImage");
+                                marker.showInfoWindow();
+                            }
+                        }
+                        @Override
+                        public void onError() {}
+                    });
         }
         String title = marker.getTitle();
         TextView tvLocationName = ((TextView) view.findViewById(R.id.tvLocationName));

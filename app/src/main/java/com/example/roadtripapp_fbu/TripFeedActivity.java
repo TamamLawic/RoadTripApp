@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.app.SearchManager;
 import android.content.Context;
@@ -40,7 +41,7 @@ import java.util.List;
 
 /**
  * Displays the Feed for the current trip you have selected from Profile feed.
- * Sets onclick listener to start NewPost Actvity.
+ * Sets onclick listener to start NewPost Activity.
  */
 public class TripFeedActivity extends AppCompatActivity {
     public static final String TAG = "TripFeedActivity";
@@ -71,6 +72,7 @@ public class TripFeedActivity extends AppCompatActivity {
         rvTripPosts.setAdapter(adapter);
         rvTripPosts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         // set the layout manager on the recycler view
+        //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTripPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
@@ -127,24 +129,16 @@ public class TripFeedActivity extends AppCompatActivity {
         dialog.show(fm, "NEW ADD FRIENDS");
     }
 
-
-
     /** Begins a Parse Query in a background thread, getting all posts for this trip. */
     /**The posts are added to a list, and the adapter is notified of the data change.*/
     protected void queryPosts() {
         // specify what type of data we want to query - Post.class
         ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
-        // include data referred by user key
         query.include(Post.KEY_USER);
-        // include data referred by trip
         query.include(Post.KEY_TRIP);
-        // include data referred by location
         query.include(Post.KEY_LOCATION);
-        //only show the trip was selected
         query.whereEqualTo("tripId", selectedTrip);
-        // limit query to latest 20 items
         query.setLimit(20);
-        // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");
         // start an asynchronous call for posts
         query.findInBackground(new FindCallback<Post>() {
@@ -168,15 +162,10 @@ public class TripFeedActivity extends AppCompatActivity {
     protected void queryJournals() {
         // specify what type of data we want to query - Post.class
         ParseQuery<JournalEntry> query = ParseQuery.getQuery(JournalEntry.class);
-        // include data referred by user key
         query.include(JournalEntry.KEY_USER);
-        // include data referred by user key
         query.include(JournalEntry.KEY_TRIP);
-        //only show the trip was selected
         query.whereEqualTo(JournalEntry.KEY_USER, ParseUser.getCurrentUser());
-        //only show the trip was selected
         query.whereEqualTo(JournalEntry.KEY_TRIP, selectedTrip);
-        // limit query to latest 20 items
         query.setLimit(20);
         // order posts by creation date (newest first)
         query.addDescendingOrder("createdAt");

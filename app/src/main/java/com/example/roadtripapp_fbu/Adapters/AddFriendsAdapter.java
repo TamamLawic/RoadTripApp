@@ -23,18 +23,19 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 /**
  * Adapter class for AddFriendsFragment. Shows basic profile information for all users to add to trip collaborators.
  */
 public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.ViewHolder> implements Filterable {
-    List<ParseUser> users;
-    List<ParseUser> allUsers;
     Context context;
+    private final List<ParseUser> userList;
+    private FindUserFilter userFilter;
 
     public AddFriendsAdapter(Context context, List<ParseUser> users) {
         this.context = context;
-        this.users = users;
+        this.userList = users;
     }
 
     @Override
@@ -45,46 +46,63 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull AddFriendsAdapter.ViewHolder holder, int position) {
-        ParseUser user = users.get(position);
+        ParseUser user = userList.get(position);
         holder.bind(user);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return userList.size();
     }
 
     @Override
     public Filter getFilter() {
-        return filter;
+        if(userFilter == null)
+            userFilter = new FindUserFilter(this, userList);
+        return userFilter;
     }
 
-    private Filter filter = new Filter() {
+    /** Filterable, that returns all of the users that start with the string typed in*/
+    private static class FindUserFilter extends Filter {
+        private final AddFriendsAdapter adapter;
+        private final List<ParseUser> originalList;
+        private final List<ParseUser> filteredList;
+
+        private FindUserFilter(AddFriendsAdapter adapter, List<ParseUser> originalList) {
+            super();
+            this.adapter = adapter;
+            this.originalList = new LinkedList<>(originalList);
+            this.filteredList = new ArrayList<>();
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            allUsers = new ArrayList<>(users);
-            List<ParseUser> newUsersFiltered = new ArrayList<>();
-            if (constraint == null || constraint.length() == 0){
-                newUsersFiltered.addAll(allUsers);
-            }
-            else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-                for (ParseUser user : allUsers) {
-                    if (user.getUsername().toLowerCase().contains(filterPattern)){
-                        newUsersFiltered.add(user);
+            filteredList.clear();
+            final FilterResults results = new FilterResults();
+
+            if (constraint.length() == 0) {
+                filteredList.addAll(originalList);
+            } else {
+                final String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (final ParseUser user : originalList) {
+                    if (user.getUsername().toLowerCase().startsWith(filterPattern)) {
+                        filteredList.add(user);
                     }
                 }
             }
-            FilterResults results = new FilterResults();
-            results.values = newUsersFiltered;
+            results.values = filteredList;
+            results.count = filteredList.size();
             return results;
         }
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            notifyDataSetChanged();
+            adapter.userList.clear();
+            adapter.userList.addAll((ArrayList<ParseUser>) results.values);
+            adapter.notifyDataSetChanged();
         }
-    };
+    }
 
     /** Sets up view for adding friends, also sets onclick listener for adding friend*/
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -102,10 +120,10 @@ public class AddFriendsAdapter extends RecyclerView.Adapter<AddFriendsAdapter.Vi
                 public void onClick(View v) {
                     //When the user is clicked, add them to the trip collaborators
                     Collaborator collaborator = new Collaborator();
-                    collaborator.setUser(users.get(getAdapterPosition()));
+                    collaborator.setUser(userList.get(getAdapterPosition()));
                     collaborator.setTrip(TripFeedActivity.selectedTrip);
                     collaborator.saveInBackground();
-                    Toast.makeText(itemView.getContext(), "Added to trip : ".concat(users.get(getAdapterPosition()).getUsername()), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(itemView.getContext(), "Added to trip : ".concat(userList.get(getAdapterPosition()).getUsername()), Toast.LENGTH_SHORT).show();
                 }
             });
         }

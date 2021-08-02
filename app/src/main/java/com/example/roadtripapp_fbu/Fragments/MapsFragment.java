@@ -135,7 +135,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         public void onMapReady(GoogleMap googleMap) {
             //when the map is ready, add the markers for the current trip
             tripMap = googleMap;
-            // info window.
             tripMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(getContext(), MapsFragment.this));
             locations.addAll(Location.getTripLocations(currentTrip));
             adapter.notifyDataSetChanged();
@@ -206,9 +205,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_maps, container, false);
         setHasOptionsMenu(true);
         return v;
@@ -262,8 +259,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         //Set up Slide Listener for pull up view
         slidingPane.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
-            public void onPanelSlide(View panel, float slideOffset) {
-            }
+            public void onPanelSlide(View panel, float slideOffset) {}
 
             @Override
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
