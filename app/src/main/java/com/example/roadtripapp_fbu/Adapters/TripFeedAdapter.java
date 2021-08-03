@@ -16,6 +16,7 @@ import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.fivehundredpx.greedolayout.GreedoLayoutSizeCalculator;
 import com.parse.ParseFile;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 /** Adapter for the TripFeedActivity, binds selected Trip's posts and Journal Entries into the recycler view, using Glide for images. */
-public class TripFeedAdapter extends RecyclerView.Adapter {
+public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
     public static final String KEY_PROFILE = "profilePic";
     private List<FeedObjects> feedObjects;
     Context context;
@@ -31,6 +32,19 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
     public TripFeedAdapter(Context context, List<FeedObjects> feedObjects) {
         this.context = context;
         this.feedObjects = feedObjects;
+    }
+
+    @Override
+    public double aspectRatioForIndex(int i) {
+        if (i >= feedObjects.size()){
+            return .8;
+        }
+        if (feedObjects.get(i).getType() == 101) {
+            return 1.7;
+        }
+        else {
+            return .948;
+        }
     }
 
     /** Separate ViewHolder and Binder for the Post Objects*/
@@ -63,7 +77,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
                 tvTripNamePost.setText(post.getLocation().getString("locationName"));
             }
             else {
-                tvTripNamePost.setText(post.getTripId().getString("tripName"));
+                tvTripNamePost.setVisibility(View.INVISIBLE);
             }
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
@@ -83,7 +97,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter {
             }
         }
     }
-    /** Seperate View Holder for the Journal Objects in the TripFeed*/
+    /** Separate View Holder for the Journal Objects in the TripFeed*/
     class JournalViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
         TextView tvCaption;

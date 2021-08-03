@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     TextView tvOpeningHours;
     TextView tvPhoneNumber;
     TextView tvWebsite;
+    ImageButton btnBackDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         tvOpeningHours = findViewById(R.id.tvOpeningHours);
         tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
         tvWebsite = findViewById(R.id.tvWebsite);
+        btnBackDetails = findViewById(R.id.btnBackDetails);
 
         //when created get the place that was clicked, and use parcel to unwrap
         selectedLocation = (Location) Parcels
@@ -77,6 +80,14 @@ public class PlaceDetailsActivity extends AppCompatActivity {
                         }
                     }
                 });
+            }
+        });
+
+        //set up back button for details page
+        btnBackDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

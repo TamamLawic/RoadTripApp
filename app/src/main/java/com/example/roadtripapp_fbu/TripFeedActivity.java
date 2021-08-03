@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.icu.util.MeasureUnit;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
@@ -35,6 +36,8 @@ import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.fivehundredpx.greedolayout.GreedoLayoutManager;
+import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -71,7 +74,6 @@ public class TripFeedActivity extends AppCompatActivity {
     TextView tvTripNameFeed;
     ImageButton btnBackTrip;
     ImageView ivTripImageFeed;
-
     List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
     public static Trip selectedTrip;

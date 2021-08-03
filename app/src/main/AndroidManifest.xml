@@ -37,7 +37,8 @@
         <activity android:name=".NewPostActivity"
             android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
         <activity android:name=".MainActivity" />
-        <activity android:name=".UserProfileActivity" />
+        <activity android:name=".UserProfileActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
 
         <provider
             android:name="androidx.core.content.FileProvider"

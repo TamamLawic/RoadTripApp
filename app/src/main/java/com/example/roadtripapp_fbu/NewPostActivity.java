@@ -58,6 +58,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
     ImageButton btnTakePicture;
     ImageButton btnPostUpdate;
     ImageButton btnSelectPhoto;
+    ImageButton btnBackPost;
     File photoFile;
     Trip clicked_trip;
     Location postLocation;
@@ -74,6 +75,7 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
         btnPostUpdate = findViewById(R.id.btnPostUpdate);
         btnSelectPhoto = findViewById(R.id.btnSelectPhoto);
         spinnerLocation = findViewById(R.id.spinnerLocation);
+        btnBackPost = findViewById(R.id.btnBackPost);
 
         //use Parcels to unwrap trip selected
         //unwrap post's data from the pass
@@ -108,6 +110,14 @@ public class NewPostActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View v) {
                 imageChooser();
+            }
+        });
+
+        //set back button listener
+        btnBackPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
 

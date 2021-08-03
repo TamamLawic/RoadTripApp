@@ -23,6 +23,7 @@ public class NewJournalActivity extends AppCompatActivity {
     EditText etJournal;
     ImageButton btnPostJournal;
     Trip clicked_trip;
+    ImageButton btnBackJournal;
 
     /** Sets up on click listeners for buttons to take photo and post update **/
     @Override
@@ -33,6 +34,7 @@ public class NewJournalActivity extends AppCompatActivity {
         etJournal = findViewById(R.id.etJournal);
         etTitle = findViewById(R.id.etTitle);
         btnPostJournal = findViewById(R.id.btnPostJournal);
+        btnBackJournal = findViewById(R.id.btnBackJournal);
 
         //use Parcels to unwrap trip selected
         //unwrap post's data from the pass
@@ -55,6 +57,14 @@ public class NewJournalActivity extends AppCompatActivity {
                     return;
                 }
                 savePost(text, title);
+            }
+        });
+
+        //set back button for posting a journal
+        btnBackJournal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }
