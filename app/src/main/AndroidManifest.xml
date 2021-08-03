@@ -28,10 +28,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadTripAppFBU">
         <activity android:name=".ShowTripActivity"></activity>
-        <activity android:name=".TripFeedActivity" />
-        <activity android:name=".PlaceDetailsActivity" />
-        <activity android:name=".NewJournalActivity" />
-        <activity android:name=".NewPostActivity" />
+        <activity android:name=".TripFeedActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
+        <activity android:name=".PlaceDetailsActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
+        <activity android:name=".NewJournalActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
+        <activity android:name=".NewPostActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
         <activity android:name=".MainActivity" />
         <activity android:name=".UserProfileActivity" />
 

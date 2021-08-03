@@ -9,29 +9,36 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.Image;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SearchView;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.roadtripapp_fbu.Adapters.TripFeedAdapter;
 import com.example.roadtripapp_fbu.Fragments.AddFriendsFragment;
-import com.example.roadtripapp_fbu.Fragments.EditTripNameFragment;
-import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
 import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.FeedObjects;
 import com.example.roadtripapp_fbu.Objects.JournalEntry;
+import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -43,6 +50,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
+import static androidx.core.app.FrameMetricsAggregator.DELAY_DURATION;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
+
 /**
  * Displays the Feed for the current trip you have selected from Profile feed.
  * Sets onclick listener to start NewPost Activity.
@@ -52,6 +64,14 @@ public class TripFeedActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_POST = 20;
     public static final int REQUEST_CODE_JOURNAL = 40;
     RecyclerView rvTripPosts;
+    FloatingActionButton fabAdd;
+    FloatingActionButton fabAddJournal;
+    FloatingActionButton fabAddPost;
+    FloatingActionButton fabAddCollaborators;
+    TextView tvTripNameFeed;
+    ImageButton btnBackTrip;
+    ImageView ivTripImageFeed;
+
     List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
     public static Trip selectedTrip;
@@ -63,68 +83,107 @@ public class TripFeedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_trip_feed);
 
         //use Parcels to unwrap trip selected
-        //unwrap post's data from the pass
         selectedTrip = (Trip) Parcels
                 .unwrap(getIntent()
                         .getParcelableExtra(Trip.class.getSimpleName()));
 
+        //set up recycler view for list of posts
         rvTripPosts = findViewById(R.id.rvPosts);
-        //Set up the adapter for the trip recycler view
         feedObjects = new ArrayList<>();
-        //create the adapter
         adapter = new TripFeedAdapter(this, feedObjects);
-        //set the adapter on the recycler view
         rvTripPosts.setAdapter(adapter);
         rvTripPosts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        // set the layout manager on the recycler view
-        //StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvTripPosts.setLayoutManager(layoutManager);
         // query posts from Instagram App
         queryPosts();
         queryJournals();
+
+        //set up floating action buttons
+        setUpFloatingActionButtons();
+
+        tvTripNameFeed = findViewById(R.id.tvTripNameFeed);
+        tvTripNameFeed.setText(selectedTrip.getTripName());
+        ivTripImageFeed = findViewById(R.id.ivTripOverviewImage);
+        List<Location> locations = Location.getTripLocations(selectedTrip);
+        ParseFile lastImage = locations.get(locations.size() - 2).getImage();
+        setBlurImageToBackground(this, lastImage, ivTripImageFeed);
+
+        //set up Back Button
+        btnBackTrip = findViewById(R.id.btnBackTrip);
+        btnBackTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
+
+    private void setUpFloatingActionButtons() {
+        fabAdd = findViewById(R.id.fabAdd);
+        fabAddJournal = findViewById(R.id.fabAddJournal);
+        fabAddPost = findViewById(R.id.fabAddPost);
+        fabAddCollaborators = findViewById(R.id.fabAddCollaborators);
+
+        //show all of the buttons when the add button is clicked
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fabAddCollaborators.getVisibility() == View.VISIBLE){
+                    fabAddCollaborators.setVisibility(View.INVISIBLE);
+                    fabAddJournal.setVisibility(View.INVISIBLE);
+                    fabAddPost.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    fabAddCollaborators.setVisibility(View.VISIBLE);
+                    fabAddJournal.setVisibility(View.VISIBLE);
+                    fabAddPost.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        //when add journal is clicked, show journal
+        fabAddJournal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //NewJournal icon is tapped, start new post activity
+                Intent i = new Intent(TripFeedActivity.this, NewJournalActivity.class);
+                // serialize the post using parceler, use its short name as a key
+                i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
+                //startActivity(i);
+                startActivityForResult(i, REQUEST_CODE_JOURNAL);
+            }
+        });
+
+        //when add post is clicked, launch on new post
+        fabAddPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //NewPost icon is tapped, start new post activity
+                Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
+                // serialize the post using parceler, use its short name as a key
+                i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
+                //startActivity(i);
+                startActivityForResult(i, REQUEST_CODE_POST);
+            }
+        });
+
+        fabAddCollaborators.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddFriendsDialogue();
+            }
+        });
+
     }
 
     /** Inflates the menu for trip feed, and sets up for a search view to add friends*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_trip_feed, menu);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(selectedTrip.getTripName());
         return true;
-    }
-
-    /**
-     * When the Delete button is clicked, delete the current trip. When the new post is selected, start intent to NewPostActivity
-     */
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //if the selected menu item is new post, take to new post activity
-        if (item.getItemId() == R.id.itemNewPost){
-            //NewPost icon is tapped, start new post activity
-            Intent i = new Intent(TripFeedActivity.this, NewPostActivity.class);
-            // serialize the post using parceler, use its short name as a key
-            i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
-            //startActivity(i);
-            startActivityForResult(i, REQUEST_CODE_POST);
-            return true;
-        }
-        //if the New Journal Entry Button is selected, take to journal entry activity
-        if (item.getItemId() == R.id.itemNewJournal){
-            //NewPost icon is tapped, start new post activity
-            Intent i = new Intent(TripFeedActivity.this, NewJournalActivity.class);
-            // serialize the post using parceler, use its short name as a key
-            i.putExtra(Trip.class.getSimpleName(), Parcels.wrap(selectedTrip));
-            //startActivity(i);
-            startActivityForResult(i, REQUEST_CODE_JOURNAL);
-            return true;
-        }
-        //if add user is selected, start dialogue to find friends to add
-        if (item.getItemId() == R.id.itemAddFriend) {
-            showAddFriendsDialogue();
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // Call this method to launch the edit dialog
@@ -256,5 +315,19 @@ public class TripFeedActivity extends AppCompatActivity {
             }
         });
         adapter.notifyDataSetChanged();
+    }
+
+
+    public static void setBlurImageToBackground(final Context context, final ParseFile path, final ImageView imageView) {
+        imageView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions = requestOptions.transforms(new CenterCrop(), new BlurTransformation(25));
+                Glide.with(context).load(path.getUrl())
+                        .apply(requestOptions)
+                        .into(imageView);
+            }
+        }, DELAY_DURATION);
     }
 }

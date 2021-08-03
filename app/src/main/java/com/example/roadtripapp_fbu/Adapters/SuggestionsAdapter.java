@@ -2,6 +2,7 @@ package com.example.roadtripapp_fbu.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BlurMaskFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.roadtripapp_fbu.BuildConfig;
 import com.example.roadtripapp_fbu.Objects.Collaborator;
 import com.example.roadtripapp_fbu.Objects.Location;
@@ -38,6 +44,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
+import static androidx.core.app.FrameMetricsAggregator.DELAY_DURATION;
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /** Adapter class for the suggested places recycler view in MapFragment.*/
 public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.ViewHolder> {
@@ -123,7 +134,7 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
             try {
                 //get the data
                 StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/photo?");
-                googlePlacesUrl.append("maxwidth=").append(1600);
+                googlePlacesUrl.append("maxwidth=").append(3000);
                 //change the radius for the search
                 googlePlacesUrl.append("&photoreference=").append(place.getJSONArray("photos").getJSONObject(0).getString("photo_reference"));
                 googlePlacesUrl.append("&types=").append("restaurant");
@@ -138,7 +149,9 @@ public class SuggestionsAdapter extends RecyclerView.Adapter<SuggestionsAdapter.
                             public void onResponse(Bitmap response) {
                                 // Do something with response
                                 placesImages.add(response);
-                                ivSuggestedImage.setImageBitmap(response);
+                                RequestOptions requestOptions = new RequestOptions();
+                                requestOptions = requestOptions.transforms(new CenterCrop(), new RoundedCorners(16));
+                                Glide.with(itemView).asBitmap().apply(requestOptions).load(response).into(ivSuggestedImage);
                             }
                         },
                         0, // Image width

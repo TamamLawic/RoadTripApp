@@ -48,8 +48,6 @@ public class PlaceDetailsActivity extends AppCompatActivity {
                         .getParcelableExtra(Location.class.getSimpleName()));
 
         //put data into fields
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(selectedLocation.getLocationName());
         tvPlaceName.setText(selectedLocation.getLocationName());
         tvPlaceAddress.setText(selectedLocation.getAddress());
         tvOpeningHours.setText(selectedLocation.getHours());

@@ -25,6 +25,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -124,6 +126,10 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     long miles = 0L;
     long duration = 0L;
     int targetLocationLength = 0;
+    double latN = 25; //highest Latitude
+    double lngN = -130; //highest Longitude
+    double latS = 50; //Lowest Latitude
+    double lngS = -70; //lowest Longitude
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction poly lines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -186,6 +192,9 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
             btnResfreshMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //clear the adapter for the recycler view when moving out of the city view
+                    suggestedLocations.clear();
+                    suggestionsAdapter.notifyDataSetChanged();
                     if (addedLocations.size() > 0){
                         //add locations to the current trip
                         targetLocationLength = locations.size() + addedLocations.size();
@@ -193,10 +202,10 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                     }
                     else {
                         LatLngBounds bounds = new LatLngBounds(
-                                new LatLng(25.82, -124.39),
-                                new LatLng(49.38, -66.94)
+                                new LatLng(latS, lngS),
+                                new LatLng(latN, lngN)
                         );
-                        tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
+                        tripMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
                     }
                 }
             });
@@ -243,7 +252,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         autocompleteFragment.setLocationBias(RectangularBounds.newInstance(new LatLng(-33.880490, 151.184364), new LatLng(-33.858754, 151.229596)));
         autocompleteFragment.setCountries("US");
         //specify the types of place data to return
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI));
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS, Place.Field.PHOTO_METADATAS, Place.Field.OPENING_HOURS, Place.Field.PHONE_NUMBER, Place.Field.WEBSITE_URI, Place.Field.VIEWPORT));
         // Set up a PlaceSelectionListener to handle the response.
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
@@ -305,11 +314,11 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
      */
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_maps_fragment, menu);
         //change the title to show the trip you are editing/viewing
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
         actionBar.setTitle(currentTrip.getTripName());
+        inflater.inflate(R.menu.menu_maps_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -506,15 +515,26 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
 
     /** Adds all locations to the current map*/
     private void addAllLocationsMap() {
-        //create bounds for start or map, center around the US
-        LatLngBounds bounds = new LatLngBounds(
-                new LatLng(25.82, -124.39),
-                new LatLng(49.38, -66.94)
-        );
 
         for (int i = 0; i < locations.size(); i++) {
             Location location = locations.get(i);
-            LatLng latLng1 = new LatLng(location.getLatitude().doubleValue(), location.getLongitude().doubleValue());
+            double latLocation = location.getLatitude().doubleValue();
+            double lngLocation = location.getLongitude().doubleValue();
+            // check bounds to find the camera position
+            if (latLocation > latN) {
+                latN = latLocation;
+            }
+            if (latLocation < latS) {
+                latS = latLocation;
+            }
+            if (lngLocation > lngN) {
+                lngN = lngLocation;
+            }
+            if (lngLocation < lngS) {
+                lngS = lngLocation;
+            }
+
+            LatLng latLng1 = new LatLng(latLocation, lngLocation);
             tripMap.addMarker(new MarkerOptions().position(latLng1).title(location.getLocationName()));
 
             //If you have two pins connecting to each other, add polyline
@@ -531,7 +551,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                     duration += results.routes[overview].legs[overview].duration.inSeconds * 0.000277778;
                 }
             }
-            tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(bounds.getCenter(), 3));
             //set the TripDistance and time
             currentTrip.setLength((int) miles);
             currentTrip.setTime((int) duration);
@@ -544,6 +563,14 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                 }
             });
         }
+
+        //create bounds for start or map, center around the US
+        LatLngBounds bounds = new LatLngBounds(
+                new LatLng(latS, lngS),
+                new LatLng(latN, lngN)
+        );
+        tripMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
+
     }
 
     /** Gets all of the suggested places to visit in the proximity of the waypoint selected using HTTP request to nearby search in PlaceAPI*/

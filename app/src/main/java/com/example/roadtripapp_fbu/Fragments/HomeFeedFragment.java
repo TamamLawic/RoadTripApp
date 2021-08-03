@@ -49,6 +49,7 @@ public class HomeFeedFragment extends Fragment {
         // Inflate the layout for this fragment
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         ActionBar actionBar = activity.getSupportActionBar();
+        actionBar.show();
         actionBar.setTitle("Road Trip App");
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
