@@ -10,7 +10,7 @@
     tools:context=".Fragments.ProfileFragment"
     android:gravity="bottom"
     sothree:umanoPanelHeight="70dp"
-    sothree:umanoShadowHeight="4dp">>
+    sothree:umanoShadowHeight="4dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -65,6 +65,16 @@
             android:background="@drawable/outline_published_with_changes_24"
             android:backgroundTint="#FF9800" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.DeviceDefault.ProgressBar.Large"
+            android:layout_width="112dp"
+            android:layout_height="140dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="227dp"
+            android:layout_marginEnd="139dp" />
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -86,7 +96,7 @@
             android:background="@drawable/outline_location_on_24" />
 
         <TextView
-            android:id="@+id/tvStopsDetails"
+            android:id="@+id/tvStopsFeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -102,11 +112,11 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/tvStopsDetails"
+            android:layout_toEndOf="@+id/tvStopsFeed"
             app:srcCompat="@drawable/outline_watch_later_24" />
 
         <TextView
-            android:id="@+id/tvDurationDetails"
+            android:id="@+id/tvDurationFeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -122,11 +132,11 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="40dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@+id/tvDurationDetails"
+            android:layout_toEndOf="@+id/tvDurationFeed"
             app:srcCompat="@drawable/outline_directions_car_filled_24" />
 
         <TextView
-            android:id="@+id/tvMilesDetails"
+            android:id="@+id/tvMilesFeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"

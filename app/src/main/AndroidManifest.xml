@@ -22,23 +22,29 @@
     <application
         android:name=".ParseApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/outline_directions_car_filled_24"
         android:label="Road Trip Planner"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/outline_directions_car_filled_24"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadTripAppFBU">
-        <activity android:name=".ShowTripActivity"></activity>
-        <activity android:name=".TripFeedActivity"
-            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
-        <activity android:name=".PlaceDetailsActivity"
-            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
-        <activity android:name=".NewJournalActivity"
-            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
-        <activity android:name=".NewPostActivity"
-            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
+        <activity android:name=".CreateAccountActivity"></activity>
+        <activity android:name=".ShowTripActivity" />
+        <activity
+            android:name=".TripFeedActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar" />
+        <activity
+            android:name=".PlaceDetailsActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar" />
+        <activity
+            android:name=".NewJournalActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar" />
+        <activity
+            android:name=".NewPostActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".UserProfileActivity"
-            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
+        <activity
+            android:name=".UserProfileActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -75,14 +81,13 @@
 
         <activity
             android:name=".LoginActivity"
-            android:label="@string/title_activity_login">
+            android:label="TripIt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

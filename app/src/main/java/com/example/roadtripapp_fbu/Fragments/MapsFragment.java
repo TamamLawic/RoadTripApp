@@ -1,8 +1,6 @@
 package com.example.roadtripapp_fbu.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -18,21 +16,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.toolbox.ImageRequest;
 import com.example.roadtripapp_fbu.Adapters.CustomInfoWindowAdapter;
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
 import com.example.roadtripapp_fbu.Adapters.SuggestionsAdapter;
@@ -43,9 +37,7 @@ import com.example.roadtripapp_fbu.NewPostActivity;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -57,9 +49,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PointOfInterest;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
 import com.google.android.libraries.places.api.model.PhotoMetadata;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
@@ -130,6 +120,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     double lngN = -130; //highest Longitude
     double latS = 50; //Lowest Latitude
     double lngS = -70; //lowest Longitude
+    ProgressBar progressBar;
 
     /** Loads Current trip data to display the current trip on a map with markers, and direction poly lines connecting*/
     private OnMapReadyCallback callback = new OnMapReadyCallback() {
@@ -211,6 +202,8 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                     }
                 }
             });
+            //get rid of progress bar
+            progressBar.setVisibility(View.INVISIBLE);
         }
     };
 
@@ -226,13 +219,14 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvMiles = view.findViewById(R.id.tvMilesDetails);
-        tvDuration = view.findViewById(R.id.tvDurationDetails);
-        tvStops = view.findViewById(R.id.tvStopsDetails);
+        tvMiles = view.findViewById(R.id.tvMilesFeed);
+        tvDuration = view.findViewById(R.id.tvDurationFeed);
+        tvStops = view.findViewById(R.id.tvStopsFeed);
         rvItinerary = view.findViewById(R.id.rvItinerary);
         rvSuggestedStops = view.findViewById(R.id.rvSuggestedStops);
         slidingPane = view.findViewById(R.id.slidingPaneItinerary);
         btnResfreshMap = view.findViewById(R.id.btnResfreshMap);
+        progressBar = view.findViewById(R.id.progressBar);
 
         //set up map view
         SupportMapFragment mapFragment =
@@ -596,7 +590,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                 new LatLng(latN, lngN)
         );
         tripMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
-
     }
 
     /** Gets all of the suggested places to visit in the proximity of the waypoint selected using HTTP request to nearby search in PlaceAPI*/

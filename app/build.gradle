@@ -73,6 +73,9 @@ dependencies {
     //Greedy layout for recycler view
     implementation 'com.fivehundredpx:greedo-layout:1.5.1'
     implementation 'io.cabriole:decorator:1.2.0'
+    //Lottie Files for animation
+    implementation "com.airbnb.android:lottie:4.0.0"
+
 
 
 

@@ -55,11 +55,11 @@ public class ShowTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_trip);
 
-        tvStopsDetails = findViewById(R.id.tvStopsDetails);
+        tvStopsDetails = findViewById(R.id.tvStopsFeed);
         rvTripDetails = findViewById(R.id.rvTripDetails);
-        tvDurationDetails = findViewById(R.id.tvDurationDetails);
-        tvMilesDetails = findViewById(R.id.tvMilesDetails);
-        tvStopsDetails = findViewById(R.id.tvStopsDetails);
+        tvDurationDetails = findViewById(R.id.tvDurationFeed);
+        tvMilesDetails = findViewById(R.id.tvMilesFeed);
+        tvStopsDetails = findViewById(R.id.tvStopsFeed);
 
         //unwrap trip from Parcel and put data into trip
         //use Parcels to unwrap trip selected

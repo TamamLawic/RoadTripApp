@@ -76,6 +76,10 @@ public class TripFeedActivity extends AppCompatActivity {
     ImageView ivTripImageFeed;
     List<FeedObjects> feedObjects;
     TripFeedAdapter adapter;
+    TextView tvDurationFeed;
+    TextView tvStopsFeed;
+    TextView tvMilesFeed;
+
     public static Trip selectedTrip;
     int ready = 0;
 
@@ -84,13 +88,25 @@ public class TripFeedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_feed);
 
+        btnBackTrip = findViewById(R.id.btnBackTrip);
+        tvTripNameFeed = findViewById(R.id.tvTripNameFeed);
+        ivTripImageFeed = findViewById(R.id.ivTripOverviewImage);
+        rvTripPosts = findViewById(R.id.rvPosts);
+        tvDurationFeed = findViewById(R.id.tvDurationFeed);
+        tvStopsFeed = findViewById(R.id.tvStopsFeed);
+        tvMilesFeed = findViewById(R.id.tvMilesFeed);
+
         //use Parcels to unwrap trip selected
         selectedTrip = (Trip) Parcels
                 .unwrap(getIntent()
                         .getParcelableExtra(Trip.class.getSimpleName()));
 
+        tvMilesFeed.setText(String.valueOf(selectedTrip.getLength()).concat(" Mi"));
+        tvDurationFeed.setText(String.valueOf(selectedTrip.getTime()).concat(" Hr"));
+        List<Location> locations = Location.getTripLocations(selectedTrip);
+        tvStopsFeed.setText(String.valueOf(locations.size()));
+
         //set up recycler view for list of posts
-        rvTripPosts = findViewById(R.id.rvPosts);
         feedObjects = new ArrayList<>();
         adapter = new TripFeedAdapter(this, feedObjects);
         rvTripPosts.setAdapter(adapter);
@@ -104,15 +120,11 @@ public class TripFeedActivity extends AppCompatActivity {
         //set up floating action buttons
         setUpFloatingActionButtons();
 
-        tvTripNameFeed = findViewById(R.id.tvTripNameFeed);
         tvTripNameFeed.setText(selectedTrip.getTripName());
-        ivTripImageFeed = findViewById(R.id.ivTripOverviewImage);
-        List<Location> locations = Location.getTripLocations(selectedTrip);
         ParseFile lastImage = locations.get(locations.size() - 2).getImage();
         setBlurImageToBackground(this, lastImage, ivTripImageFeed);
 
         //set up Back Button
-        btnBackTrip = findViewById(R.id.btnBackTrip);
         btnBackTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

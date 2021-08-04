@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/medium_gray_30"
+    tools:context=".LoginActivity">
+
+    <EditText
+        android:id="@+id/etNewUsername"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivIconLogin"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/oswald_light"
+        android:hint="Phone number, username, or email"
+        android:outlineProvider="bounds"
+        android:textColor="@color/purple"
+        android:textColorHint="@color/purple"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etNewPassword"
+        android:layout_width="380dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/etNewUsername"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/oswald_light"
+        android:hint="password"
+        android:inputType="textPassword"
+        android:textColor="@color/purple"
+        android:textColorHint="@color/purple"
+        android:textSize="14sp" />
+
+    <Button
+        android:id="@+id/btnCreateAccount"
+        android:layout_width="380dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/etNewPassword"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:backgroundTint="@color/purple"
+        android:fontFamily="@font/oswald_light"
+        android:text="Create Account"
+        android:textColor="@color/medium_gray_30" />
+
+    <ImageView
+        android:id="@+id/ivIconLogin"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:background="@drawable/outline_directions_car_filled_24"
+        android:backgroundTint="@color/purple" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnCreateAccount"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="@font/oswald_light"
+        android:text="Already have an account?"
+        android:textColor="@color/purple" />
+
+    <Button
+        android:id="@+id/btnLogIn"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/btnCreateAccount"
+        android:layout_alignParentEnd="false"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toEndOf="@+id/textView7"
+        android:backgroundTint="@color/purple"
+        android:fontFamily="@font/oswald_light"
+        android:shadowColor="#FFFFFF"
+        android:text="Log in"
+        android:textColor="@color/medium_gray_30" />
+
+</RelativeLayout>
