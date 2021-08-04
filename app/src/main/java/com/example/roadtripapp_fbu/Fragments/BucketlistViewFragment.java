@@ -71,6 +71,9 @@ public class BucketlistViewFragment extends Fragment {
     }
 
     private void getLocations(List<BucketListLocation> bucketLocations) {
+        if (bucketLocations == null){
+            return;
+        }
         for (int i = 0; i < bucketLocations.size(); i++) {
             BucketListLocation bucketLocation = bucketLocations.get(i);
             locations.add(bucketLocation.getLocation());

@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -90,7 +93,12 @@ public class ItineraryAdapter extends RecyclerView.Adapter<ItineraryAdapter.View
                 Location location = locations.get(position);
                 Intent intent = new Intent(context, PlaceDetailsActivity.class);
                 intent.putExtra(Location.class.getSimpleName(), Parcels.wrap(location));
-                context.startActivity(intent);
+                //shared element transition data
+                Pair<View, String> p1 = Pair.create((View)tvAddress, "locationName");
+                Pair<View, String> p2 = Pair.create((View)ivPlaceImage, "locationImage");
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity) context, p1, p2);
+                context.startActivity(intent, options.toBundle());
             }
         }
     }

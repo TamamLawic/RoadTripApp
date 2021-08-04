@@ -1,7 +1,9 @@
 package com.example.roadtripapp_fbu.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
+import com.example.roadtripapp_fbu.MainActivity;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
@@ -60,6 +66,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
         TextView tvStopsTrip;
         TextView tvMilesTrip;
         TextView tvDurationTrip;
+        ImageView ivStopsIconTrip;
+        ImageView imageViewTrip;
+        ImageView imageView2Trip;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,6 +77,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
             tvStopsTrip = itemView.findViewById(R.id.tvStopsTrip);
             tvMilesTrip = itemView.findViewById(R.id.tvMilesTrip);
             tvDurationTrip = itemView.findViewById(R.id.tvDurationTrip);
+            ivStopsIconTrip = itemView.findViewById(R.id.ivStopsIconTrip);
+            imageViewTrip = itemView.findViewById(R.id.imageViewTrip);
+            imageView2Trip = itemView.findViewById(R.id.imageView2Trip);
             itemView.setOnClickListener(this);
         }
 
@@ -99,7 +111,16 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 Trip trip = trips.get(position);
                 Intent intent = new Intent(context, TripFeedActivity.class);
                 intent.putExtra(Trip.class.getSimpleName(), Parcels.wrap(trip));
-                context.startActivity(intent);
+                //shared element transition data
+                Pair<View, String> p1 = Pair.create((View)tvTripNameProfile, "tripName");
+                Pair<View, String> p2 = Pair.create((View)ivDestinationTrip, "destination");
+                Pair<View, String> p3 = Pair.create((View)ivStopsIconTrip, "stopIcon");
+                Pair<View, String> p4 = Pair.create((View)imageViewTrip, "timeIcon");
+                Pair<View, String> p5 = Pair.create((View)imageView2Trip, "carIcon");
+
+                ActivityOptionsCompat options = ActivityOptionsCompat.
+                        makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4, p5);
+                context.startActivity(intent, options.toBundle());
             }
         }
     }

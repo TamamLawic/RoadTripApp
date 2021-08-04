@@ -16,6 +16,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="Theme.RoadTripAppFBU_NoActionBar" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -30,5 +31,6 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowContentTransitions">true</item>
     </style>
 </resources>

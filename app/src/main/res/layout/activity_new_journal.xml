@@ -45,6 +45,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/outline_done_24"
+        android:backgroundTint="@color/purple"
         android:text="Post"
         android:textSize="13sp" />
 
