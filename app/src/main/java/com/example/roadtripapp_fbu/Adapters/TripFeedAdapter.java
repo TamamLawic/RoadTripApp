@@ -4,7 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -95,6 +99,12 @@ public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayou
                         .circleCrop()
                         .into(ivProfile);
             }
+            ivImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //show image full screen
+                }
+            });
         }
     }
     /** Separate View Holder for the Journal Objects in the TripFeed*/

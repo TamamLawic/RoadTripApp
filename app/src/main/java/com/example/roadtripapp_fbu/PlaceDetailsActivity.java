@@ -87,7 +87,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         btnBackDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+                supportFinishAfterTransition();
             }
         });
     }

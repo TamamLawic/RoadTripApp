@@ -75,8 +75,4 @@ dependencies {
     implementation 'io.cabriole:decorator:1.2.0'
     //Lottie Files for animation
     implementation "com.airbnb.android:lottie:4.0.0"
-
-
-
-
 }
