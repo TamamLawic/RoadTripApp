@@ -34,6 +34,9 @@ import java.util.List;
 public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
     private Context context;
     private List<Trip> trips;
+    public static int totalMiles = 0;
+    public static int totalStops = 0;
+    public static int totalDuration = 0;
 
     public TripAdapter(Context context, List<Trip> trips) {
         this.context = context;
@@ -88,10 +91,16 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
         public void bind(Trip trip) {
             // Bind the post data to the view elements
             tvTripNameProfile.setText(trip.getTripName());
-            tvMilesTrip.setText(String.valueOf(trip.getLength()).concat(" Mi"));
-            tvDurationTrip.setText(String.valueOf(trip.getTime()).concat(" Hr"));
+            double miles = trip.getLength();
+            totalMiles += miles;
+            tvMilesTrip.setText(String.valueOf(miles).concat(" Mi"));
+            double time = trip.getTime();
+            totalDuration += time;
+            tvDurationTrip.setText(String.valueOf(time).concat(" Hr"));
             List<Location> locations = Location.getTripLocations(trip);
-            tvStopsTrip.setText(String.valueOf(locations.size()));
+            double stops = locations.size();
+            totalStops += stops;
+            tvStopsTrip.setText(String.valueOf(stops));
             if (locations.size() > 0){
                 ParseFile destinationImage = locations.get(locations.size() - 1).getImage();
                 Glide.with(context)
@@ -117,7 +126,6 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 Pair<View, String> p3 = Pair.create((View)ivStopsIconTrip, "stopIcon");
                 Pair<View, String> p4 = Pair.create((View)imageViewTrip, "timeIcon");
                 Pair<View, String> p5 = Pair.create((View)imageView2Trip, "carIcon");
-
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4, p5);
                 context.startActivity(intent, options.toBundle());

@@ -32,6 +32,7 @@ import java.util.List;
 import static com.example.roadtripapp_fbu.TripFeedActivity.selectedTrip;
 
 /**
+ * Trip Fragment for the TabView in tripfeed to show all the posts in the current trip selected
  */
 public class TripFeedFragment extends Fragment {
     RecyclerView rvTripPosts;

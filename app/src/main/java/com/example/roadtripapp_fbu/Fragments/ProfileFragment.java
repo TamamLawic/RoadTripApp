@@ -1,6 +1,7 @@
 package com.example.roadtripapp_fbu.Fragments;
 
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -18,8 +19,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +42,11 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
+
+import static com.example.roadtripapp_fbu.Adapters.TripAdapter.totalStops;
 
 /**
  * Fragment for bottom navigational view. Shows currently logged in User's information.
@@ -52,6 +59,8 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
     ImageView ivProfilePic;
     TextView tvName;
     EditText etTripName;
+    TextView tvStopsProfile;
+    ImageButton btnLogOut;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -77,6 +86,8 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         ivProfilePic = view.findViewById(R.id.ivProfileImage);
         tvName = view.findViewById(R.id.tvName);
         etTripName = view.findViewById(R.id.etTripName);
+        tvStopsProfile = view.findViewById(R.id.tvStopsProfile);
+        btnLogOut = view.findViewById(R.id.btnLogOut);
 
         tvName.setText(ParseUser.getCurrentUser().getUsername());
         //Put profile picture into the ImageView
@@ -103,6 +114,18 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         viewPager.setAdapter(myPagerAdapter);
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
+
+        //setup log out button
+        btnLogOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseUser.logOut();
+                ParseUser currentUser = ParseUser.getCurrentUser(); // this will now be null
+                //send user back to the log in page
+                Intent i = new Intent(getContext(), LoginActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     // Call this method to launch the edit dialog
@@ -120,18 +143,6 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         Toast.makeText(getContext(), "New trip: " + inputText, Toast.LENGTH_SHORT).show();
         ParseUser currentUser = ParseUser.getCurrentUser();
         makeNewTrip(currentUser, inputText);
-    }
-
-    /**
-     * When the options menu is created, change it to the one for the maps fragment
-     */
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_profile_fragment, menu);
-        AppCompatActivity activity = (AppCompatActivity) getActivity();
-        ActionBar actionBar = activity.getSupportActionBar();
-        actionBar.setTitle("Profile");
-        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**

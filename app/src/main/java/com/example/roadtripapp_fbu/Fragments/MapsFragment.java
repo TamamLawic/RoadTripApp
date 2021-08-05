@@ -219,9 +219,9 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        tvMiles = view.findViewById(R.id.tvMilesFeed);
-        tvDuration = view.findViewById(R.id.tvDurationFeed);
-        tvStops = view.findViewById(R.id.tvStopsFeed);
+        tvMiles = view.findViewById(R.id.tvMilesProfile);
+        tvDuration = view.findViewById(R.id.tvDurationProfile);
+        tvStops = view.findViewById(R.id.tvStopsProfile);
         rvItinerary = view.findViewById(R.id.rvItinerary);
         rvSuggestedStops = view.findViewById(R.id.rvSuggestedStops);
         slidingPane = view.findViewById(R.id.slidingPaneItinerary);

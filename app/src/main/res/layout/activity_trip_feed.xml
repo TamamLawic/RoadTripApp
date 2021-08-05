@@ -81,7 +81,7 @@
                     android:backgroundTint="#FFFFFF" />
 
                 <TextView
-                    android:id="@+id/tvStopsFeed"
+                    android:id="@+id/tvStopsProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvTripNameFeed"
@@ -99,13 +99,13 @@
                     android:layout_below="@+id/tvTripNameFeed"
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
-                    android:layout_toEndOf="@+id/tvStopsFeed"
+                    android:layout_toEndOf="@+id/tvStopsProfile"
                     android:transitionName="timeIcon"
                     android:background="@drawable/outline_watch_later_24"
                     android:backgroundTint="#FFFFFF" />
 
                 <TextView
-                    android:id="@+id/tvDurationFeed"
+                    android:id="@+id/tvDurationProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvTripNameFeed"
@@ -124,12 +124,12 @@
                     android:layout_marginStart="40dp"
                     android:layout_marginTop="20dp"
                     android:transitionName="carIcon"
-                    android:layout_toEndOf="@+id/tvDurationFeed"
+                    android:layout_toEndOf="@+id/tvDurationProfile"
                     android:background="@drawable/outline_directions_car_filled_24"
                     android:backgroundTint="#FFFFFF" />
 
                 <TextView
-                    android:id="@+id/tvMilesFeed"
+                    android:id="@+id/tvMilesProfile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvTripNameFeed"
@@ -174,10 +174,10 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="15dp"
-            android:backgroundTint="@color/orange"
+            android:backgroundTint="#E51F1F"
             android:src="@drawable/outline_add_24"
             app:borderWidth="0dp"
-            app:fabSize="normal"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+            app:fabSize="normal" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddJournal"
@@ -189,7 +189,7 @@
             android:layout_marginEnd="20dp"
             android:src="@drawable/outline_history_edu_24"
             android:visibility="invisible"
-            app:backgroundTint="@color/yellow"
+            app:backgroundTint="#E51F1F"
             app:fabSize="mini"
             tools:visibility="invisible" />
 
@@ -203,7 +203,7 @@
             android:layout_marginEnd="20dp"
             android:src="@drawable/outline_add_a_photo_24"
             android:visibility="invisible"
-            app:backgroundTint="@color/yellow"
+            app:backgroundTint="#E51F1F"
             app:fabSize="mini"
             tools:visibility="invisible" />
 
@@ -218,7 +218,7 @@
             android:layout_marginBottom="10dp"
             android:src="@drawable/outline_person_add_24"
             android:visibility="invisible"
-            app:backgroundTint="@color/yellow"
+            app:backgroundTint="#E51F1F"
             app:fabSize="mini"
             tools:visibility="invisible" />
     </RelativeLayout>

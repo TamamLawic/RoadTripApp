@@ -1,26 +1,15 @@
 package com.example.roadtripapp_fbu;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.icu.util.MeasureUnit;
-import android.media.Image;
 import android.os.Bundle;
-import android.transition.TransitionManager;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,41 +17,22 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.Rotate;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.roadtripapp_fbu.Adapters.PagerAdapter;
 import com.example.roadtripapp_fbu.Adapters.PagerAdapterFeed;
-import com.example.roadtripapp_fbu.Adapters.TripFeedAdapter;
 import com.example.roadtripapp_fbu.Fragments.AddFriendsFragment;
-import com.example.roadtripapp_fbu.Objects.Collaborator;
-import com.example.roadtripapp_fbu.Objects.FeedObjects;
-import com.example.roadtripapp_fbu.Objects.JournalEntry;
 import com.example.roadtripapp_fbu.Objects.Location;
-import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.Objects.Trip;
-import com.fivehundredpx.greedolayout.GreedoLayoutManager;
-import com.fivehundredpx.greedolayout.GreedoSpacingItemDecoration;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 
 import static androidx.core.app.FrameMetricsAggregator.DELAY_DURATION;
-import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 /**
  * Displays the Feed for the current trip you have selected from Profile feed.
@@ -92,9 +62,9 @@ public class TripFeedActivity extends AppCompatActivity {
         btnBackTrip = findViewById(R.id.btnBackTrip);
         tvTripNameFeed = findViewById(R.id.tvTripNameFeed);
         ivTripImageFeed = findViewById(R.id.ivTripOverviewImage);
-        tvDurationFeed = findViewById(R.id.tvDurationFeed);
-        tvStopsFeed = findViewById(R.id.tvStopsFeed);
-        tvMilesFeed = findViewById(R.id.tvMilesFeed);
+        tvDurationFeed = findViewById(R.id.tvDurationProfile);
+        tvStopsFeed = findViewById(R.id.tvStopsProfile);
+        tvMilesFeed = findViewById(R.id.tvMilesProfile);
 
         //use Parcels to unwrap trip selected
         selectedTrip = (Trip) Parcels

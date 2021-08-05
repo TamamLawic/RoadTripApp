@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.*;
-
+/** Adapter class used to show image gallery. Uses GreedyLayoutManager for recycler view. Uses Glide to put in images.*/
 public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapter.ViewHolder> implements GreedoLayoutSizeCalculator.SizeCalculatorDelegate {
     public static final String KEY_PROFILE = "profilePic";
     private Context context;
@@ -103,9 +103,7 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
         }
     }
 
-    /** ViewHolder class, that sets up posts for the FeedFragment recycler view.
-     * Binds Posts using Parse to get the data, and Glide to bind it.*/
-    //find and store references to the Text and Image views for the post
+    /** ViewHolder class, that sets up images for the image gallery tab in trip feed. Uses a shared element transition to show the enlarged image*/
     class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivImageGallery;
         ConstraintLayout layoutImage;

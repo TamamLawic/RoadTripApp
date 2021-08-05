@@ -30,7 +30,7 @@ import java.util.List;
 import static com.example.roadtripapp_fbu.TripFeedActivity.selectedTrip;
 
 /**
- * Fragment for TabView in TripFeed Activity, Shows all feed information for selected trip
+ * Fragment for TabView in TripFeed Activity, Shows all images for the trip
  */
 public class ImageGalleryFragment extends Fragment {
     RecyclerView rvImageGallery;
