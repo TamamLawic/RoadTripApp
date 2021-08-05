@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu.Adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -20,11 +21,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.example.roadtripapp_fbu.ImageFullscreenActivity;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.Objects.Post;
 import com.example.roadtripapp_fbu.Objects.Trip;
@@ -116,7 +120,12 @@ public class ImageGalleryAdapter extends RecyclerView.Adapter<ImageGalleryAdapte
                 @Override
                 public void onClick(View v) {
                     //when post is clicked, show bigger image
-
+                    Intent intent = new Intent(context, ImageFullscreenActivity.class);
+                    intent.putExtra("post", Parcels.wrap(posts.get(getAdapterPosition())));
+                    //shared element transition data
+                    Pair<View, String> p1 = Pair.create((View)ivImageGallery, "imageBig");
+                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, p1);
+                    context.startActivity(intent, options.toBundle());
                 }
             });
         }

@@ -51,6 +51,9 @@ public class HomeFeedFragment extends Fragment {
         ActionBar actionBar = activity.getSupportActionBar();
         actionBar.show();
         actionBar.setTitle("Road Trip App");
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.logo_white);
+        actionBar.setDisplayUseLogoEnabled(true);
         return inflater.inflate(R.layout.fragment_feed, container, false);
     }
 

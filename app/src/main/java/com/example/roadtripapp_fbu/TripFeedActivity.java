@@ -110,6 +110,8 @@ public class TripFeedActivity extends AppCompatActivity {
         setUpFloatingActionButtons();
 
         tvTripNameFeed.setText(selectedTrip.getTripName());
+        ParseFile lastImage = locations.get(locations.size() - 1).getImage();
+        setBlurImageToBackground(this, lastImage, ivTripImageFeed);
 
         //set up Back Button
         btnBackTrip.setOnClickListener(new View.OnClickListener() {
@@ -226,4 +228,17 @@ public class TripFeedActivity extends AppCompatActivity {
 //        }
 //        super.onActivityResult(requestCode, resultCode, data);
 //    }
+
+    public static void setBlurImageToBackground(final Context context, final ParseFile path, final ImageView imageView) {
+        imageView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RequestOptions requestOptions = new RequestOptions();
+                requestOptions = requestOptions.transforms(new CenterCrop(), new BlurTransformation(25));
+                Glide.with(context).load(path.getUrl())
+                        .apply(requestOptions)
+                        .into(imageView);
+            }
+        }, DELAY_DURATION);
+    }
 }

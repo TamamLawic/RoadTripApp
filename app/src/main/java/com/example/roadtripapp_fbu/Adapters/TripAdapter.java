@@ -113,12 +113,13 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
                 intent.putExtra(Trip.class.getSimpleName(), Parcels.wrap(trip));
                 //shared element transition data
                 Pair<View, String> p1 = Pair.create((View)tvTripNameProfile, "tripName");
+                Pair<View, String> p2 = Pair.create((View)ivDestinationTrip, "destination");
                 Pair<View, String> p3 = Pair.create((View)ivStopsIconTrip, "stopIcon");
                 Pair<View, String> p4 = Pair.create((View)imageViewTrip, "timeIcon");
                 Pair<View, String> p5 = Pair.create((View)imageView2Trip, "carIcon");
 
                 ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity) context, p1, p3, p4, p5);
+                        makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4, p5);
                 context.startActivity(intent, options.toBundle());
             }
         }

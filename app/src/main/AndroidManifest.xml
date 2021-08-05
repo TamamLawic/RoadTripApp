@@ -22,12 +22,15 @@
     <application
         android:name=".ParseApplication"
         android:allowBackup="true"
-        android:icon="@drawable/outline_directions_car_filled_24"
-        android:label="Road Trip Planner"
-        android:roundIcon="@drawable/outline_directions_car_filled_24"
+        android:icon="@drawable/logo"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.RoadTripAppFBU">
-        <activity android:name=".CreateAccountActivity"></activity>
+        <activity android:name=".ImageFullscreenActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"></activity>
+        <activity android:name=".CreateAccountActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"/>
         <activity android:name=".ShowTripActivity" />
         <activity
             android:name=".TripFeedActivity"
@@ -81,6 +84,7 @@
 
         <activity
             android:name=".LoginActivity"
+            android:theme="@style/Theme.RoadTripAppFBU_NoActionBar"
             android:label="TripIt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
