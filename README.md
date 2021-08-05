@@ -36,22 +36,24 @@ App to allow users to plan, and track a road trip's: cost, photos, and progress.
 * Implement user profile
     * User information
     * User Trips
-* User can add trip updates (Money spent, Photos, and journal entries) to their Trip's feed
-* User can see current amount spent on trip
+* User can add trip updates (Photos, and journal entries) to their Trip's feed
 * User can see posted updates with trip progress
 
 
 
 
 **Optional Nice-to-have Stories**
-
-* User can add other users to the trip, and they can split everything evenly
+* User can connect road trip playlists/podcasts from Spotify for everyone to edit/contribute
+* Map suggests popular locations near the waypoints on the map. 
+* Use can tag posts with locations
+* User can reorder the trip's waypoints
+* User can add other people to thier trip to collaborate
+* Collaborators can split costs everything evenly
 * User can Change road trip/decide to end early, and recalculate rest of trip accordingly
 * User can request a stop, and it will suggest popular food places near them
 * Other users can add expenses, and calculate what everyone owes them
 * When making map user can see projected cost of trip
 * Can connect to Twitter, to attach all information into update for app
-* User can connect road trip playlists/podcasts from Spotify for everyone to edit/contribute
 
 
 ### 2. Screen Archetypes
