@@ -128,6 +128,8 @@
         android:layout_marginTop="20dp"
         android:layout_toEndOf="@+id/imageView4"
         android:fontFamily="@font/oswald_light"
+        android:autoLink="all"
+        android:linksClickable="true"
         android:text="TextView" />
 
     <Button

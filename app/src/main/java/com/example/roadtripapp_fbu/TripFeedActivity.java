@@ -1,5 +1,6 @@
 package com.example.roadtripapp_fbu;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
@@ -171,34 +172,18 @@ public class TripFeedActivity extends AppCompatActivity {
         dialog.show(fm, "NEW ADD FRIENDS");
     }
 
-//    /** Unwraps the posted updated, and populates the Trip Feed without a query.*/
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        //Make sure it is returning the same request we made earlier for post, and the result is ok
-//        if (requestCode == REQUEST_CODE_POST && resultCode == RESULT_OK){
-//            //get data from the intent and unwrap parcel
-//            Post post = Parcels.unwrap(data.getParcelableExtra("post"));
-//            //update the recycler view with the new post
-//            feedObjects.add(0, post);
-//            //update the adapter
-//            adapter.notifyItemInserted(0);
-//            //scroll to the top of the recycler view
-//            rvTripPosts.smoothScrollToPosition(0);
-//        }
-//        //Make sure it is returning the same request we made earlier for journal, and the result is ok
-//        if (requestCode == REQUEST_CODE_JOURNAL && resultCode == RESULT_OK){
-//            //get data from the intent and unwrap parcel
-//            JournalEntry journal = Parcels.unwrap(data.getParcelableExtra("journal"));
-//            //update the recycler view with the new post
-//            feedObjects.add(0, journal);
-//            //update the adapter
-//            adapter.notifyItemInserted(0);
-//            //scroll to the top of the recycler view
-//            rvTripPosts.smoothScrollToPosition(0);
-//        }
-//        super.onActivityResult(requestCode, resultCode, data);
-//    }
+    /** When the post has been saved, remake the tab view to show the new posts.*/
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        ViewPager viewPager = (ViewPager) findViewById(R.id.pageView);
+        PagerAdapterFeed myPagerAdapter = new PagerAdapterFeed(getSupportFragmentManager(), 0);
+        viewPager.setAdapter(myPagerAdapter);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabBar);
+        tabLayout.setupWithViewPager(viewPager);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
+    /** blurs the background of the last trip image and puts into the header for the trip feed*/
     public static void setBlurImageToBackground(final Context context, final ParseFile path, final ImageView imageView) {
         imageView.postDelayed(new Runnable() {
             @Override

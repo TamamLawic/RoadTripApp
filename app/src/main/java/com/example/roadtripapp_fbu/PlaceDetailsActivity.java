@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -55,6 +56,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         tvPlaceAddress.setText(selectedLocation.getAddress());
         tvOpeningHours.setText(selectedLocation.getHours());
         tvPhoneNumber.setText(selectedLocation.getPhone());
+        Linkify.addLinks(tvPhoneNumber, Linkify.ALL);
         tvWebsite.setText(selectedLocation.getWebsite());
         ParseFile locationImage = selectedLocation.getImage();
         Glide.with(this)
