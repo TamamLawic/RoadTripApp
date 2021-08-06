@@ -17,10 +17,18 @@ import com.example.roadtripapp_fbu.Objects.BucketListLocation;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_LOCATION;
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_USER;
+import static com.parse.ParseObject.KEY_CREATED_AT;
 
 public class PlaceDetailsActivity extends AppCompatActivity {
     Location selectedLocation;
@@ -32,6 +40,7 @@ public class PlaceDetailsActivity extends AppCompatActivity {
     TextView tvPhoneNumber;
     TextView tvWebsite;
     ImageButton btnBackDetails;
+    List<String> BucketLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +59,9 @@ public class PlaceDetailsActivity extends AppCompatActivity {
         selectedLocation = (Location) Parcels
                 .unwrap(getIntent()
                         .getParcelableExtra(Location.class.getSimpleName()));
+
+        BucketLocations = new ArrayList<>();
+        getLocations(getBucketListLocations(ParseUser.getCurrentUser()));
 
         //put data into fields
         tvPlaceName.setText(selectedLocation.getLocationName());
@@ -92,5 +104,41 @@ public class PlaceDetailsActivity extends AppCompatActivity {
                 supportFinishAfterTransition();
             }
         });
+
+        //set up the add to bucketlist button
+        addBucketListButton();
+    }
+
+    private void getLocations(List<BucketListLocation> bucketListLocations) {
+        for (int i = 0; i < bucketListLocations.size(); i++) {
+            BucketLocations.add(bucketListLocations.get(i).getLocation().getLocationName());
+        }
+    }
+
+    /**
+     * Uses ParseQuery to get the BucketList of Locations for the user.
+     */
+    private List<BucketListLocation> getBucketListLocations(ParseUser currentUser) {
+        // specify what type of data we want to query - Location.class
+        ParseQuery<BucketListLocation> query = ParseQuery.getQuery(BucketListLocation.class);
+        //only query BucketList of the current user
+        query.whereEqualTo(KEY_USER, UserProfileActivity.user);
+        //include data about the locations
+        query.include(KEY_LOCATION);
+        //finds the newest created trip
+        query.addAscendingOrder(KEY_CREATED_AT);
+        try {
+            return query.find();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /** Only add onclick listener for bucketList if the user doesn't already have it in their list*/
+    private void addBucketListButton() {
+        if(BucketLocations.contains(selectedLocation.getLocationName())){
+            btnAddBucketList.setVisibility(View.INVISIBLE);
+        }
     }
 }

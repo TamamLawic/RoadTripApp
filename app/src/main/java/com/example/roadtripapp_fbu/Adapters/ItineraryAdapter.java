@@ -15,14 +15,23 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.roadtripapp_fbu.Objects.BucketListLocation;
 import com.example.roadtripapp_fbu.Objects.Location;
 import com.example.roadtripapp_fbu.PlaceDetailsActivity;
 import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.UserProfileActivity;
+import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_LOCATION;
+import static com.example.roadtripapp_fbu.Objects.BucketListLocation.KEY_USER;
+import static com.parse.ParseObject.KEY_CREATED_AT;
 
 /**
  * Adapter class SlideUpPanel to show the list of waypoints on the trip in order.
