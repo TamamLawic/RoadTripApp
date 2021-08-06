@@ -65,6 +65,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         ImageView ivProfile;
         TextView tvCaption;
         TextView tvTripNamePost;
+        ImageView ivLocationPin;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +75,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvCaption = itemView.findViewById(R.id.tvCaption);
             tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
+            ivLocationPin = itemView.findViewById(R.id.ivLocationPin);
+
             //when the name of the trip is clicked, bring up details
             //If the location is clicked, show the location details page
             tvTripNamePost.setOnClickListener(new View.OnClickListener() {
@@ -111,12 +114,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             tvCaption.setText(post.getCaption());
             tvUsername.setText(post.getUser().getUsername());
             Trip trip = (Trip) post.getTripId();
+
             //If there is a location associated to the post, show the location instead of the trip
             if (post.getLocation() != null) {
                 tvTripNamePost.setText(post.getLocation().getString("locationName"));
             }
             else {
                 tvTripNamePost.setText(trip.getTripName());
+                ivLocationPin.setImageResource(R.drawable.outline_map_24);
             }
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();

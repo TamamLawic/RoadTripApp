@@ -49,10 +49,10 @@
         android:id="@+id/imageView4"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/btnAddBucketList"
+        android:layout_below="@+id/ivPlaceImageDetails"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="17dp"
         app:srcCompat="@drawable/outline_watch_later_24" />
 
     <ImageView
@@ -62,17 +62,17 @@
         android:layout_below="@+id/tvOpeningHours"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="20dp"
         app:srcCompat="@drawable/outline_location_on_24" />
 
     <ImageView
         android:id="@+id/imageView6"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/imageView5"
+        android:layout_below="@+id/tvPlaceAddress"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:backgroundTintMode="src_in"
         app:srcCompat="@drawable/outline_call_24" />
 
@@ -80,22 +80,23 @@
         android:id="@+id/imageView7"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_below="@+id/imageView6"
+        android:layout_below="@+id/tvPhoneNumber"
         android:layout_alignParentStart="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         app:srcCompat="?android:attr/actionModeWebSearchDrawable" />
 
     <TextView
         android:id="@+id/tvOpeningHours"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnAddBucketList"
+        android:layout_below="@+id/ivPlaceImageDetails"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="22dp"
         android:layout_toEndOf="@+id/imageView4"
         android:fontFamily="@font/oswald_light"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvPlaceAddress"
@@ -103,10 +104,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvOpeningHours"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="21dp"
         android:layout_toEndOf="@+id/imageView4"
         android:fontFamily="@font/oswald_light"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvPhoneNumber"
@@ -114,10 +116,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPlaceAddress"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="21dp"
         android:layout_toEndOf="@+id/imageView4"
         android:fontFamily="@font/oswald_light"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textColorLink="@color/purple"
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/tvWebsite"
@@ -125,21 +129,23 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvPhoneNumber"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="21dp"
         android:layout_toEndOf="@+id/imageView4"
-        android:fontFamily="@font/oswald_light"
         android:autoLink="all"
+        android:fontFamily="@font/oswald_light"
         android:linksClickable="true"
-        android:text="TextView" />
+        android:text="TextView"
+        android:textColorLink="@color/purple"
+        android:textSize="16sp" />
 
     <Button
         android:id="@+id/btnAddBucketList"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ivPlaceImageDetails"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="65dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="19dp"
         android:fontFamily="@font/oswald_light"
         android:text="+ Bucketlist"
         android:textColor="@color/white" />

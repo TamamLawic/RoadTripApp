@@ -2,6 +2,17 @@ package com.example.roadtripapp_fbu.Fragments;
 
 import android.os.Bundle;
 
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.example.roadtripapp_fbu.Adapters.OtherUserTripAdapter;
+import com.example.roadtripapp_fbu.R;
+
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -34,16 +45,13 @@ import java.util.List;
 /**
  * Fragment for the TabView's Trip section, shows the user's Trips. Uses ParseQuery to get all Trips the user is a collaborator on
  */
-public class TripViewFragment extends Fragment {
+public class OtherUserTripViewFragment extends Fragment {
     RecyclerView rvTrips;
-    protected TripAdapter adapter;
+    protected OtherUserTripAdapter adapter;
     protected List<Trip> allTrips;
     List<Collaborator> collaborators;
-    int totalStops = 0;
-    int totalDuration = 0;
-    int totalLength = 0;
 
-    public TripViewFragment() {
+    public OtherUserTripViewFragment() {
         // Required empty public constructor
     }
 
@@ -62,7 +70,7 @@ public class TripViewFragment extends Fragment {
         allTrips = new ArrayList<>();
         collaborators = new ArrayList<>();
         //create the adapter
-        adapter = new TripAdapter(getContext(), allTrips);
+        adapter = new OtherUserTripAdapter(getContext(), allTrips);
         //set the adapter on the recycler view
         rvTrips.setAdapter(adapter);
         rvTrips.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
@@ -110,20 +118,7 @@ public class TripViewFragment extends Fragment {
     private void getAllTrips() {
         for (int i = 0; i < collaborators.size(); i++) {
             Trip trip = collaborators.get(i).getTrip();
-            totalDuration += trip.getTime();
-            totalLength += trip.getLength();
-            totalStops += Location.getTripLocations(trip).size();
             allTrips.add(trip);
-
         }
-        saveProfileInformation();
-    }
-
-    private void saveProfileInformation() {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        currentUser.put("totalStops", totalStops);
-        currentUser.put("totalTime", totalDuration);
-        currentUser.put("totalDistance", totalLength);
-        currentUser.saveInBackground();
     }
 }

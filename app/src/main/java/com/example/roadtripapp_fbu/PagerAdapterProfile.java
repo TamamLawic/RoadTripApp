@@ -1,24 +1,19 @@
-package com.example.roadtripapp_fbu.Adapters;
+package com.example.roadtripapp_fbu;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.example.roadtripapp_fbu.Fragments.BucketlistViewFragment;
-import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
-import com.example.roadtripapp_fbu.Fragments.TripViewFragment;
-
-import java.util.EventListener;
+import com.example.roadtripapp_fbu.Fragments.OtherUserTripViewFragment;
 
 /**
- * Adapter class for the Tab View in the Profile Fragment. Gets new fragments for bucketlistfragment, and trip view fragments.
+ * Adapter class for the Tab View in a different user's Profile Fragment. Gets new fragments for bucketlistfragment, and trip view fragments.
  */
-public class PagerAdapter extends FragmentStatePagerAdapter {
+public class PagerAdapterProfile extends FragmentStatePagerAdapter {
 
-    public PagerAdapter(@NonNull FragmentManager fm, int behavior) {
+    public PagerAdapterProfile(@NonNull FragmentManager fm, int behavior) {
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
@@ -30,7 +25,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new TripViewFragment();
+            return new OtherUserTripViewFragment();
         }
         else {
             return new BucketlistViewFragment();

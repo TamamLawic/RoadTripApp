@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.roadtripapp_fbu.Adapters.ItineraryAdapter;
@@ -49,6 +51,7 @@ public class ShowTripActivity extends AppCompatActivity {
     TextView tvDurationDetails;
     TextView tvMilesDetails;
     GoogleMap tripMap;
+    ImageButton btnBackOtherTrip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class ShowTripActivity extends AppCompatActivity {
         tvDurationDetails = findViewById(R.id.tvDurationProfile);
         tvMilesDetails = findViewById(R.id.tvMilesProfile);
         tvStopsDetails = findViewById(R.id.tvStopsProfile);
+        btnBackOtherTrip = findViewById(R.id.btnBackOtherTrip);
 
         //unwrap trip from Parcel and put data into trip
         //use Parcels to unwrap trip selected
@@ -100,6 +104,14 @@ public class ShowTripActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //if the back button is pressed go back to home feed
+        btnBackOtherTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /** Loads new google map. Populates the map with the user's current trip, determined by ParseQuery.

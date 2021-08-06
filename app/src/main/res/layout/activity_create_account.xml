@@ -4,41 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/medium_gray_30"
+    android:backgroundTint="@color/purple"
     tools:context=".LoginActivity">
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="378dp"
+        android:layout_height="280dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="19dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="193dp"
+        tools:srcCompat="@drawable/loginbackground" />
 
     <EditText
         android:id="@+id/etNewUsername"
-        android:layout_width="380dp"
+        android:layout_width="330dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ivIconLogin"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_below="@+id/etNewUsername2"
+        android:layout_alignStart="@+id/imageView11"
+        android:layout_alignEnd="@+id/imageView11"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="5dp"
         android:fontFamily="@font/oswald_light"
         android:hint="Phone number, username, or email"
         android:outlineProvider="bounds"
-        android:textColor="@color/purple"
-        android:textColorHint="@color/purple"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etNewUsername2"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etNewUsername3"
+        android:layout_alignStart="@+id/imageView11"
+        android:layout_alignEnd="@+id/imageView11"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/oswald_light"
+        android:hint="Last Name"
+        android:outlineProvider="bounds"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+        android:textSize="14sp" />
+
+    <EditText
+        android:id="@+id/etNewUsername3"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/imageView11"
+        android:layout_alignTop="@+id/imageView11"
+        android:layout_alignEnd="@+id/imageView11"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="4dp"
+        android:fontFamily="@font/oswald_light"
+        android:hint="Name"
+        android:outlineProvider="bounds"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:textSize="14sp" />
 
     <EditText
         android:id="@+id/etNewPassword"
-        android:layout_width="380dp"
-        android:layout_height="40dp"
+        android:layout_width="324dp"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/etNewUsername"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
+        android:layout_alignStart="@+id/imageView11"
+        android:layout_alignEnd="@+id/imageView11"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="7dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="5dp"
         android:fontFamily="@font/oswald_light"
         android:hint="password"
         android:inputType="textPassword"
-        android:textColor="@color/purple"
-        android:textColorHint="@color/purple"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:textSize="14sp" />
 
     <Button
@@ -46,25 +96,15 @@
         android:layout_width="380dp"
         android:layout_height="50dp"
         android:layout_below="@+id/etNewPassword"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
+        android:layout_alignStart="@+id/imageView11"
+        android:layout_alignEnd="@+id/imageView11"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
         android:backgroundTint="@color/purple"
         android:fontFamily="@font/oswald_light"
         android:text="Create Account"
-        android:textColor="@color/medium_gray_30" />
-
-    <ImageView
-        android:id="@+id/ivIconLogin"
-        android:layout_width="170dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
-        android:background="@drawable/logo"
-        android:backgroundTint="@color/purple" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/textView7"
@@ -75,8 +115,8 @@
         android:layout_marginStart="110dp"
         android:layout_marginTop="30dp"
         android:fontFamily="@font/oswald_light"
-        android:text="Already have an account?"
-        android:textColor="@color/purple" />
+        android:text="Already have an Account?"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/btnLogIn"
@@ -92,6 +132,17 @@
         android:fontFamily="@font/oswald_light"
         android:shadowColor="#FFFFFF"
         android:text="Log in"
-        android:textColor="@color/medium_gray_30" />
+        android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="254dp"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="79dp"
+        app:srcCompat="@drawable/logo" />
 
 </RelativeLayout>

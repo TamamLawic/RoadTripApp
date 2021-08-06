@@ -27,7 +27,7 @@
         android:layout_height="30dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="45dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="30dp"
         android:layout_toStartOf="@+id/imageView"
         android:background="@drawable/outline_location_on_24"
         android:backgroundTint="@color/purple" />
@@ -51,7 +51,7 @@
         android:layout_height="30dp"
         android:layout_alignParentTop="true"
         android:layout_marginTop="45dp"
-        android:layout_marginEnd="50dp"
+        android:layout_marginEnd="40dp"
         android:layout_toStartOf="@+id/imageView2"
         android:background="@drawable/outline_watch_later_24"
         android:backgroundTint="@color/purple" />
@@ -77,7 +77,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="45dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginEnd="40dp"
         android:background="@drawable/outline_directions_car_filled_24"
         android:backgroundTint="@color/purple" />
 
@@ -115,7 +115,7 @@
         android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="15dp"
         tools:src="@tools:sample/avatars" />
 
@@ -144,5 +144,17 @@
         android:backgroundTint="@color/purple"
         android:src="@drawable/outline_logout_24"
         app:tint="@color/white" />
+
+    <ImageButton
+        android:id="@+id/btnBackOtherProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"
+        android:background="@drawable/outline_arrow_back_ios_24"
+        android:backgroundTint="@color/black" />
 
 </RelativeLayout>

@@ -59,6 +59,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayou
         private TextView tvTime;
         private ImageView ivProfile;
         TextView tvTripNamePost;
+        ImageView ivLocationPin;
 
         /** View Holder for the Post Objects*/
         public PostViewHolder(View itemView) {
@@ -70,6 +71,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayou
             tvTime = itemView.findViewById(R.id.tvTimeStamp);
             ivProfile = itemView.findViewById(R.id.ivProfile);
             tvTripNamePost = itemView.findViewById(R.id.tvTripNamePost);
+            ivLocationPin = itemView.findViewById(R.id.ivLocationPin);
         }
 
         void bindView(int position) {
@@ -82,6 +84,7 @@ public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayou
             }
             else {
                 tvTripNamePost.setVisibility(View.INVISIBLE);
+                ivLocationPin.setVisibility(View.INVISIBLE);
             }
             //bind time since the post was posted
             Date createdAt = post.getCreatedAt();
@@ -99,12 +102,6 @@ public class TripFeedAdapter extends RecyclerView.Adapter implements GreedoLayou
                         .circleCrop()
                         .into(ivProfile);
             }
-            ivImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //show image full screen
-                }
-            });
         }
     }
     /** Separate View Holder for the Journal Objects in the TripFeed*/

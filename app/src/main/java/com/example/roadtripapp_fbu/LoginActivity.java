@@ -21,7 +21,6 @@ import com.parse.SignUpCallback;
  * Activity the allows the user to log into an existing account, or create a new one using Parse.
  */
 public class LoginActivity extends AppCompatActivity {
-    ImageView ivIconLogin;
     EditText etUsername;
     EditText etPassword;
     Button btnLogin;
@@ -39,8 +38,6 @@ public class LoginActivity extends AppCompatActivity {
             goToMainActivity();
         }
 
-        ivIconLogin = findViewById(R.id.ivIconLogin);
-        //ivIconLogin.setImageResource(R.mipmap.icon);
         etUsername = findViewById(R.id.etCaption);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);

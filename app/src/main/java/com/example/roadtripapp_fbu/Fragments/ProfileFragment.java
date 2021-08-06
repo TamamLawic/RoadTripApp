@@ -46,7 +46,6 @@ import org.w3c.dom.Text;
 
 import java.util.List;
 
-import static com.example.roadtripapp_fbu.Adapters.TripAdapter.totalStops;
 
 /**
  * Fragment for bottom navigational view. Shows currently logged in User's information.
@@ -60,6 +59,8 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
     TextView tvName;
     EditText etTripName;
     TextView tvStopsProfile;
+    TextView tvDurationProfile;
+    TextView tvMilesProfile;
     ImageButton btnLogOut;
 
     public ProfileFragment() {
@@ -88,8 +89,13 @@ public class ProfileFragment extends Fragment implements EditTripNameFragment.Ed
         etTripName = view.findViewById(R.id.etTripName);
         tvStopsProfile = view.findViewById(R.id.tvStopsProfile);
         btnLogOut = view.findViewById(R.id.btnLogOut);
+        tvDurationProfile = view.findViewById(R.id.tvDurationProfile);
+        tvMilesProfile = view.findViewById(R.id.tvMilesProfile);
 
         tvName.setText(ParseUser.getCurrentUser().getUsername());
+        tvStopsProfile.setText(String.valueOf(ParseUser.getCurrentUser().getNumber("totalStops")));
+        tvDurationProfile.setText(ParseUser.getCurrentUser().getNumber("totalTime") + " Hrs");
+        tvMilesProfile.setText(ParseUser.getCurrentUser().getNumber("totalDistance") + " Miles");
         //Put profile picture into the ImageView
         // query posts from Instagram App
         if (ParseUser.getCurrentUser().getParseFile(KEY_PROFILE) != null) {

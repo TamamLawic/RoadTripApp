@@ -31,6 +31,7 @@
         android:fontFamily="@font/oswald_light"
         android:text="TextView"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textSize="16sp"
         tools:text="Sophie" />
 
     <ImageView
@@ -80,16 +81,27 @@
 
     <TextView
         android:id="@+id/tvTripNamePost"
-        android:layout_width="wrap_content"
+        android:layout_width="283dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:layout_toStartOf="@+id/ivProfile"
+        android:layout_toEndOf="@+id/ivLocationPin"
         android:clickable="true"
         android:fontFamily="@font/oswald_light"
         android:text="Road Trip Across the US"
         android:textColor="@color/black"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/ivLocationPin"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/pushpin" />
 </RelativeLayout>

@@ -535,7 +535,6 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
 
     /** Adds all locations to the current map*/
     private void addAllLocationsMap() {
-
         for (int i = 0; i < locations.size(); i++) {
             Location location = locations.get(i);
             double latLocation = location.getLatitude().doubleValue();

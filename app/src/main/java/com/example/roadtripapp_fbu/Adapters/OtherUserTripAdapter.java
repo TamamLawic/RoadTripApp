@@ -3,7 +3,6 @@ package com.example.roadtripapp_fbu.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,28 +15,22 @@ import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.roadtripapp_fbu.Fragments.ProfileFragment;
-import com.example.roadtripapp_fbu.MainActivity;
 import com.example.roadtripapp_fbu.Objects.Location;
-import com.example.roadtripapp_fbu.R;
 import com.example.roadtripapp_fbu.Objects.Trip;
+import com.example.roadtripapp_fbu.R;
+import com.example.roadtripapp_fbu.ShowTripActivity;
 import com.example.roadtripapp_fbu.TripFeedActivity;
-import com.google.android.gms.maps.model.Marker;
 import com.parse.ParseFile;
 
 import org.parceler.Parcels;
 
-import java.util.EventListener;
 import java.util.List;
 
-/**
- * Adapter Class for the TabViews Trip Page, shows all Trips the user is a collaborator on.
- */
-public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
+public class OtherUserTripAdapter extends RecyclerView.Adapter<OtherUserTripAdapter.ViewHolder>{
     private Context context;
     private List<Trip> trips;
 
-    public TripAdapter(Context context, List<Trip> trips) {
+    public OtherUserTripAdapter(Context context, List<Trip> trips) {
         this.context = context;
         this.trips = trips;
     }
@@ -49,7 +42,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TripAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull OtherUserTripAdapter.ViewHolder holder, int position) {
         Trip trip = trips.get(position);
         holder.bind(trip);
     }
@@ -106,7 +99,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
             }
         }
 
-        /** When the post is clicked, wrap trip data using Parcels and start TripFeedActivity sending it with the wrapped trip. */
+        /** When the trip is clicked show the trip overview page */
         @Override
         public void onClick(View v) {
             // gets item position
@@ -114,17 +107,9 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.ViewHolder> {
             // makes sure the position exists before using intent to start TripFeed for selected Trip
             if (position != RecyclerView.NO_POSITION) {
                 Trip trip = trips.get(position);
-                Intent intent = new Intent(context, TripFeedActivity.class);
-                intent.putExtra(Trip.class.getSimpleName(), Parcels.wrap(trip));
-                //shared element transition data
-                Pair<View, String> p1 = Pair.create((View)tvTripNameProfile, "tripName");
-                Pair<View, String> p2 = Pair.create((View)ivDestinationTrip, "destination");
-                Pair<View, String> p3 = Pair.create((View)ivStopsIconTrip, "stopIcon");
-                Pair<View, String> p4 = Pair.create((View)imageViewTrip, "timeIcon");
-                Pair<View, String> p5 = Pair.create((View)imageView2Trip, "carIcon");
-                ActivityOptionsCompat options = ActivityOptionsCompat.
-                        makeSceneTransitionAnimation((Activity) context, p1, p2, p3, p4, p5);
-                context.startActivity(intent, options.toBundle());
+                Intent intent = new Intent(context, ShowTripActivity.class);
+                intent.putExtra("trip", Parcels.wrap(trip));
+                context.startActivity(intent);
             }
         }
     }
