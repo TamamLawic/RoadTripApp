@@ -359,6 +359,7 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
     private void addPlaceToTrip(Place place) {
         Location location = new Location();
         LatLng latLng = place.getLatLng();
+        tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
         //check if this changes the bounds of the map
         double latLocation = latLng.latitude;
         double lngLocation = latLng.longitude;
@@ -375,6 +376,12 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
         if (lngLocation < lngS) {
             lngS = lngLocation;
         }
+        LatLngBounds bounds = new LatLngBounds(
+                new LatLng(latS, lngS),
+                new LatLng(latN, lngN)
+        );
+        tripMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
+
         location.setLatitude(latLng.latitude);
         location.setLocationName(place.getName());
         location.setAddress(place.getAddress());
@@ -467,17 +474,10 @@ public class MapsFragment extends Fragment implements SuggestionsAdapter.EventLi
                     }
                 });
             }
-            LatLngBounds bounds = new LatLngBounds(
-                    new LatLng(latS, lngS),
-                    new LatLng(latN, lngN)
-            );
-            tripMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 200));
         }
         else {
-
-            tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(41.850033, -87.6500523), 15));
+            tripMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
         }
-        tripMap.addMarker(new MarkerOptions().position(latLng).title(location.getLocationName()));
 
     }
 
